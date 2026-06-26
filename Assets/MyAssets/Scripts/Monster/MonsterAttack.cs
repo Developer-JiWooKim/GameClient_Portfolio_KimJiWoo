@@ -1,0 +1,26 @@
+using UnityEngine;
+
+/// <summary>
+/// 몬스터 공격 범위 안에 플레이어가 들어왔는지 체크, Trigger 이벤트
+/// </summary>
+public class MonsterAttack : MonoBehaviour
+{
+    public bool PlayerInAttackRange { get; private set; } = false;
+    public PlayerController Player { get; private set; }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        PlayerInAttackRange = true;
+        Player              = other.GetComponent<PlayerController>();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        PlayerInAttackRange = false;
+        Player              = null;
+    }
+}
