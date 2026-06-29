@@ -2,8 +2,9 @@ using UnityEngine;
 using FischlWorks_FogWar;
 using Unity.Cinemachine;
 
-[RequireComponent(typeof(PlayerInputHandler))]
 [RequireComponent(typeof(PlayerMove))]
+[RequireComponent(typeof(PlayerAnim))]
+[RequireComponent(typeof(PlayerInputHandler))]
 [RequireComponent(typeof(CinemachineImpulseSource))]
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInputHandler _playerInputHandler;
     private PlayerMove         _playerMove;
+    private PlayerAnim         _playerAnim;
 
     private CinemachineImpulseSource _impulseSource;
 
@@ -33,6 +35,8 @@ public class PlayerController : MonoBehaviour
     {
         _playerInputHandler = GetComponent<PlayerInputHandler>();
         _playerMove         = GetComponent<PlayerMove>();
+        _playerAnim         = GetComponent<PlayerAnim>();
+
         _impulseSource      = GetComponent<CinemachineImpulseSource>();
 
         _currentHp = _maxHp;
@@ -61,6 +65,11 @@ public class PlayerController : MonoBehaviour
     {
         // PlayerInputHandler가 onActionTriggered 콜백으로 갱신해둔 입력값을 그대로 읽어서 사용
         Vector3 dir = new Vector3(_playerInputHandler.InputVector.x, 0, _playerInputHandler.InputVector.y);
+
+        bool hasInput = dir.sqrMagnitude > 0.0001f;
+        float targetAnimSpeed = hasInput ? 1f : 0f;
+
+        _playerAnim.SetMoving(hasInput);
 
         _playerMove.Move(dir, _moveSpeed);               
     }
