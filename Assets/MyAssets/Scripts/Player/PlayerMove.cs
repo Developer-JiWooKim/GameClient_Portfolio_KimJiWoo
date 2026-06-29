@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour
 
         if (distance < 0.001f) return;
 
-        // Vector3 정규화
+        // Vector3 normailzed
         moveDir /= distance;
 
         RotateToward(moveDir);
