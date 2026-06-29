@@ -12,10 +12,8 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private Vector2 _inputVector = Vector2.zero;
-    private bool _isRunning = false;
 
     public Vector2 InputVector => _inputVector;
-    public bool IsRunning => _isRunning;
 
     // 유니티 내장 PlayerInput 컴포넌트
     private PlayerInput _playerInput;
@@ -40,8 +38,6 @@ public class PlayerInputHandler : MonoBehaviour
         _playerInput.onActionTriggered -= HandleActionTriggered;
 
         _inputVector = Vector2.zero; // 비활성화되는 순간 입력 초기화
-
-        _isRunning = false;
     }
 
     /// <summary>
@@ -53,10 +49,6 @@ public class PlayerInputHandler : MonoBehaviour
         {
             case "Move":
                 _inputVector = context.ReadValue<Vector2>();
-                break;
-            case "Run":
-                if (context.phase == InputActionPhase.Performed) _isRunning = true;
-                else if (context.phase == InputActionPhase.Canceled) _isRunning = false;
                 break;
             case "SwitchLayer":
                 if (context.phase == InputActionPhase.Performed)

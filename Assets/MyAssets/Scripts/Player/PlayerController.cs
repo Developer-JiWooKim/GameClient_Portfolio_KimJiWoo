@@ -67,11 +67,13 @@ public class PlayerController : MonoBehaviour
         Vector3 dir = new Vector3(_playerInputHandler.InputVector.x, 0, _playerInputHandler.InputVector.y);
 
         bool hasInput = dir.sqrMagnitude > 0.0001f;
-        float targetAnimSpeed = hasInput ? 1f : 0f;
-
+        
         _playerAnim.SetMoving(hasInput);
 
-        _playerMove.Move(dir, _moveSpeed);               
+        if(hasInput)
+        {
+            _playerMove.Move(dir, _moveSpeed);
+        }           
     }
 
     /// <summary>
