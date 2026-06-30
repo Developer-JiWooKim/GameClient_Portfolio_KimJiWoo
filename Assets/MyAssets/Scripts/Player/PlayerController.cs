@@ -9,9 +9,10 @@ using Unity.Cinemachine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float _moveSpeed = 10f;
-    [SerializeField] private int   _maxHp     = 3;
-    [SerializeField] private float _sightRange = 10f;
+    [SerializeField] private float _moveSpeed          = 10f;
+    [SerializeField] private int   _maxHp              = 3;
+    [SerializeField] private float _sightRange         = 10f;
+    [SerializeField] private float _invincibleDuration = 1.5f;
 
     private PlayerInputHandler _playerInputHandler;
     private PlayerMove         _playerMove;
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private csFogWar.FogRevealer _myRevealer;
 
     private int _currentHp;
+
+    private float _invincibleTimer;
 
     public int CurrentHp => _currentHp;
     public int MaxHp => _maxHp;
@@ -63,6 +66,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(_invincibleTimer > 0)
+        {
+            _invincibleTimer -= Time.deltaTime;
+        }
+
         // PlayerInputHandler가 onActionTriggered 콜백으로 갱신해둔 입력값을 그대로 읽어서 사용
         Vector3 dir = new Vector3(_playerInputHandler.InputVector.x, 0, _playerInputHandler.InputVector.y);
 
@@ -79,11 +87,13 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 몬스터 공격 범위 안에 닿았을 때 호출될 메소드
     /// </summary>
-    public void TakeDamage()
+    public bool TakeDamage()
     {
-        if (_currentHp <= 0) return;
+        if(_currentHp <= 0) return false;
+        if (_invincibleTimer > 0f) return false;
 
         _currentHp--;
+        _invincibleTimer = _invincibleDuration;
 
         // 피격 시 카메라 흔들림 발생 (Cinemachine Impulse Listener가 받아서 처리)
         _impulseSource?.GenerateImpulse();
@@ -93,5 +103,7 @@ public class PlayerController : MonoBehaviour
         OnHPChanged?.Invoke(_currentHp, _maxHp);
 
         if (_currentHp <= 0) OnDead?.Invoke();
+
+        return true;
     }
 }

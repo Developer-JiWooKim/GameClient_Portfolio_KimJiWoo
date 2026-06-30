@@ -3,6 +3,10 @@ using UnityEngine;
 /// <summary>
 /// 몬스터의 행동을 결정하고 조종하는 컨트롤러
 /// </summary>
+[RequireComponent(typeof(MonsterSight))]
+[RequireComponent(typeof(MonsterMove))]
+[RequireComponent(typeof(MonsterFSM))]
+[RequireComponent(typeof(MonsterAnim))]
 public class MonsterController : MonoBehaviour
 {
     private MonsterSight       _monsterSight;
@@ -10,12 +14,10 @@ public class MonsterController : MonoBehaviour
     private MonsterFSM         _monsterFSM;
     private MonsterAttack      _monsterAttack;
     private MonsterFieldOfView _monsterFOV;
+    private MonsterAnim        _monsterAnim;
 
     private bool _isSensed  = false; // 타겟 감지 여부를 저장하는 bool
     private bool _isInRange = false; // 타겟이 감지 반경 안에 들어와 있는지 여부를 저장하는 bool
-
-    private float _attackInterval = 1.5f;
-    private float _attackTimer    = 0f;
 
     private Transform _target;
     public Transform Target
@@ -34,6 +36,7 @@ public class MonsterController : MonoBehaviour
         _monsterMove  = GetComponent<MonsterMove>();
         _monsterSight = GetComponent<MonsterSight>();
         _monsterFSM   = GetComponent<MonsterFSM>();
+        _monsterAnim  = GetComponent<MonsterAnim>();
 
         _monsterAttack = GetComponentInChildren<MonsterAttack>();
         _monsterFOV    = GetComponentInChildren<MonsterFieldOfView>();
@@ -64,13 +67,15 @@ public class MonsterController : MonoBehaviour
     {
         if (_target == null) return;
 
+        Vector3 targetPos = _target.position;
+
         // 타겟 위치가 탐지 거리 안에 있는지 체크
-        _isInRange = _monsterSight.IsInRange(_target.position); 
+        _isInRange = _monsterSight.IsInRange(targetPos); 
         
         if(_isInRange)
         {
             // 탐지 거리 안에 들어와 있으면 시야각 안에 들어와 있고 그 사이에 벽이 있는지 체크
-            _isSensed = _monsterSight.TargetSense(_target.position);
+            _isSensed = _monsterSight.TargetSense(targetPos);
         }
         else
         {
@@ -101,15 +106,18 @@ public class MonsterController : MonoBehaviour
         {
             case MonsterFSM.State.Idle:
                 _monsterMove.Patrol();
+                _monsterAnim.PlayWalk();
                 break;
             case MonsterFSM.State.Chase:
                 _monsterMove.MoveToTarget(_target.position);
-                if(_monsterAttack.PlayerInAttackRange)
+                _monsterAnim.PlayRun();
+                if (_monsterAttack.PlayerInAttackRange)
                 {
                     _monsterFSM.SetAttack(true);
                 }
                 break;
             case MonsterFSM.State.Attack:
+                _monsterMove.StopMovement();
                 _monsterMove.LookAtTarget(_target.position);
                 if(!_monsterAttack.PlayerInAttackRange)
                 {
@@ -117,21 +125,18 @@ public class MonsterController : MonoBehaviour
                 }
                 else
                 {
-                    TryAttack();
+                    bool didAttack = _monsterAttack.Player != null && _monsterAttack.Player.TakeDamage();
+
+                    if(didAttack)
+                    {
+                        _monsterAnim.PlayAttack();
+                    }
+                    else
+                    {
+                        _monsterAnim.PlayIdle();
+                    }                    
                 }
                 break;
         }
-    }
-
-    /// <summary>
-    /// 몬스터 공격에 Interval을 주어 플레이어 체력이 한번에 0이 되지 않게하는 메소드
-    /// </summary>
-    private void TryAttack()
-    {
-        _attackTimer -= Time.deltaTime;
-        if (_attackTimer > 0f) return;
-
-        _attackTimer = _attackInterval;
-        _monsterAttack.Player?.TakeDamage();
     }
 }
