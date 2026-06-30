@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class UnitSpawner : MonoBehaviour
 {
@@ -164,6 +165,11 @@ public class UnitSpawner : MonoBehaviour
             if (monster.TryGetComponent(out MonsterController mc) && _player != null)
             {
                 mc.Target = _player.transform;
+            }
+
+            if(monster.TryGetComponent(out NavMeshAgent agent))
+            {
+                agent.avoidancePriority = Random.Range(0, 99);
             }
 
             // 스폰한 몬스터들을 리스트에 추가

@@ -2,17 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class MonsterMove : MonoBehaviour
 {
     [Header("Setting")]
-    [SerializeField] private float _moveSpeed      = 7f;   
+    [SerializeField] private float _patrolSpeed    = 4f;   
+    [SerializeField] private float _chaseSpeed     = 8f;   
     [SerializeField] private float _rotateSpeed    = 240f;
-    [SerializeField] private float _arriveDistance = 0.5f; // 목표 지점 도착 판정 거리
+    [SerializeField] private float _arriveDistance = 0.1f; // 목표 지점 도착 판정 거리
 
     private NavMeshAgent _agent;
     private Vector3      _patrolTarget;
-    private bool         _hasPatrolTarget;
     private Vector2Int   _previousCell;
+    private bool         _hasPatrolTarget;
     private bool         _hasPreviousCell;
 
     private List<Vector2Int> _openNeighbors = new List<Vector2Int>(4);
@@ -20,7 +22,7 @@ public class MonsterMove : MonoBehaviour
     private void Awake()
     {
         _agent                = GetComponent<NavMeshAgent>();
-        _agent.speed          = _moveSpeed;
+        _agent.speed          = _patrolSpeed; // 시작은 Patrol 속도로 초기화
         _agent.updateRotation = true; 
     }
 
@@ -29,10 +31,11 @@ public class MonsterMove : MonoBehaviour
     /// </summary>
     public void Patrol()
     {
+        _agent.speed     = _patrolSpeed;
         _agent.isStopped = false;
 
         if (!_hasPatrolTarget || _agent.remainingDistance <= _arriveDistance)
-        {
+        {            
             if(TryGetRandomPatrolPoint(out Vector3 point))
             {
                 _patrolTarget = point;
@@ -47,8 +50,15 @@ public class MonsterMove : MonoBehaviour
     /// </summary>
     public void MoveToTarget(Vector3 targetPos)
     {
-        _agent.isStopped = false;
+        _agent.speed = _chaseSpeed;
+        _agent.isStopped = false;        
         _agent.SetDestination(targetPos);
+    }
+
+    public void StopMovement()
+    {
+        _agent.isStopped = true;
+        _agent.velocity = Vector3.zero;
     }
 
     /// <summary>
@@ -56,8 +66,6 @@ public class MonsterMove : MonoBehaviour
     /// </summary>
     public void LookAtTarget(Vector3 targetPos)
     {
-        _agent.isStopped = true;
-
         Vector3 dir = targetPos - transform.position;
         dir.y = 0f;
 
@@ -81,10 +89,15 @@ public class MonsterMove : MonoBehaviour
     /// </summary>
     private bool TryGetRandomPatrolPoint(out Vector3 result)
     {
-        MazeGenerator mazeGenenrator = MazeLayerManager.Instance.GetActiveMaze();
+        MazeGenerator mazeGenenrator = MazeLayerManager.Instance != null ? MazeLayerManager.Instance.GetActiveMaze() : null;
 
         Vector3 myPos = transform.position;
-                
+        if (mazeGenenrator == null)
+        {
+            result = myPos;
+            return false;
+        }
+
         Vector2Int currentCellPos = mazeGenenrator.WorldToCell(myPos);
 
         Cell currentCell = mazeGenenrator.GetCell(currentCellPos.x, currentCellPos.y);
@@ -121,7 +134,6 @@ public class MonsterMove : MonoBehaviour
         _hasPreviousCell = true;
 
         result = neighborCell.worldCenter;
-
         result.y = myPos.y;
 
         return true;
