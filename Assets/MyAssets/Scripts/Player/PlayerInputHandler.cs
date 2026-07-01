@@ -14,14 +14,10 @@ public class PlayerInputHandler : MonoBehaviour
     private Vector2 _inputVector = Vector2.zero;
 
     public Vector2 InputVector => _inputVector;
+    
+    private PlayerInput _playerInput; // 유니티 내장 PlayerInput 컴포넌트
 
-    // 유니티 내장 PlayerInput 컴포넌트
-    private PlayerInput _playerInput;
-
-    /// <summary>
-    /// SwitchLayer 액션(Tab 키)이 트리거됐을 때 발생하는 이벤트
-    /// </summary>
-    public event System.Action<Vector3> OnLayerSwitchRequested;
+    public event System.Action<Vector3> OnLayerSwitchRequested; // SwitchLayer 액션(Tab 키)이 트리거됐을 때 발생하는 이벤트
 
     private void Awake()
     {

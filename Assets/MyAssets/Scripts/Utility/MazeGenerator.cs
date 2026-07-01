@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class MazeGenerator : MonoBehaviour
 {
@@ -34,7 +35,10 @@ public class MazeGenerator : MonoBehaviour
     private Cell[,] _grid;
     private List<Cell> _allCells = new List<Cell>();
 
-    private readonly List<WallEntry> _wallEntries = new List<WallEntry>();   
+    private readonly List<WallEntry> _wallEntries = new List<WallEntry>();
+    private ObjectPool<GameObject>   _wallPool; // 재사용 대기 중인(비활성화된) 벽 오브젝트 풀
+
+    private Transform _wallParent; // 벽 오브젝트들의 공통 부모, Generate()마다 새로 만들지 않고 재사용
 
     private readonly List<Cell>  _neighborCache = new List<Cell>(4);
     private readonly Stack<Cell> _dfsStack      = new Stack<Cell>();
@@ -46,7 +50,28 @@ public class MazeGenerator : MonoBehaviour
 
     private void Awake()
     {
-        worldStart = new Vector2(-20 * _cellSize * 0.5f, -20 * _cellSize * 0.5f);
+        worldStart = new Vector2(-_cols * _cellSize * 0.5f, -_rows * _cellSize * 0.5f);
+
+        GameObject wallParentObj = new GameObject("Walls");
+        wallParentObj.transform.SetParent(transform);
+        _wallParent = wallParentObj.transform;
+
+        _wallPool = new ObjectPool<GameObject>(
+            createFunc: CreateWall,
+            actionOnGet: wall => wall.SetActive(true),
+            actionOnRelease: wall => wall.SetActive(false),
+            actionOnDestroy: wall => Destroy(wall),
+            collectionCheck: true,
+            defaultCapacity: _cols * _rows * 2,
+            maxSize: _cols * _rows * 4);
+    }
+
+    /// <summary>
+    /// 풀이 비어 새로 생성해야 할 때 호출되는 벽 생성 함수
+    /// </summary>
+    private GameObject CreateWall()
+    {
+        return Instantiate(_wallPrefab, _wallParent);
     }
 
     /// <summary>
@@ -80,7 +105,7 @@ public class MazeGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Wall이 담긴 리스트 초기화
+    /// 생성된 벽들을 파괴하지 않고 풀에 반납하는 메소드
     /// </summary>
     public void ClearWalls()
     {
@@ -88,7 +113,7 @@ public class MazeGenerator : MonoBehaviour
         {
             if (entry.gameObject != null)
             {
-                DestroyImmediate(entry.gameObject);
+                _wallPool.Release(entry.gameObject);
             }
         }
 
@@ -201,9 +226,6 @@ public class MazeGenerator : MonoBehaviour
     {
         if (_wallPrefab == null) return;
 
-        GameObject wallParent = new GameObject("Walls");
-        wallParent.transform.SetParent(transform);
-
         int wallLayer = LayerMask.NameToLayer(_wallLayerName);
 
         for (int r = 0; r < _rows; r++)
@@ -219,35 +241,36 @@ public class MazeGenerator : MonoBehaviour
                 if (cell.northWall)
                 {
                     Vector3 pos = new Vector3(cx, _wallHeight * 0.5f, cz + _cellSize * 0.5f);
-                    SpawnWall(pos, false, wallParent.transform, wallLayer);
+                    SpawnWall(pos, false, wallLayer);
                 }
 
                 if (cell.eastWall)
                 {
                     Vector3 pos = new Vector3(cx + _cellSize * 0.5f, _wallHeight * 0.5f, cz);
-                    SpawnWall(pos, true, wallParent.transform, wallLayer);
+                    SpawnWall(pos, true, wallLayer);
                 }
                 if (r == 0 && cell.southWall)
                 {
                     Vector3 pos = new Vector3(cx, _wallHeight * 0.5f, cz - _cellSize * 0.5f);
-                    SpawnWall(pos, false, wallParent.transform, wallLayer);
+                    SpawnWall(pos, false, wallLayer);
                 }
                 if (c == 0 && cell.westWall)
                 {
                     Vector3 pos = new Vector3(cx - _cellSize * 0.5f, _wallHeight * 0.5f, cz);
-                    SpawnWall(pos, true, wallParent.transform, wallLayer);
+                    SpawnWall(pos, true, wallLayer);
                 }
             }
         }
     }
 
     /// <summary>
-    /// 벽 하나 생성, isVertical -> true = Z축 방향 벽, false = X축 방향 벽
+    /// 벽 하나 생성(풀에서 재사용), isVertical -> true = Z축 방향 벽, false = X축 방향 벽
     /// </summary>
-    private void SpawnWall(Vector3 position, bool isVertical, Transform parent, int wallLayer)
+    private void SpawnWall(Vector3 position, bool isVertical, int wallLayer)
     {
-        GameObject wall = Instantiate(_wallPrefab, position, Quaternion.identity, parent);
+        GameObject wall = _wallPool.Get();
 
+        wall.transform.SetPositionAndRotation(position, Quaternion.identity);
         wall.transform.localScale = isVertical ? new Vector3(_wallThickness, _wallHeight, _cellSize) : new Vector3(_cellSize, _wallHeight, _wallThickness);
 
         if (wallLayer != -1)

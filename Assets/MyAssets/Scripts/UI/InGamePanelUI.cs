@@ -2,22 +2,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InGamePanelUI : MonoBehaviour
+public class InGamePanelUI : BasePanelUI
 {
     [SerializeField] private TextMeshProUGUI _hpText;
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _keyCountText;
     [SerializeField] private Button _endButton;
 
-    public bool IsActive => gameObject.activeSelf;
-
-    private void Awake()
+    private void Start()
     {
-        _endButton.onClick.AddListener(() => GameManager.Instance.GameOver());
+        _endButton.onClick.AddListener(() => GameManager.Instance.GameRule.GameOver());
     }
-
-    public void Show() => gameObject.SetActive(true);
-    public void Hide() => gameObject.SetActive(false);
 
     public void UpdateHp(int current, int max)
     {

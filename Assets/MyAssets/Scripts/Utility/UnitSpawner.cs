@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 public class UnitSpawner : MonoBehaviour
 {
@@ -39,8 +40,32 @@ public class UnitSpawner : MonoBehaviour
     private List<GameObject> _monsters = new List<GameObject>();
     public List<GameObject> Monsters => _monsters;
 
+    private ObjectPool<GameObject> _monsterPool;
+    private ObjectPool<GameObject> _keyPool;
+
+    private void Awake()
+    {
+        _monsterPool = new ObjectPool<GameObject>(
+            createFunc: () => Instantiate(_monsterPrefab),
+            actionOnGet: obj => obj.SetActive(true),
+            actionOnRelease: obj => obj.SetActive(false),
+            actionOnDestroy: obj => Destroy(obj),
+            collectionCheck: true,
+            defaultCapacity: _monsterCount,
+            maxSize: 50);
+
+        _keyPool = new ObjectPool<GameObject>(
+            createFunc: () => Instantiate(_keyPrefab),
+            actionOnGet: obj => obj.SetActive(true),
+            actionOnRelease: obj => obj.SetActive(false),
+            actionOnDestroy: obj => Destroy(obj),
+            collectionCheck: true,
+            defaultCapacity: _keyCount,
+            maxSize: 20);
+    }
+
     /// <summary>
-    /// 몬스터 수 설정 메소드
+    /// 몬스터 수 설정 메소드 TODO: 하드 난이도일때는 이 몬스터 수를 변경할 듯?
     /// </summary>
     public void SetMonsterCount(int count)
     {
@@ -83,7 +108,7 @@ public class UnitSpawner : MonoBehaviour
             return;
         }
         // 열쇠를 전부 모으면 골 포인트를 생성하도록 구독
-        GameManager.Instance.OnAllKeysCollected += SpawnGoalPoint;
+        GameManager.Instance.GameRule.OnAllKeysCollected += SpawnGoalPoint;
 
         if (_mazeLayerManager == null || _mazeLayerManager.FogWarSystem == null || Player == null)
         {
@@ -117,7 +142,11 @@ public class UnitSpawner : MonoBehaviour
         spawnPos.y = _spawnY;
 
         _player = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
-        
+
+        // 재시작(Replay) 시 이전 판에서 올려둔 팔로우 카메라 우선순위가 남아있으면 인트로 카메라가 안 보이므로,
+        // 매번 인트로보다 낮은 값으로 되돌려둔 뒤 SwitchToFollowCameraAfterDelay()에서 다시 올림
+        _followPlayerCamera.Priority = _introCamera.Priority - 1;
+
         _followPlayerCamera.Target.TrackingTarget = _player.transform;
 
         // 즉시 Priority를 높이면 블렌딩이 생략되는 현상 생김
@@ -161,10 +190,12 @@ public class UnitSpawner : MonoBehaviour
             Vector3 spawnPos = candidates[i].worldCenter;
             spawnPos.y = _spawnY;
 
-            GameObject monster = Instantiate(_monsterPrefab, spawnPos, Quaternion.identity);
-            if (monster.TryGetComponent(out MonsterController mc) && _player != null)
+            GameObject monster = _monsterPool.Get();
+            monster.transform.rotation = Quaternion.identity;
+
+            if (monster.TryGetComponent(out MonsterController mc))
             {
-                mc.Target = _player.transform;
+                mc.ResetForReuse(spawnPos, _player != null ? _player.transform : null);
             }
 
             if(monster.TryGetComponent(out NavMeshAgent agent))
@@ -218,9 +249,27 @@ public class UnitSpawner : MonoBehaviour
             Vector3 spawnPos = candidates[i].worldCenter;
             spawnPos.y = _spawnY;
 
-            GameObject key = Instantiate(_keyPrefab, spawnPos, Quaternion.identity);
+            GameObject key = _keyPool.Get();
+            key.transform.SetPositionAndRotation(spawnPos, Quaternion.identity);
+
+            if (key.TryGetComponent(out Key keyComponent))
+            {
+                keyComponent.OnCollected += HandleKeyCollected;
+            }
+
             _spawnedKeys.Add(key);
         }
+    }
+
+    /// <summary>
+    /// 열쇠 획득 시 호출, 구독 해제 후 풀에 반납하는 메소드
+    /// </summary>
+    private void HandleKeyCollected(Key key)
+    {
+        key.OnCollected -= HandleKeyCollected;
+
+        _spawnedKeys.Remove(key.gameObject);
+        _keyPool.Release(key.gameObject);
     }
 
     /// <summary>
@@ -247,26 +296,44 @@ public class UnitSpawner : MonoBehaviour
     /// </summary>
     private void ClearAll()
     {
-        GameManager.Instance.OnAllKeysCollected -= SpawnGoalPoint;
+        GameManager.Instance.GameRule.OnAllKeysCollected -= SpawnGoalPoint;
 
         if (_player != null)
         {
+            // 안개 시스템에 리빌러가 계속 쌓이지 않도록 파괴 전에 해제
+            if (_player.TryGetComponent(out PlayerController pc))
+            {
+                pc.UnregisterFromFogSystem();
+            }
+
             Destroy(_player);
             _player = null;
         }
 
         foreach (GameObject mon in _monsters)
         {
-            if (mon != null) Destroy(mon);
+            if (mon == null) continue;
+
+            if (mon.TryGetComponent(out MonsterController mc))
+            {
+                mc.ClearTarget();
+            }
+
+            _monsterPool.Release(mon);
         }
         _monsters.Clear();
 
         foreach (GameObject key in _spawnedKeys)
         {
-            if(key != null)
+            if (key == null) continue;
+
+            // 획득되지 않고 남은 열쇠는 구독을 끊고 반납 (재사용 시 중복 구독 방지)
+            if (key.TryGetComponent(out Key keyComponent))
             {
-                Destroy(key);
+                keyComponent.OnCollected -= HandleKeyCollected;
             }
+
+            _keyPool.Release(key);
         }
         _spawnedKeys.Clear();
 

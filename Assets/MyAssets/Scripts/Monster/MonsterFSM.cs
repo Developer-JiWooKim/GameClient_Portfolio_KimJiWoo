@@ -1,63 +1,70 @@
+using System;
 using UnityEngine;
 
+/// <summary>
+/// 몬스터의 상태 전환을 관리하는 상태 머신 (State Pattern Context)
+/// 각 상태의 행동/전환 조건 판단은 IMonsterState 구현체(Idle/Chase/Attack)가 직접 담당하며,
+/// 이 클래스는 상태 인스턴스 보관과 Enter/Exit 전환 처리, Tick 위임만 담당
+/// </summary>
 public class MonsterFSM : MonoBehaviour
 {
-    public enum State
+    private MonsterController _controller;
+
+    private IMonsterState _current;
+    public IMonsterState Current => _current;
+
+    private readonly MonsterIdleState   _idleState   = new MonsterIdleState();
+    private readonly MonsterChaseState  _chaseState  = new MonsterChaseState();
+    private readonly MonsterAttackState _attackState = new MonsterAttackState();
+
+    public IMonsterState IdleState   => _idleState;
+    public IMonsterState ChaseState  => _chaseState;
+    public IMonsterState AttackState => _attackState;
+
+    public event Action<IMonsterState> OnStateChanged;
+
+    private void Awake()
     {
-        Idle,       
-        Chase,      
-        Attack,
-    }
-
-    [SerializeField] private State _current;
-
-    public State Current => _current;
-
-    public event System.Action<State> OnStateChanged;
-
-    /// <summary>
-    /// isSensed(시야각, 장애물 있는지 여부), isInRange(감지 범위 안에 들어와있는지 여부) 에 따라 현재 상태 결정하는 메소드
-    /// </summary>
-    public void Evaluate(bool isSensed, bool isInRange)
-    {
-        switch (Current)
-        {     
-            // 현재 상태가 Idle인데 타겟을 감지했으면 Chase로 상태 변경
-            case State.Idle:
-                if (isSensed) TransitionTo(State.Chase);
-                break;
-
-            // 현재 상태가 Chase인데 타겟이 감지 반경을 벗어나면 Idle로 상태 변경
-            case State.Chase:
-                if (!isInRange) TransitionTo(State.Idle);
-                break;
-        }
+        _controller = GetComponent<MonsterController>();
+        _current    = _idleState;
     }
 
     /// <summary>
-    /// 공격이 가능하면 상태를 Attack, 그렇지 않으면 Chase로 변경하는 메소드
+    /// 현재 상태를 Tick, 그 안에서 상태 전환이 일어나면 같은 프레임에 이어서 새 상태까지 Tick
     /// </summary>
-    public void SetAttack(bool isAttacking)
+    public void Tick()
     {
-        if (isAttacking)
+        IMonsterState before;
+        int safety = 0; // 무한 루프 방지용
+
+        do
         {
-            TransitionTo(State.Attack);
+            before = _current; // 최신 상태 저장
+            _current?.Tick(_controller); // 현재 상태의 행동 실행
+            safety++; // 실행횟수 +1
         }
-        else
-        {
-            TransitionTo(State.Chase);
-        }
+        while (_current != before && safety < 3); // 방금 실행하는 동안 상태가 바뀌었고, 실행 횟수가 3미만이면 반복
     }
 
     /// <summary>
-    /// 상태 변경 메소드
+    /// 상태 전환 메소드, 이전 상태의 Exit와 새 상태의 Enter를 호출하고 변경 이벤트를 발행
     /// </summary>
-    private void TransitionTo(State next)
+    public void ChangeState(IMonsterState next)
     {
         if (_current == next) return;
 
-        OnStateChanged?.Invoke(next);
-
+        _current?.Exit(_controller);
         _current = next;
+        _current?.Enter(_controller);
+
+        OnStateChanged?.Invoke(_current);
+    }
+
+    /// <summary>
+    /// 오브젝트 풀에서 재사용될 때 상태를 Idle로 초기화하는 메소드 (Enter/이벤트 발행 없이 즉시 초기화)
+    /// </summary>
+    public void ResetState()
+    {
+        _current = _idleState;
     }
 }

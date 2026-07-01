@@ -76,7 +76,7 @@ public class DamageflashUI : MonoBehaviour
         }
         finally
         {
-            // 예외가 나도(또는 정상 취소돼도) _isFlashing이 영원히 true로 고정되지 않도록 무조건 복구
+            // 예외(또는 정상 취소)가 나도 _isFlashing이 영원히 true로 고정되지 않도록 무조건 복구
             _isFlashing = false; 
         }        
     }

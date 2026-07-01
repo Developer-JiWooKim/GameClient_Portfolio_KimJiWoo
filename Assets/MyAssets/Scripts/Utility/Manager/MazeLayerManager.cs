@@ -70,8 +70,6 @@ public class MazeLayerManager : MonoBehaviour
 
         _physicalWallMask = LayerMask.GetMask("Wall_Physical");
         _arcaneWallMask   = LayerMask.GetMask("Wall_Arcane");
-
-        RandomSeed();
     }
     private void OnDestroy()
     {
@@ -92,6 +90,9 @@ public class MazeLayerManager : MonoBehaviour
     /// </summary>
     public void SetLayersAndMazeGenerate(int cols, int rows)
     {
+        // 재시작(Replay) 시에도 매번 새 미로 레이아웃이 나오도록 호출할 때마다 시드를 새로 뽑음
+        RandomSeed();
+
         _physicalMaze.SetSeed(_physicalSeed);
         _physicalMaze.SetSize(cols, rows);
         _physicalMaze.Generate();
