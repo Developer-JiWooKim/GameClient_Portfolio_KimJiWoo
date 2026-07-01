@@ -11,6 +11,10 @@ public class MonsterMove : MonoBehaviour
     [SerializeField] private float _rotateSpeed    = 240f;
     [SerializeField] private float _arriveDistance = 0.1f; // 목표 지점 도착 판정 거리
 
+    [Header("Hard 난이도")]
+    [Tooltip("Hard 난이도 + Arcane 레이어에서 추격 속도에 곱해지는 배율. 플레이어 이동속도(10)보다 빨라지도록 설정")]
+    [SerializeField] private float _hardArcaneChaseSpeedMultiplier = 1.3f;
+
     private NavMeshAgent _agent;
     private Vector3      _patrolTarget;
     private Vector2Int   _previousCell;
@@ -50,7 +54,9 @@ public class MonsterMove : MonoBehaviour
     /// </summary>
     public void MoveToTarget(Vector3 targetPos)
     {
-        _agent.speed = _chaseSpeed;
+        bool isHardArcane = GameManager.IsHardArcaneMode();
+
+        _agent.speed = isHardArcane ? _chaseSpeed * _hardArcaneChaseSpeedMultiplier : _chaseSpeed;
         _agent.isStopped = false;        
         _agent.SetDestination(targetPos);
     }
@@ -84,19 +90,25 @@ public class MonsterMove : MonoBehaviour
     }
 
     /// <summary>
+    /// 오브젝트 풀에서 재사용될 때 NavMeshAgent를 새 위치로 순간이동시키는 메소드
+    /// transform.position을 직접 옮기면 에이전트 내부 상태와 어긋나므로 Warp를 사용
+    /// </summary>
+    public void Warp(Vector3 position)
+    {
+        _hasPreviousCell = false;
+        ClearPath();
+        _agent.Warp(position);
+    }
+
+    /// <summary>
     /// 현재 셀 기준으로 벽이 없는 인접 셀 중 하나를 골라 순찰 목표로 반환하는 메소드
     /// 방금 왔던 셀은 막다른 길이 아닌 이상 후보에서 제외 -> 핑퐁 이동 방지
     /// </summary>
     private bool TryGetRandomPatrolPoint(out Vector3 result)
     {
-        MazeGenerator mazeGenenrator = MazeLayerManager.Instance != null ? MazeLayerManager.Instance.GetActiveMaze() : null;
+        MazeGenerator mazeGenenrator = MazeLayerManager.Instance.GetActiveMaze();
 
         Vector3 myPos = transform.position;
-        if (mazeGenenrator == null)
-        {
-            result = myPos;
-            return false;
-        }
 
         Vector2Int currentCellPos = mazeGenenrator.WorldToCell(myPos);
 
@@ -104,6 +116,7 @@ public class MonsterMove : MonoBehaviour
 
         if (currentCell == null)
         {
+            Debug.LogError("TryGetRandomPatrolPoint currentCell is null");
             result = myPos;
             return false;
         }

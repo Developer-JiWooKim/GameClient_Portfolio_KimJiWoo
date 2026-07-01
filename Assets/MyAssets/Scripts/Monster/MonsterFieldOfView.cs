@@ -37,10 +37,10 @@ public class MonsterFieldOfView : MonoBehaviour
         _meshFilter = GetComponent<MeshFilter>();
 
         _mesh = new Mesh { name = "FieldOfViewMesh" };
+        _mesh.MarkDynamic(); // GC 생성을 방지하기 위해 동적 Mesh임을 미리 선언
         _meshFilter.mesh = _mesh;
 
         _vertices  = new Vector3[_rayCount + 2];
-
         _triangles = new int[_rayCount * 3];
         for (int i = 0; i < _rayCount; i++)
         {
@@ -72,15 +72,14 @@ public class MonsterFieldOfView : MonoBehaviour
     {
         _updateTimer -= Time.deltaTime;
         if (_updateTimer > 0f) return;
-
         _updateTimer = _updateInterval;
 
         float angleStep   = _fieldOfView / _rayCount;
         float startAngle  = -_fieldOfView * 0.5f;
         float originAngle = monsterTransform.eulerAngles.y;
 
-        Vector3 origin = monsterTransform.position;
-        origin.y = _meshHeight;
+        Vector3 originPos = monsterTransform.position;
+        originPos.y = _meshHeight;
 
         _vertices[0] = Vector3.zero;
 
@@ -88,17 +87,17 @@ public class MonsterFieldOfView : MonoBehaviour
         {
             float angle = originAngle + startAngle + angleStep * i;
             float rad = angle * Mathf.Deg2Rad;
-            Vector3 direction = new Vector3(Mathf.Sin(rad), 0f, Mathf.Cos(rad));
 
+            Vector3 direction = new Vector3(Mathf.Sin(rad), 0f, Mathf.Cos(rad));
             Vector3 endPoint;
 
-            if (Physics.Raycast(origin, direction, out RaycastHit hit, _detectionRange, MazeLayerManager.Instance.CurrentWallLayerMask))
+            if (Physics.Raycast(originPos, direction, out RaycastHit hit, _detectionRange, MazeLayerManager.Instance.CurrentWallLayerMask))
             {
                 endPoint = hit.point;
             }
             else
             {
-                endPoint = origin + direction * _detectionRange;
+                endPoint = originPos + direction * _detectionRange;
             }
 
             endPoint.y = _meshHeight;
@@ -109,8 +108,8 @@ public class MonsterFieldOfView : MonoBehaviour
         }
 
         _mesh.Clear();
-        _mesh.vertices  = _vertices;
-        _mesh.triangles = _triangles;
-        _mesh.RecalculateNormals();
+        _mesh.SetVertices(_vertices);
+        _mesh.SetTriangles(_triangles, 0);
+        _mesh.RecalculateBounds();
     }
 }

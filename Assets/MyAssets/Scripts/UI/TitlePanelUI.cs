@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TitlePanelUI : MonoBehaviour
+public class TitlePanelUI : BasePanelUI
 {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _exitButton;
@@ -13,7 +13,4 @@ public class TitlePanelUI : MonoBehaviour
         _playButton.onClick.AddListener(() => OnPlayClicked?.Invoke());
         _exitButton.onClick.AddListener(() => GameManager.Instance.GameExit());
     }
-
-    public void Show() => gameObject.SetActive(true);
-    public void Hide() => gameObject.SetActive(false);
 }

@@ -44,7 +44,15 @@ public class PlayerFaceController : MonoBehaviour
     {
         if (_isCaught) return; // 발각 상태면 깜빡임 로직 자체를 멈춤 (Fdam 고정 유지)
 
-        _blinkTimer += Time.deltaTime;        
+        startBlinking();        
+    }
+
+    /// <summary>
+    /// 눈 깜빡임(Fhide 0 - 100) 메소드
+    /// </summary>
+    private void startBlinking()
+    {
+        _blinkTimer += Time.deltaTime;
 
         if (_blinkTimer < _nextBlinkInterval) return; // 아직 깜빡일 타이밍 아님
 
@@ -63,6 +71,7 @@ public class PlayerFaceController : MonoBehaviour
 
         _faceRenderer.SetBlendShapeWeight(_fhideIndex, weight);
     }
+
 
     /// <summary>
     /// 몬스터에게 발각됐을 때 호출

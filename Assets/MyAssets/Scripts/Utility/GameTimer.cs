@@ -3,8 +3,9 @@ using UnityEngine;
 public class GameTimer
 {
     private float _elapsedTime = 0f;
-    private bool  _isRunning   = false;    
+    private bool  _isRunning   = false;
 
+    public bool IsRunning => _isRunning;
     public void StartTimer()
     {
         _elapsedTime = 0f;
@@ -18,8 +19,6 @@ public class GameTimer
 
     public void UpdateTime()
     {
-        if (!_isRunning) return;
-
         _elapsedTime += Time.deltaTime;
     }
 

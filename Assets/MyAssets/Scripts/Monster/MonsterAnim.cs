@@ -13,20 +13,12 @@ public class MonsterAnim : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
     }
 
-    public void PlayWalk()
-    {
-        if(_animator == null)
-        {
-            Debug.LogError("Animator is null");
-            return;
-        }
+    public void PlayWalk()   => SetState(moving: true,  running: false, attacking: false);
+    public void PlayRun()    => SetState(moving: true,  running: true,  attacking: false);
+    public void PlayIdle()   => SetState(moving: false, running: false, attacking: false);
+    public void PlayAttack() => SetState(moving: false, running: false, attacking: true);
 
-        _animator.SetBool(IsMovingHash, true);
-        _animator.SetBool(IsRunningHash, false);
-        _animator.SetBool(IsAttackingHash, false);
-    }
-
-    public void PlayRun()
+    private void SetState(bool moving, bool running, bool attacking)
     {
         if (_animator == null)
         {
@@ -34,34 +26,8 @@ public class MonsterAnim : MonoBehaviour
             return;
         }
 
-        _animator.SetBool(IsMovingHash, true);
-        _animator.SetBool(IsRunningHash, true);
-        _animator.SetBool(IsAttackingHash, false);
-    }
-
-    public void PlayIdle()
-    {
-        if (_animator == null)
-        {
-            Debug.LogError("Animator is null");
-            return;
-        }
-
-        _animator.SetBool(IsMovingHash, false);
-        _animator.SetBool(IsRunningHash, false);
-        _animator.SetBool(IsAttackingHash, false);
-    }
-
-    public void PlayAttack()
-    {
-        if (_animator == null)
-        {
-            Debug.LogError("Animator is null");
-            return;
-        }
-
-        _animator.SetBool(IsMovingHash, false);
-        _animator.SetBool(IsRunningHash, false);
-        _animator.SetBool(IsAttackingHash, true);
+        _animator.SetBool(IsMovingHash, moving);
+        _animator.SetBool(IsRunningHash, running);
+        _animator.SetBool(IsAttackingHash, attacking);
     }
 }

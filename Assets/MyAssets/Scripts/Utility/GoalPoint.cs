@@ -11,6 +11,6 @@ public class GoalPoint : MonoBehaviour
 
         SoundManager.Instance?.PlayGoalReached();
 
-        GameManager.Instance.Clear();
+        GameManager.Instance.GameRule.Clear();
     }
 }
