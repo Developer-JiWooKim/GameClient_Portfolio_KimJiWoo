@@ -23,7 +23,7 @@ public class UnitSpawner : MonoBehaviour
     private int _keyCount     = 5;
 
     private float _spawnY            = 1f;   // 유닛 스폰 y 좌표
-    private float _introHoldDuration = 0.5f; // 씬 재시작 시 안정적인 카메라 전환을 위해 기다릴 시간
+    private float _introHoldDuration = 0.5f; // 재시작 시 안정적인 카메라 전환을 위해 기다릴 시간
 
     private Vector2Int _playerStartCell; // 플레이어 시작 셀
     private Vector2Int _goalCell;        // 목표 지점 셀    
