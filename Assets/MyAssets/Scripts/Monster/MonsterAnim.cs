@@ -8,6 +8,12 @@ public class MonsterAnim : MonoBehaviour
     private static readonly int IsRunningHash   = Animator.StringToHash("IsRunning");
     private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
 
+    // 매 Tick마다 같은 상태(Play*)가 반복 호출돼도 SetBool을 다시 쏘지 않도록 마지막 값 캐싱
+    private bool _lastMoving;
+    private bool _lastRunning;
+    private bool _lastAttacking;
+    private bool _hasSetStateOnce;
+
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
@@ -26,8 +32,19 @@ public class MonsterAnim : MonoBehaviour
             return;
         }
 
+        // 상태 클래스가 Tick()마다 같은 Play*()를 계속 호출하므로, 값이 그대로면 SetBool 3회를 그냥 건너뜀
+        if (_hasSetStateOnce && moving == _lastMoving && running == _lastRunning && attacking == _lastAttacking)
+        {
+            return;
+        }
+
         _animator.SetBool(IsMovingHash, moving);
         _animator.SetBool(IsRunningHash, running);
         _animator.SetBool(IsAttackingHash, attacking);
+
+        _lastMoving      = moving;
+        _lastRunning     = running;
+        _lastAttacking   = attacking;
+        _hasSetStateOnce = true;
     }
 }

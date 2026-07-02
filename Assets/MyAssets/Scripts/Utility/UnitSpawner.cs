@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
@@ -9,9 +8,8 @@ public class UnitSpawner : MonoBehaviour
     [Header("Maze Layer Manager")]
     [SerializeField] private MazeLayerManager _mazeLayerManager;
 
-    [Header("Cinemachine Cameras")]
-    [SerializeField] private CinemachineCamera _followPlayerCamera;
-    [SerializeField] private CinemachineCamera _introCamera;
+    [Header("Intro Camera")]
+    [SerializeField] private IntroCameraSequencer _introCameraSequencer;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _monsterPrefab;
@@ -22,8 +20,7 @@ public class UnitSpawner : MonoBehaviour
     private int _monsterCount = 10;
     private int _keyCount     = 5;
 
-    private float _spawnY            = 1f;   // 유닛 스폰 y 좌표
-    private float _introHoldDuration = 0.5f; // 재시작 시 안정적인 카메라 전환을 위해 기다릴 시간
+    private float _spawnY = 1f; // 유닛 스폰 y 좌표
 
     private Vector2Int _playerStartCell; // 플레이어 시작 셀
     private Vector2Int _goalCell;        // 목표 지점 셀    
@@ -105,9 +102,9 @@ public class UnitSpawner : MonoBehaviour
 
     private bool CheckSerializeFieldIsNull()
     {
-        if (_mazeLayerManager == null || _followPlayerCamera == null ||
-            _introCamera == null || _monsterPrefab == null ||
-            _playerPrefab == null || _keyPrefab == null || _goalPointPrefab == null)
+        if (_mazeLayerManager == null || _introCameraSequencer == null ||
+            _monsterPrefab == null || _playerPrefab == null ||
+            _keyPrefab == null || _goalPointPrefab == null)
         {
             Debug.LogError("UnitSpawner CheckSerializeFieldNull():SerializeField 중 Null이 있음");
             return true;
@@ -141,6 +138,11 @@ public class UnitSpawner : MonoBehaviour
         // 열쇠를 전부 모으면 골 포인트를 생성하도록 구독
         GameManager.Instance.GameRule.OnAllKeysCollected += SpawnGoalPoint;
 
+        // 클리어/게임오버 시 몬스터가 플레이어를 계속 쫓지 않도록, 몬스터 인스턴스를 들고 있는
+        // 이 쪽에서 직접 타겟을 끊음 (씬 전체를 FindObjectsByType으로 스캔할 필요가 없어짐)
+        GameManager.Instance.GameRule.OnClear    += StopAllMonsters;
+        GameManager.Instance.GameRule.OnGameOver += StopAllMonsters;
+
         if (_mazeLayerManager == null || _mazeLayerManager.FogWarSystem == null || Player == null)
         {
             Debug.LogError("UnitSpawner SpawnAll():Null이 있음");
@@ -155,6 +157,13 @@ public class UnitSpawner : MonoBehaviour
         // 스폰된 플레이어에게 안개 시스템을 넘겨주며 시야를 킴
         PlayerController pc = Player;
         pc.RegisterToFogSystem(fogWar);
+
+        // 재시작(Replay) 시 MazeLayerManager.ResetFogMemory()로 fogField 자체는 이미 Hidden으로 초기화되지만,
+        // 실제로 화면에 그려지는 안개 텍스처(fogPlaneTextureLerpBuffer)는 Update()의 갱신 주기/보간(lerp)을 통해
+        // 서서히 따라가므로, 그동안 이전 판에서 밝혔던 부분이 잠시(혹은 갱신 조건에 따라 계속) 남아 보일 수 있음.
+        // ForceUpdateFog()로 새 플레이어 기준 안개를 즉시 재계산하고 버퍼에 그대로 복사해, 재시작 시에도
+        // 처음 시작할 때와 동일하게 안개가 즉시 리셋된 상태로 보이게 함
+        fogWar.ForceUpdateFog();
     }
 
     private void Initialize()
@@ -174,37 +183,13 @@ public class UnitSpawner : MonoBehaviour
 
         _player = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
-        // 재시작(Replay) 시 이전 판에서 올려둔 팔로우 카메라 우선순위가 남아있으면 인트로 카메라가 안 보이므로,
-        // 매번 인트로보다 낮은 값으로 되돌려둔 뒤 SwitchToFollowCameraAfterDelay()에서 다시 올림
-        _followPlayerCamera.Priority = _introCamera.Priority - 1;
-
-        _followPlayerCamera.Target.TrackingTarget = _player.transform;
-
-        // 즉시 Priority를 높이면 블렌딩이 생략되는 현상 생김
-        // -> Awaitable.WaitForSecondsAsync()로 _introHoldDuration 만큼 기다린 후 _followPlayerCamera의 Priority를 높임
-        _ = SwitchToFollowCameraAfterDelay();
+        // 인트로->팔로우 카메라 전환 연출은 IntroCameraSequencer가 전담
+        _introCameraSequencer.PlayIntro(_player.transform);
 
         // 플레이어의 입력(Tab) 시 미로를 전환하는 이벤트를 연결
         if (_player.TryGetComponent(out PlayerInputHandler playerInput))
         {
             _mazeLayerManager.RegisterPlayerInput(playerInput);
-        }
-    }
-
-    /// <summary>
-    /// 인트로 카메라를 일정 시간 동안 무조건 보여준 뒤, 추적 카메라의 우선순위를 올려 카메라 전환시키는 메소드
-    /// </summary>
-    private async Awaitable SwitchToFollowCameraAfterDelay()
-    {
-        try
-        {
-            await Awaitable.WaitForSecondsAsync(_introHoldDuration, destroyCancellationToken);
-
-            _followPlayerCamera.Priority = _introCamera.Priority + 1;
-        }
-        catch (System.OperationCanceledException oce)
-        {
-            Debug.LogException(oce);
         }
     }
 
@@ -323,11 +308,30 @@ public class UnitSpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// 클리어/게임오버 시 호출(GameRule.OnClear/OnGameOver 구독), 살아있는 몬스터 전부의 타겟을 끊어
+    /// 결과 화면이 뜬 뒤에도 계속 쫓아오지 않게 함
+    /// </summary>
+    private void StopAllMonsters()
+    {
+        foreach (GameObject monster in _monsters)
+        {
+            if (monster == null) continue;
+
+            if (monster.TryGetComponent(out MonsterController mc))
+            {
+                mc.ClearTarget();
+            }
+        }
+    }
+
+    /// <summary>
     /// 초기화 메소드(리스트, 이벤트 구독 해제, 기존 오브젝트 제거)
     /// </summary>
     private void ClearAll()
     {
         GameManager.Instance.GameRule.OnAllKeysCollected -= SpawnGoalPoint;
+        GameManager.Instance.GameRule.OnClear    -= StopAllMonsters;
+        GameManager.Instance.GameRule.OnGameOver -= StopAllMonsters;
 
         if (_player != null)
         {

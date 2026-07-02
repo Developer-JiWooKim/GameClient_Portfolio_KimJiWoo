@@ -2,20 +2,13 @@ using FischlWorks_FogWar;
 using Unity.AI.Navigation;
 using UnityEngine;
 
-public class MazeLayerManager : MonoBehaviour
+public class MazeLayerManager : Singleton<MazeLayerManager>
 {
-    private static MazeLayerManager _instance = null;
-    public static MazeLayerManager Instance => _instance;
-
     public enum LayerType
     {
         Physical,
         Arcane,
     }    
-
-    [Header("Layer Roots")]
-    [SerializeField] private GameObject _physicalLayerRoot;
-    [SerializeField] private GameObject _arcaneLayerRoot;
 
     [Header("Maze Generators")]
     [SerializeField] private MazeGenerator _physicalMaze;
@@ -38,6 +31,7 @@ public class MazeLayerManager : MonoBehaviour
     [SerializeField] private float _rippleOutDuration  = 0.1f;
 
     private bool _isTransitioning = false;
+    public bool IsTransitioning => _isTransitioning; // 전환 연출 중 일시정지 등 다른 흐름 진입을 막기 위한 상태 노출
 
     private int _physicalWallMask;
     private int _physicalSeed;
@@ -57,22 +51,19 @@ public class MazeLayerManager : MonoBehaviour
     public event System.Action<LayerType> OnLayerChanged;
     public event System.Action            OnLayerSwitchBlocked; // 전환 실패(벽에 끼임) 시 호출, 사운드/전환 불가 UI 혹은 화면 쉐이킹?
 
-    private void Awake()
+    protected override void Awake()
     {
-        if(_instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }        
+        base.Awake();
+        if (!IsValidInstance) return; // 중복 인스턴스는 base.Awake()가 파괴 처리하므로 초기화 생략
 
         _physicalWallMask = LayerMask.GetMask("Wall_Physical");
         _arcaneWallMask   = LayerMask.GetMask("Wall_Arcane");
     }
-    private void OnDestroy()
+
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         if(_playerInputHandler != null)
         {
             _playerInputHandler.OnLayerSwitchRequested -= SwitchLayer;
@@ -93,14 +84,27 @@ public class MazeLayerManager : MonoBehaviour
         // 재시작(Replay) 시에도 매번 새 미로 레이아웃이 나오도록 호출할 때마다 시드를 새로 뽑음
         RandomSeed();
 
+        // FogWar의 시야 기억(fogField)은 ScanLevel()로 재생성되는 장애물 데이터(levelData)와 별개로
+        // 세션 내내 유지되는 상태라, 재시작해도 이전 판에서 밝혔던 타일이 새 미로 위에 그대로 남아있게 됨.
+        // 새 판을 시작할 때마다 시야 기억을 완전히 초기화(Hidden)해 처음 시작과 동일하게 보이도록 함
+        ResetFogMemory();
+
         _physicalMaze.SetSeed(_physicalSeed);
         _physicalMaze.SetSize(cols, rows);
         _physicalMaze.Generate();
+
+        // 프로젝트 Physics 설정의 Auto Sync Transforms가 꺼져 있어(m_AutoSyncTransforms: 0),
+        // 방금 스크립트로 재배치한(특히 풀에서 재사용된) 벽 콜라이더 위치가 물리 엔진에 아직 반영되지 않은 상태.
+        // NavMeshSurface는 Physics Colliders 모드라 이 상태를 그대로 읽어 베이크하므로,
+        // BuildNavMesh() 직전에 명시적으로 동기화하지 않으면 일부 벽이 이전 위치로 구워져 NavMesh에 구멍이 생김
+        Physics.SyncTransforms();
         _physicalNavMeshSurface.BuildNavMesh(); // Physical 전용 NavMesh Bake
 
         _arcaneMaze.SetSeed(_arcaneSeed);
         _arcaneMaze.SetSize(cols, rows);
         _arcaneMaze.Generate();
+
+        Physics.SyncTransforms();
         _arcaneNavMeshSurface.BuildNavMesh(); // Arcane 전용 NavMesh Bake
 
         // 실시간 레이어 전환(SwitchLayer)과 동일한 경로로 Physical을 활성화.
@@ -275,5 +279,28 @@ public class MazeLayerManager : MonoBehaviour
     public MazeGenerator GetActiveMaze()
     {
         return _currentLayer == LayerType.Physical ? _physicalMaze : _arcaneMaze;
+    }
+
+    /// <summary>
+    /// FogWar의 타일별 시야 기억(Revealed/PreviouslyRevealed)을 전부 Hidden으로 되돌리는 메소드.
+    /// keepRevealedTiles가 true인 동안은 Shadowcaster.ResetTileVisibility()만으로는 PreviouslyRevealed 타일이
+    /// 지워지지 않으므로, AOSFogWar가 공개하는 인덱서만으로 직접 전체 타일을 순회하며 초기화함
+    /// (에셋 자체는 수정하지 않고 외부 공개 API만 사용)
+    /// </summary>
+    private void ResetFogMemory()
+    {
+        if (_fogWarSystem == null) return;
+
+        Shadowcaster.FogField fogField = _fogWarSystem.shadowcaster.fogField;
+
+        for (int x = 0; x < _fogWarSystem.levelData.levelDimensionX; x++)
+        {
+            Shadowcaster.LevelColumn column = fogField[x];
+
+            for (int y = 0; y < column.Count(); y++)
+            {
+                column[y] = Shadowcaster.LevelColumn.ETileVisibility.Hidden;
+            }
+        }
     }
 }

@@ -3,28 +3,14 @@ using UnityEngine;
 /// <summary>
 /// 사운드 재생을 책임지는 매니저
 /// </summary>
-public class SoundManager : MonoBehaviour
+public class SoundManager : Singleton<SoundManager>
 {
-    public static SoundManager Instance { get; private set; }
-
     [SerializeField] private SoundLibrary _library;
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource _sfxSource;
     [SerializeField] private AudioSource _bgmSource;
     [SerializeField] private float _bgmVolume = 0.5f;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     /// <summary>
     /// 효과음 하나 재생
