@@ -3,11 +3,13 @@ using UnityEngine;
 public class GameUIController : MonoBehaviour
 {
     [Header("Panels")]
-    [SerializeField] private TitlePanelUI  _titlePanel;
-    [SerializeField] private SelectPanelUI _selectPanel;
-    [SerializeField] private InGamePanelUI _inGamePanel;
-    [SerializeField] private ResultPanelUI _resultPanel;
-    [SerializeField] private DamageflashUI _damageflashUI;
+    [SerializeField] private TitlePanelUI   _titlePanel;
+    [SerializeField] private SelectPanelUI  _selectPanel;
+    [SerializeField] private InGamePanelUI  _inGamePanel;
+    [SerializeField] private PausePanelUI   _pausePanel;
+    [SerializeField] private OptionsPanelUI _optionsPanel;
+    [SerializeField] private ResultPanelUI  _resultPanel;
+    [SerializeField] private DamageflashUI  _damageflashUI;
 
     [Header("참조")]
     [SerializeField] private MazeLayerManager _mazeLayerManager;
@@ -21,47 +23,64 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private int  _fixedMonsterCnt = 10;
 
     private PlayerController _player;
+    public PlayerController Player => _player;
+
+    private GameFlowFSM _flowFsm;
+
+    public TitlePanelUI   TitlePanel   => _titlePanel;
+    public SelectPanelUI  SelectPanel  => _selectPanel;
+    public InGamePanelUI  InGamePanel  => _inGamePanel;
+    public PausePanelUI   PausePanel   => _pausePanel;
+    public OptionsPanelUI OptionsPanel => _optionsPanel;
+    public ResultPanelUI  ResultPanel  => _resultPanel;
+
+    public string PendingResultMessage { get; private set; }
+
+    private void Awake()
+    {
+        _flowFsm = new GameFlowFSM(this);
+    }
 
     private void Start()
     {
-        _titlePanel.OnPlayClicked        += OnPlayClicked;
-        _selectPanel.OnGameModeConfirmed += OnGameModeConfirmed;
-        _resultPanel.OnReplayClicked     += OnReplayClicked;
+        _titlePanel.OnPlayClicked        += () => _flowFsm.ChangeState(_flowFsm.SelectState);
+
+        _selectPanel.OnBackClicked       += () => _flowFsm.ChangeState(_flowFsm.TitleState);
+        _selectPanel.OnGameModeConfirmed += StartNewGame;
+
+        _inGamePanel.OnPauseClicked      += () => _flowFsm.ChangeState(_flowFsm.PausedState);
+
+        _pausePanel.OnResumeClicked      += () => _flowFsm.ChangeState(_flowFsm.PlayingState);
+        _pausePanel.OnReplayClicked      += StartNewGame;
+        _pausePanel.OnEndClicked         += () => GameManager.Instance.GameRule.GameOver();
+
+        _resultPanel.OnReplayClicked     += StartNewGame;
+        _resultPanel.OnSelectClicked     += () => _flowFsm.ChangeState(_flowFsm.SelectState);
 
         _selectPanel.Hide();
         _inGamePanel.Hide();
+        _pausePanel.Hide();
+        _optionsPanel.Hide();
         _resultPanel.Hide();
 
-        _titlePanel.Show();
+        _flowFsm.ChangeState(_flowFsm.TitleState);
     }
 
     private void Update()
     {
-        if (_inGamePanel.IsActive)
+        if (_flowFsm.Current == _flowFsm.PlayingState)
         {
-            _inGamePanel.UpdateTimer(GameManager.Instance.GameTimer.GetFormattedTime()); 
+            _inGamePanel.UpdateTimer(GameManager.Instance.GameTimer.GetFormattedTime());
         }
     }
 
-    private void OnGameModeConfirmed()
-    {
-        _selectPanel.Hide();
-        StartGame(_fixedCols, _fixedRows, _fixedMonsterCnt);
-    }
-
-    private void OnPlayClicked()
-    {
-        _titlePanel.Hide();
-        _selectPanel.Show();
-    }
-
     /// <summary>
-    /// 결과 화면의 재시작 버튼 클릭 시 호출 - 씬을 리로드하지 않고 그 자리에서 새 판을 시작
+    /// 난이도 선택 확정, Pause의 Replay, Result의 Replay - 새 판을 시작하는 모든 진입점이 공통으로 호출
     /// </summary>
-    private void OnReplayClicked()
+    private void StartNewGame()
     {
-        _resultPanel.Hide();
         StartGame(_fixedCols, _fixedRows, _fixedMonsterCnt);
+        _flowFsm.ChangeState(_flowFsm.PlayingState);
     }
 
     private void StartGame(int cols, int rows, int monsterCount)
@@ -81,8 +100,6 @@ public class GameUIController : MonoBehaviour
     /// </summary>
     private void SetupInGame(int cols, int rows)
     {
-        // GameStart()가 새 GameRule 인스턴스를 만들기 때문에, 아래에서 구독할 참조를 얻기 전에 먼저 호출해야 함
-        // (순서가 바뀌면 재시작 시 방금 만든 새 GameRule이 아닌 이전 판의 GameRule을 구독하게 됨)
         GameManager.Instance.GameStart();
 
         GameRule gameRule = GameManager.Instance.GameRule;
@@ -95,28 +112,28 @@ public class GameUIController : MonoBehaviour
         gameRule.OnGameOver     += () => ShowResult("GAME OVER..");
         gameRule.OnKeyCollected += _inGamePanel.UpdateKeyCount;
 
-        _inGamePanel.Show();
-
         _inGamePanel.UpdateHp(_player.CurrentHp, _player.MaxHp);
         _inGamePanel.UpdateKeyCount(gameRule.CurrentCollectedKeyCount, gameRule.RequiredKeyCount);
     }
 
-    /// <summary>
-    /// 결과 화면 전환, 플레이어 입력 막기
-    /// </summary>
     private void ShowResult(string message)
     {
-        _inGamePanel.Hide();
-        _resultPanel.Show(message, GameManager.Instance.GameTimer.GetFormattedTime());
+        PendingResultMessage = message;
+        _flowFsm.ChangeState(_flowFsm.ResultState);
+    }
 
-        // #TODO: UI에서 플레이어의 입력을 제한하는 코드? 이거 이상함
+    /// <summary>
+    /// 플레이어의 입력 활성화 여부를 제어 (Pause/Result 진입 시 비활성화, Playing 진입 시 재활성화)
+    /// </summary>
+    public void SetPlayerInputEnabled(bool isEnabled)
+    {
         if (_player.TryGetComponent<PlayerInputHandler>(out PlayerInputHandler playerInputHandler))
         {
-            playerInputHandler.enabled = false;
+            playerInputHandler.enabled = isEnabled;
         }
         else
         {
-            Debug.LogError("GameUIController ShowResult(): PlayerInputHandler is null");
+            Debug.LogError("GameUIController SetPlayerInputEnabled(): PlayerInputHandler is null");
         }
     }
 }

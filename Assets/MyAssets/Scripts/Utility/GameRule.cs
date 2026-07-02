@@ -38,14 +38,8 @@ public class GameRule
 
         _isGameEnd = true;
 
-        // 모든 몬스터 타겟 제거 #TODO 이 부분을 게임 룰에서 해야되는가? 아마 필요없을듯, 그냥 OnClear만 발생시키는게 나을듯
-        // 사운드도 OnClear에 등록해두면 여기서 할 필요없음
-        foreach (var monster in Object.FindObjectsByType<MonsterController>())
-        {
-            monster.Target = null;
-        }
+        StopAllMonsters();
         SoundManager.Instance?.PlayGameClear();
-
 
         OnClear?.Invoke();
     }
@@ -56,9 +50,20 @@ public class GameRule
 
         _isGameEnd = true;
 
-        // #TODO: 여기도 위와 동일
+        StopAllMonsters();
         SoundManager.Instance?.PlayGameOver();
 
         OnGameOver?.Invoke();
+    }
+
+    /// <summary>
+    /// 게임 종료(Clear/GameOver) 시 모든 몬스터가 더 이상 플레이어를 쫓지 않도록 타겟을 끊는 메소드
+    /// </summary>
+    private void StopAllMonsters()
+    {
+        foreach (var monster in Object.FindObjectsByType<MonsterController>())
+        {
+            monster.ClearTarget();
+        }
     }
 }
