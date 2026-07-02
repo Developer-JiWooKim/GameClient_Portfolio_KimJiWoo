@@ -7,13 +7,16 @@ public class ResultPanelUI : BasePanelUI
     [SerializeField] private TextMeshProUGUI _resultText;
     [SerializeField] private TextMeshProUGUI _resultTimeText;
     [SerializeField] private Button _replayButton;
+    [SerializeField] private Button _selectButton;
     [SerializeField] private Button _gameEndButton;
 
     public event System.Action OnReplayClicked;
+    public event System.Action OnSelectClicked;
 
     private void Awake()
     {
         _replayButton.onClick.AddListener(() => OnReplayClicked?.Invoke());
+        _selectButton.onClick.AddListener(() => OnSelectClicked?.Invoke());
         _gameEndButton.onClick.AddListener(() => GameManager.Instance.GameExit());
     }
 

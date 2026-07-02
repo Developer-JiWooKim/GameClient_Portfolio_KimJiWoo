@@ -285,6 +285,12 @@ public class MazeGenerator : MonoBehaviour
             collider = wall.GetComponent<Collider>()
         };
 
+        // 풀에서 재사용된 벽은 이전 레이어에서 비활성(트리거) 상태였던 이력이 남아있을 수 있음.
+        // NavMesh Bake는 트리거 콜라이더를 장애물로 잡지 않으므로, Bake 전에 반드시 솔리드 상태로 리셋해둬야
+        // 나중에 SetActiveLayer()가 다시 트리거로 내려도 이미 구워진 NavMesh에 구멍이 남지 않음
+        if (entry.renderer != null) entry.renderer.enabled = true;
+        if (entry.collider != null) entry.collider.isTrigger = false;
+
         _wallEntries.Add(entry);
     }
 

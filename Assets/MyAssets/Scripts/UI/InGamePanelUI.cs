@@ -7,11 +7,13 @@ public class InGamePanelUI : BasePanelUI
     [SerializeField] private TextMeshProUGUI _hpText;
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _keyCountText;
-    [SerializeField] private Button _endButton;
+    [SerializeField] private Button _pauseButton;
+
+    public event System.Action OnPauseClicked;
 
     private void Start()
     {
-        _endButton.onClick.AddListener(() => GameManager.Instance.GameRule.GameOver());
+        _pauseButton.onClick.AddListener(() => OnPauseClicked?.Invoke());
     }
 
     public void UpdateHp(int current, int max)

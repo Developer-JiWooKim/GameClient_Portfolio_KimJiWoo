@@ -102,18 +102,11 @@ public class MazeLayerManager : MonoBehaviour
         _arcaneMaze.SetSize(cols, rows);
         _arcaneMaze.Generate();
         _arcaneNavMeshSurface.BuildNavMesh(); // Arcane 전용 NavMesh Bake
-        _arcaneNavMeshSurface.RemoveData();   // 시작은 Physical이므로 Arcane 데이터는 일단 빼둠
 
-        _currentLayer = LayerType.Physical;
-        _currentWallLayerMask = _physicalWallMask;
-
-        _physicalMaze.SetWallsActiveState(true);
-        _arcaneMaze.SetWallsActiveState(false);
-
-        if(_fogWarSystem != null)
-        {            
-            _fogWarSystem.ScanLevel();
-        }
+        // 실시간 레이어 전환(SwitchLayer)과 동일한 경로로 Physical을 활성화.
+        // 예전엔 여기서 _currentLayer/벽 상태/NavMesh를 직접 다시 맞췄는데, OnLayerChanged를 발행하지 않아서
+        // 조명(LayerLightingController)/BGM처럼 그 이벤트를 구독하는 쪽은 Arcane 상태로 Replay할 때 갱신되지 않는 버그가 있었음
+        SetActiveLayer(LayerType.Physical);
     }
 
     /// <summary>

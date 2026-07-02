@@ -97,7 +97,12 @@ public class MonsterMove : MonoBehaviour
     {
         _hasPreviousCell = false;
         ClearPath();
+
+        // 재사용 전 이전 판에서 쫓아오던 경로/속도가 남아있으면 새 위치에서도 그 잔여 이동으로
+        // 몇 프레임 동안 벽을 스치듯 파고드는 것처럼 보일 수 있어 명시적으로 초기화
+        _agent.ResetPath();
         _agent.Warp(position);
+        _agent.velocity = Vector3.zero;
     }
 
     /// <summary>

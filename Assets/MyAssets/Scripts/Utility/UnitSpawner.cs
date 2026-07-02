@@ -62,6 +62,37 @@ public class UnitSpawner : MonoBehaviour
             collectionCheck: true,
             defaultCapacity: _keyCount,
             maxSize: 20);
+
+        if (_mazeLayerManager != null)
+        {
+            _mazeLayerManager.OnLayerChanged += HandleLayerChanged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_mazeLayerManager != null)
+        {
+            _mazeLayerManager.OnLayerChanged -= HandleLayerChanged;
+        }
+    }
+
+    /// <summary>
+    /// 레이어 전환 시 두 미로의 벽 배치가 서로 달라 몬스터가 서 있던 자리가 새 레이어에서는 벽 안일 수 있음.
+    /// NavMeshAgent가 이전 레이어의 NavMesh에 남은 상태로 이동을 계속하면 벽을 뚫고 다니게 되므로,
+    /// 전환 직후 제자리에서 Warp를 다시 걸어 새로 활성화된 NavMesh에 강제로 재동기화시킴
+    /// </summary>
+    private void HandleLayerChanged(MazeLayerManager.LayerType layer)
+    {
+        foreach (GameObject monster in _monsters)
+        {
+            if (monster == null || !monster.activeInHierarchy) continue;
+
+            if (monster.TryGetComponent(out MonsterController mc))
+            {
+                mc.Move.Warp(mc.transform.position);
+            }
+        }
     }
 
     /// <summary>

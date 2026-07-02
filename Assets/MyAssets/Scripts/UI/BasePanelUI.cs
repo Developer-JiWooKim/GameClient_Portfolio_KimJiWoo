@@ -5,8 +5,6 @@ using UnityEngine;
 /// </summary>
 public abstract class BasePanelUI : MonoBehaviour
 {
-    public bool IsActive => gameObject.activeSelf;
-
     public virtual void Show() => gameObject.SetActive(true);
     public virtual void Hide() => gameObject.SetActive(false);
 }
