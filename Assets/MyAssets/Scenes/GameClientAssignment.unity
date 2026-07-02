@@ -537,6 +537,7 @@ GameObject:
   - component: {fileID: 91412347}
   - component: {fileID: 91412350}
   - component: {fileID: 91412351}
+  - component: {fileID: 91412352}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -694,6 +695,21 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &91412352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91412346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5adf3c3c12cd4eaba30f0bbf0cf8e876, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _followPlayerCamera: {fileID: 656802221}
+  _introCamera: {fileID: 657806357}
+  _introHoldDuration: 0.5
 --- !u!1 &119119220
 GameObject:
   m_ObjectHideFlags: 0
@@ -4330,8 +4346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawner
   _mazeLayerManager: {fileID: 2132763794}
-  _followPlayerCamera: {fileID: 656802221}
-  _introCamera: {fileID: 657806357}
+  _introCameraSequencer: {fileID: 91412352}
   _monsterPrefab: {fileID: 7092602877218490808, guid: 32621549e4849754a8a8644584fa71e0, type: 3}
   _playerPrefab: {fileID: 4083551658152284763, guid: 78d7590be1d3add4d93549951e8cc31f, type: 3}
   _keyPrefab: {fileID: 5559845971474708186, guid: 808d8aa29a207aa43b035af5320fd96f, type: 3}
@@ -5474,8 +5489,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1549967014}
   - component: {fileID: 1549967017}
-  - component: {fileID: 1549967016}
   - component: {fileID: 1549967015}
+  - component: {fileID: 1549967016}
   m_Layer: 5
   m_Name: PausePanel
   m_TagString: Untagged
@@ -7573,8 +7588,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44805e11f808254d908ab5bcbf4fe40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeLayerManager
-  _physicalLayerRoot: {fileID: 1514082477}
-  _arcaneLayerRoot: {fileID: 881565413}
   _physicalMaze: {fileID: 466176218}
   _arcaneMaze: {fileID: 1013836944}
   _overlapCheckRadius: 0.5

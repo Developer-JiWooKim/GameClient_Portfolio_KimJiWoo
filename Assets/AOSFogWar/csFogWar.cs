@@ -5,6 +5,12 @@
  * Filename :   csHomebrewFogWar.cs (non-static monobehaviour module)
  * 
  * All Content (C) 2022 Unlimited Fischl Works, all rights reserved.
+ *
+ * [PROJECT CUSTOMIZATION] ForceUpdateFog() below was changed from private to public
+ * so game code can force an immediate fog refresh on replay (bypassing the lerp/update-rate
+ * gating in Update()). If this asset is ever re-imported/updated from the original source,
+ * re-apply that one-line access modifier change. See MazeLayerManager.ResetFogMemory() /
+ * UnitSpawner.SpawnAll() for the call sites that depend on it.
  */
 
 
@@ -404,7 +410,9 @@ namespace FischlWorks_FogWar
 
 
 
-        private void ForceUpdateFog()
+        /// Recomputes the fog field from the current FogRevealers and immediately copies the
+        /// result into the displayed buffer, bypassing the per-frame lerp/update-rate gating in Update().
+        public void ForceUpdateFog()
         {
             UpdateFogField();
 

@@ -33,7 +33,12 @@ public class MonsterController : MonoBehaviour
 
     public bool    IsSensed       => _isSensed;
     public bool    IsInRange      => _isInRange;
-    public Vector3 TargetPosition => _target.position;
+
+    // 현재는 Update()의 "_target == null이면 FSM.Tick() 자체를 건너뜀" 가드 덕분에
+    // IMonsterState 구현체들이 안전하게 호출하지만, 그 가드가 이 프로퍼티와 멀리 떨어져 있어
+    // 향후 호출 경로가 하나 추가되면 바로 NRE로 이어질 수 있는 구조. 자기 자신 위치를 안전한 기본값으로 반환해
+    // 어디서 호출되든 절대 크래시하지 않도록 프로퍼티 자체에서 방어
+    public Vector3 TargetPosition => _target != null ? _target.position : transform.position;
 
     public IMonsterState IdleState   => _monsterFSM.IdleState;
     public IMonsterState ChaseState  => _monsterFSM.ChaseState;

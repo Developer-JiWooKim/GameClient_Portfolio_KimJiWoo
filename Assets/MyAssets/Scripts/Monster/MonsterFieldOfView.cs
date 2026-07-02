@@ -83,6 +83,10 @@ public class MonsterFieldOfView : MonoBehaviour
 
         _vertices[0] = Vector3.zero;
 
+        // 루프 밖에서 한 번만 조회 (레이마다 매번 프로퍼티 접근하지 않도록).
+        // MazeLayerManager가 아직 없는 예외적인 상황이면 벽에 막히지 않은 것으로 취급해 메시만 정상적으로 그림
+        int wallLayerMask = MazeLayerManager.Instance != null ? MazeLayerManager.Instance.CurrentWallLayerMask : 0;
+
         for (int i = 0; i <= _rayCount; i++)
         {
             float angle = originAngle + startAngle + angleStep * i;
@@ -91,7 +95,7 @@ public class MonsterFieldOfView : MonoBehaviour
             Vector3 direction = new Vector3(Mathf.Sin(rad), 0f, Mathf.Cos(rad));
             Vector3 endPoint;
 
-            if (Physics.Raycast(originPos, direction, out RaycastHit hit, _detectionRange, MazeLayerManager.Instance.CurrentWallLayerMask))
+            if (Physics.Raycast(originPos, direction, out RaycastHit hit, _detectionRange, wallLayerMask))
             {
                 endPoint = hit.point;
             }

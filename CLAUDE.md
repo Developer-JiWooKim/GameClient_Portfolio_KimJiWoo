@@ -23,13 +23,17 @@ present but unused — no test files exist). "Running" this project means openin
 
 - Open with **Unity 6000.4.9f1** (URP render pipeline). Main scene: `Assets/MyAssets/Scenes/GameClientAssignment.unity`.
 - There is no command-line build/test workflow — verify changes by pressing Play in the Editor. `GameManager.GameExit()`
-  guards `Application.Quit()` behind `UNITY_EDITOR` so Play-mode exit doesn't close the editor.
+  calls `EditorApplication.isPlaying = false` under `UNITY_EDITOR` (vs. `Application.Quit()` in a real build) so
+  Play-mode exit doesn't close the editor.
 - Compiled scripts assemble via the default `Assembly-CSharp` assembly (no asmdefs) — everything in `Assets/` compiles
   together.
 - `Assets/MyAssets/Scripts/Obsolete/` (`AStarPathfinder.cs`, `FollowCamera.cs`) is dead code kept for reference only
   (marked `[Obsolete]`) — don't build on it; `MazeGenerator`/NavMesh and Cinemachine replaced it.
 - External/imported assets (`AOSFogWar`, `SD Unity-Chan Haon Custom`, `Toon Shaders Pro`, `unity-chan!`, `TextMesh Pro`)
-  are left at their original import paths and are not meant to be restructured.
+  are left at their original import paths and are not meant to be restructured. One deliberate exception:
+  `AOSFogWar/csFogWar.cs`'s `ForceUpdateFog()` was changed from `private` to `public` (see the `[PROJECT
+  CUSTOMIZATION]` comment at the top of that file) so replay can force an immediate fog refresh instead of waiting
+  on the asset's internal lerp/update-rate gating — re-apply that one-line change if the asset is ever re-imported.
 
 ## Architecture
 
@@ -38,17 +42,21 @@ subfolder for singletons), `ScriptableObject/`, and `Obsolete/`.
 
 ### Game lifecycle and rules
 
-- `GameManager` (singleton, survives via `Instance`) owns a `GameTimer` and a `GameRule`, and is the seam between them:
-  it wires `GameRule.OnClear`/`OnGameOver` to stop the timer. It also holds `Time.timeScale` pause/resume and the
-  static `CurrentGameMode` (`GameMode.Normal`/`Hard`) selected from the difficulty-select UI. `Replay()` sets a static
-  `SkipTitleOnLoad` flag and reloads the active scene so `GameUIController.Start()` can skip straight past the title
-  screen.
+- `GameManager` (singleton, survives via `Instance`) owns a `GameTimer` and a `GameRule`. `GameStart()` (called at the
+  top of each playthrough, not just once at boot) creates a **fresh** `GameRule` and wires its `OnClear`/`OnGameOver`
+  to stop the timer, so replaying doesn't leak state from the previous run. `PauseGame()`/`ResumeGame()`/`IsPaused`
+  own `Time.timeScale`, and the static `CurrentGameMode` (`GameMode.Normal`/`Hard`) is selected from the
+  difficulty-select UI. The static helper `GameManager.IsHardArcaneMode()` (Hard mode + `Arcane` layer active) is the
+  single source of truth both `MonsterSight` and `MonsterMove` check for hard-mode behavior.
 - `GameRule` is a **plain C# class**, not a MonoBehaviour — it's the pure rules/event hub for key collection and
   clear/game-over state (`OnKeyCollected`, `OnAllKeysCollected`, `OnClear`, `OnGameOver`). `GameManager` and
   `GameUIController` both subscribe to it rather than duplicating state.
-- `GameUIController` is the orchestration point for a single playthrough: it wires `TitlePanelUI` → `SelectPanelUI`
-  (difficulty choice) → `MazeLayerManager.SetLayersAndMazeGenerate` + `UnitSpawner.SpawnAll` → `InGamePanelUI` (HP/key
-  HUD, subscribed to `PlayerController`/`GameRule` events) → `ResultPanelUI`.
+- `GameUIController` is the panel/reference holder; actual UI flow is a **state machine**: `GameFlowFSM` drives
+  `IGameFlowState` implementations (`TitleState`, `SelectState`, `PlayingState`, `PausedState`, `ResultState`) that
+  each `Show()`/`Hide()` their panel on `Enter`/`Exit`. Pausing overlays `PausePanelUI` (which nests
+  `OptionsPanelUI`) on top of the still-visible `InGamePanelUI` rather than hiding it. Restarting (from Select, from
+  Pause's Replay, or from Result's Replay) all funnel through `GameUIController.StartNewGame()`, which regenerates
+  the maze and re-spawns units **in place** — there is no scene reload for replay.
 
 ### Maze generation and the dual-layer system
 
@@ -75,6 +83,12 @@ subfolder for singletons), `ScriptableObject/`, and `Obsolete/`.
   player-start cell (0,0) and goal cell (bottom-right). The Goal Point only spawns once `GameRule.OnAllKeysCollected`
   fires. It also handles the intro→follow Cinemachine camera priority handoff (delayed via `Awaitable`) and registers
   the spawned player's `PlayerInputHandler` with `MazeLayerManager` and the fog-of-war revealer.
+- Monsters and keys are **pooled** via `UnityEngine.Pool.ObjectPool<GameObject>` (`Get()`/`Release()`), not
+  instantiated/destroyed per run — `MonsterController.ResetForReuse()`/`ClearTarget()` re-initialize a pooled
+  monster's FSM/target/animation state. Follow this pooling pattern for new spawned/despawned unit types rather than
+  raw `Instantiate`/`Destroy`.
+- On layer switch, `UnitSpawner` re-`Warp()`s every active monster's `NavMeshAgent` in place, since the two layers'
+  wall layouts differ and a monster's old position/path can end up inside a wall on the newly active layer's NavMesh.
 
 ### Player
 
@@ -87,15 +101,23 @@ subfolder for singletons), `ScriptableObject/`, and `Obsolete/`.
 
 ### Monster AI
 
-- `MonsterController` composes `MonsterSight` (detection), `MonsterMove` (NavMeshAgent-based patrol/chase), `MonsterFSM`
-  (Idle/Chase/Attack state), `MonsterAnim`, and `MonsterAttack`/`MonsterFieldOfView` (children). Each `Update`, it
-  feeds sight results into the FSM, then dispatches movement/animation/attack calls based on `MonsterFSM.Current`.
-- `MonsterSight.TargetSense` does line-of-sight: range check, then dot-product field-of-view check, then a
+- `MonsterController` composes `MonsterSight` (detection), `MonsterMove` (NavMeshAgent-based patrol/chase),
+  `MonsterFSM`, `MonsterAnim`, and `MonsterAttackTrigger`/`MonsterFieldOfView` (children). `FixedUpdate` feeds sight
+  results (`IsInRange`/`IsSensed`) into fields the FSM's states read; `Update` just delegates to `MonsterFSM.Tick()`.
+- Monster state is a proper **State pattern**: `MonsterFSM` (Context) holds `IMonsterState` instances
+  (`MonsterIdleState`/`MonsterChaseState`/`MonsterAttackState`) and only handles Enter/Exit transition plumbing +
+  `Tick()` delegation (re-ticking once in the same frame if a transition happened, capped at 3 iterations as a
+  safety net). Each state implementation owns its own transition logic and movement/animation calls — add new
+  monster behaviors as new `IMonsterState` implementations, not as branches inside `MonsterFSM`.
+- `MonsterSight.TargetSense`/`IsInRange` do line-of-sight: range check, then dot-product field-of-view check, then a
   `Physics.Raycast` against `MazeLayerManager.Instance.CurrentWallLayerMask` (so walls in the *currently active* layer
-  block sight, and only that layer's walls). In `GameMode.Hard` while the `Arcane` layer is active, detection is
-  forced to always-true (`IsAlwaysDetectMode`) — this is the main difficulty-mode hook currently wired up; other
-  hard-mode ideas in `GameClient에 적용할 내용.txt` (time limit, sanity gauge, degrading Physical walls) are not yet
-  implemented.
+  block sight, and only that layer's walls). When `GameManager.IsHardArcaneMode()` is true (Hard mode + `Arcane`
+  layer active), both checks are forced to always-true, **and** `MonsterMove.MoveToTarget` multiplies chase speed by
+  `_hardArcaneChaseSpeedMultiplier` (1.3x, tuned to exceed player speed) — this is the difficulty-mode hook currently
+  wired up. Other hard-mode ideas in `GameClient에 적용할 내용.txt` (time limit, sanity gauge, degrading Physical
+  walls) are not yet implemented.
+- Detection state is surfaced to the player: `MonsterController` fires `player.NotifyDetected(bool)` whenever a
+  state's `IsAlertState` changes (true for Chase/Attack), which `PlayerFaceController` uses to swap expression.
 
 ### Cross-cutting
 

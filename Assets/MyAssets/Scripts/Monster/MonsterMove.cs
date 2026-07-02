@@ -111,9 +111,15 @@ public class MonsterMove : MonoBehaviour
     /// </summary>
     private bool TryGetRandomPatrolPoint(out Vector3 result)
     {
-        MazeGenerator mazeGenenrator = MazeLayerManager.Instance.GetActiveMaze();
-
         Vector3 myPos = transform.position;
+
+        if (MazeLayerManager.Instance == null)
+        {
+            result = myPos;
+            return false;
+        }
+
+        MazeGenerator mazeGenenrator = MazeLayerManager.Instance.GetActiveMaze();
 
         Vector2Int currentCellPos = mazeGenenrator.WorldToCell(myPos);
 

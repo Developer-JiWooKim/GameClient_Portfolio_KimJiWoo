@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// 게임의 클리어 여부와 고유 규칙을 담당하는 순수 클래스
 /// </summary>
@@ -38,9 +36,10 @@ public class GameRule
 
         _isGameEnd = true;
 
-        StopAllMonsters();
         SoundManager.Instance?.PlayGameClear();
 
+        // 몬스터가 더 이상 플레이어를 쫓지 않도록 타겟을 끊는 처리는 몬스터 인스턴스를 들고 있는
+        // UnitSpawner가 OnClear를 구독해서 직접 담당 (씬 전체를 스캔할 필요가 없어짐)
         OnClear?.Invoke();
     }
 
@@ -50,20 +49,8 @@ public class GameRule
 
         _isGameEnd = true;
 
-        StopAllMonsters();
         SoundManager.Instance?.PlayGameOver();
 
         OnGameOver?.Invoke();
-    }
-
-    /// <summary>
-    /// 게임 종료(Clear/GameOver) 시 모든 몬스터가 더 이상 플레이어를 쫓지 않도록 타겟을 끊는 메소드
-    /// </summary>
-    private void StopAllMonsters()
-    {
-        foreach (var monster in Object.FindObjectsByType<MonsterController>())
-        {
-            monster.ClearTarget();
-        }
     }
 }

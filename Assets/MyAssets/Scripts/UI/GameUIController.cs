@@ -48,7 +48,7 @@ public class GameUIController : MonoBehaviour
         _selectPanel.OnBackClicked       += () => _flowFsm.ChangeState(_flowFsm.TitleState);
         _selectPanel.OnGameModeConfirmed += StartNewGame;
 
-        _inGamePanel.OnPauseClicked      += () => _flowFsm.ChangeState(_flowFsm.PausedState);
+        _inGamePanel.OnPauseClicked      += HandlePauseClicked;
 
         _pausePanel.OnResumeClicked      += () => _flowFsm.ChangeState(_flowFsm.PlayingState);
         _pausePanel.OnReplayClicked      += StartNewGame;
@@ -75,6 +75,18 @@ public class GameUIController : MonoBehaviour
     }
 
     /// <summary>
+    /// 일시정지 버튼 클릭 처리. 레이어 전환 연출(ripple)이 진행 중일 때는 무시한다.
+    /// 전환은 내부적으로 PauseGame/ResumeGame으로 timeScale을 제어하는데, 그 도중 일시정지로 진입하면
+    /// 전환의 finally ResumeGame()이 PausedState가 기대하는 timeScale=0을 1로 되돌려 게임이 멈추지 않는 문제가 생김
+    /// </summary>
+    private void HandlePauseClicked()
+    {
+        if (_mazeLayerManager != null && _mazeLayerManager.IsTransitioning) return;
+
+        _flowFsm.ChangeState(_flowFsm.PausedState);
+    }
+
+    /// <summary>
     /// 난이도 선택 확정, Pause의 Replay, Result의 Replay - 새 판을 시작하는 모든 진입점이 공통으로 호출
     /// </summary>
     private void StartNewGame()
@@ -85,6 +97,12 @@ public class GameUIController : MonoBehaviour
 
     private void StartGame(int cols, int rows, int monsterCount)
     {
+        // UnitSpawner.SpawnAll()이 GameRule.OnAllKeysCollected를 구독하므로,
+        // 그보다 먼저 GameStart()를 호출해 이번 판에서 실제로 쓰일 GameRule 인스턴스를 확정해야 함.
+        // 순서가 바뀌면 SpawnAll()이 구독한 인스턴스가 GameStart()에서 교체돼버려
+        // 열쇠를 다 모아도 Goal Point가 생성되지 않는 버그가 생김
+        GameManager.Instance.GameStart();
+
         _mazeLayerManager.SetLayersAndMazeGenerate(cols, rows);
 
         _unitSpawner.SetMonsterCount(monsterCount);
@@ -92,16 +110,14 @@ public class GameUIController : MonoBehaviour
 
         _player = _unitSpawner.Player;
 
-        SetupInGame(cols, rows);
+        SetupInGame();
     }
 
     /// <summary>
     /// 게임 시작 후 HP/열쇠 UI 연결, Result 화면 전환 이벤트 연결
     /// </summary>
-    private void SetupInGame(int cols, int rows)
+    private void SetupInGame()
     {
-        GameManager.Instance.GameStart();
-
         GameRule gameRule = GameManager.Instance.GameRule;
 
         _player.OnHPChanged += _inGamePanel.UpdateHp;

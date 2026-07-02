@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager Instance { get; private set; }
     public static GameMode CurrentGameMode { get; set; } = GameMode.Normal;
 
     private GameTimer _gameTimer;
@@ -12,16 +11,10 @@ public class GameManager : MonoBehaviour
     public GameRule GameRule => _gameRule;
     public bool IsPaused { get; private set; }
 
-    private void Awake()
+    protected override void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
+        if (!IsValidInstance) return; // 중복 인스턴스는 base.Awake()가 파괴 처리하므로 초기화 생략
 
         _gameTimer = new GameTimer();
         _gameRule  = new GameRule();
