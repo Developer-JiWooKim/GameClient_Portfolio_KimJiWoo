@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using Assets.MyAssets.Scripts.Utility;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
+using Assets.MyAssets.Scripts.Utility.Maze;
 
 namespace Assets.MyAssets.Scripts.Monster
 {
@@ -122,7 +122,7 @@ namespace Assets.MyAssets.Scripts.Monster
 
             if (MazeLayerManager.Instance == null)
             {
-                Debug.LogError("MazeLayerManager Instance is null");
+                Debug.LogError("MonsterMove: MazeLayerManager Instance is null");
                 result = myPos;
                 return false;
             }
@@ -133,9 +133,9 @@ namespace Assets.MyAssets.Scripts.Monster
 
             Cell currentCell = mazeGenenrator.GetCell(currentCellPos.x, currentCellPos.y);
 
-            if (currentCell == null)
+            if (currentCell is null)
             {
-                Debug.LogError("TryGetRandomPatrolPoint currentCell is null");
+                Debug.LogError("MonsterMove: TryGetRandomPatrolPoint currentCell is null");
                 result = myPos;
                 return false;
             }

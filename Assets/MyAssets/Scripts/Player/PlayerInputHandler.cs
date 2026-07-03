@@ -20,6 +20,7 @@ namespace Assets.MyAssets.Scripts.Player
         private PlayerInput _playerInput; // 유니티 내장 PlayerInput 컴포넌트
 
         public event System.Action<Vector3> OnLayerSwitchRequested; // SwitchLayer 액션(Tab 키)이 트리거됐을 때 발생하는 이벤트
+        public event System.Action          OnPauseRequested;       // Pause 액션(ESC 키)이 트리거됐을 때 발생하는 이벤트
 
         private void Awake()
         {
@@ -52,6 +53,12 @@ namespace Assets.MyAssets.Scripts.Player
                     if (context.phase == InputActionPhase.Performed)
                     {
                         OnLayerSwitchRequested?.Invoke(transform.position);
+                    }
+                    break;
+                case "Pause":
+                    if (context.phase == InputActionPhase.Performed)
+                    {
+                        OnPauseRequested?.Invoke();
                     }
                     break;
             }

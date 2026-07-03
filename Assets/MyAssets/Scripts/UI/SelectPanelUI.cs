@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Assets.MyAssets.Scripts.Utility;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
+using Assets.MyAssets.Scripts.Utility.Core;
 
 namespace Assets.MyAssets.Scripts.UI
 {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Visuals
 {
     /// <summary>
     /// 풀스크린 일렁임(Ripple) 머티리얼의 _Intensity 값을 런타임에 조절하는 컨트롤러

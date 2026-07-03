@@ -1,11 +1,11 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Visuals
 {
     /// <summary>
-    /// 플레이어 스폰 시 인트로 카메라를 잠깐 보여준 뒤 팔로우 카메라로 부드럽게 전환하는 컴포넌트.
-    /// UnitSpawner가 플레이어를 스폰한 직후 PlayIntro() 한 번만 호출하면 이후 시퀀스는 알아서 진행됨
+    /// 플레이어 스폰 시 인트로 카메라를 잠깐 보여준 뒤 팔로우 카메라로 부드럽게 전환하는 컴포넌트
+    /// UnitsSpawner가 플레이어를 스폰한 직후 PlayIntro() 한 번만 호출하면 이후 시퀀스는 알아서 진행됨
     /// </summary>
     public class IntroCameraSequencer : MonoBehaviour
     {

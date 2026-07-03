@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Maze
 {
     public class MazeGenerator : MonoBehaviour
     {
@@ -273,7 +273,9 @@ namespace Assets.MyAssets.Scripts.Utility
             GameObject wall = _wallPool.Get();
 
             wall.transform.SetPositionAndRotation(position, Quaternion.identity);
-            wall.transform.localScale = isVertical ? new Vector3(_wallThickness, _wallHeight, _cellSize) : new Vector3(_cellSize, _wallHeight, _wallThickness);
+            wall.transform.localScale = isVertical ?
+                    new Vector3(_wallThickness, _wallHeight, _cellSize) : 
+                    new Vector3(_cellSize, _wallHeight, _wallThickness);
 
             if (wallLayer != -1)
             {
@@ -326,6 +328,31 @@ namespace Assets.MyAssets.Scripts.Utility
             if (col < 0 || col >= _cols || row < 0 || row >= _rows) return null;
 
             return _grid[col, row];
+        }
+
+        /// <summary>
+        /// 전체 셀 중 두 셀(주로 시작/목표 지점)을 제외한 나머지를 Fisher-Yates로 섞어 반환하는 메소드.
+        /// 스포너들이 각자 독립적으로 호출하므로, 호출할 때마다 새로 섞인 리스트를 반환함
+        /// </summary>
+        public List<Cell> GetShuffledCandidateCells(Vector2Int excludeA, Vector2Int excludeB)
+        {
+            List<Cell> candidates = new List<Cell>();
+
+            foreach (Cell cell in _allCells)
+            {
+                if (cell.col == excludeA.x && cell.row == excludeA.y) continue;
+                if (cell.col == excludeB.x && cell.row == excludeB.y) continue;
+
+                candidates.Add(cell);
+            }
+
+            for (int i = candidates.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (candidates[i], candidates[j]) = (candidates[j], candidates[i]);
+            }
+
+            return candidates;
         }
 
         /// <summary>

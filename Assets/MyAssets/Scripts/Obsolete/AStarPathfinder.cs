@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Assets.MyAssets.Scripts.Utility;
+using Assets.MyAssets.Scripts.Utility.Maze;
 
 namespace Assets.MyAssets.Scripts.Obsolete
 {

@@ -1187,7 +1187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &191973493
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1540,6 +1540,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 231624475}
   m_CullTransparentMesh: 1
+--- !u!1 &301959640
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 301959641}
+  - component: {fileID: 301959642}
+  m_Layer: 0
+  m_Name: KeySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &301959641
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301959640}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1282344941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &301959642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301959640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52580e7a1395504458eafb3f9bb4ce43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.KeySpawner
+  _keyPrefab: {fileID: 5559845971474708186, guid: 808d8aa29a207aa43b035af5320fd96f, type: 3}
 --- !u!1 &466176216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1945,6 +1990,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563295874}
   m_CullTransparentMesh: 1
+--- !u!1 &594627907
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 594627909}
+  - component: {fileID: 594627908}
+  m_Layer: 0
+  m_Name: GoalPointSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &594627908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594627907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b534d675bb220048a7e53d3da253269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.GoalPointSpawner
+  _goalPointPrefab: {fileID: 6322480162053807700, guid: f0e3d7ee1c5f4b14e9861558e633eb78, type: 3}
+--- !u!4 &594627909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594627907}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1282344941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &598455461
 GameObject:
   m_ObjectHideFlags: 0
@@ -2398,6 +2488,52 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!1 &665127255
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 665127256}
+  - component: {fileID: 665127257}
+  m_Layer: 0
+  m_Name: MonsterSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &665127256
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 665127255}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1282344941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &665127257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 665127255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f14de1a24bb8714c8212c94fdd1702d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.MonsterSpawner
+  _monsterPrefab: {fileID: 7092602877218490808, guid: 32621549e4849754a8a8644584fa71e0, type: 3}
+  _mazeLayerManager: {fileID: 2132763794}
 --- !u!1 &693503853
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,7 +2971,7 @@ MonoBehaviour:
   _resultPanel: {fileID: 1849296584}
   _damageflashUI: {fileID: 1067837771}
   _mazeLayerManager: {fileID: 2132763794}
-  _unitSpawner: {fileID: 1282344940}
+  _unitsSpawner: {fileID: 1282344940}
   _fixedCols: 20
   _fixedRows: 20
   _fixedMonsterCnt: 12
@@ -4331,7 +4467,7 @@ GameObject:
   - component: {fileID: 1282344941}
   - component: {fileID: 1282344940}
   m_Layer: 0
-  m_Name: UnitSpawner
+  m_Name: UnitsSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4350,11 +4486,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawner
   _mazeLayerManager: {fileID: 2132763794}
-  _introCameraSequencer: {fileID: 91412352}
-  _monsterPrefab: {fileID: 7092602877218490808, guid: 32621549e4849754a8a8644584fa71e0, type: 3}
-  _playerPrefab: {fileID: 4083551658152284763, guid: 78d7590be1d3add4d93549951e8cc31f, type: 3}
-  _keyPrefab: {fileID: 5559845971474708186, guid: 808d8aa29a207aa43b035af5320fd96f, type: 3}
-  _goalPointPrefab: {fileID: 6322480162053807700, guid: f0e3d7ee1c5f4b14e9861558e633eb78, type: 3}
+  _playerSpawner: {fileID: 1873188345}
+  _monsterSpawner: {fileID: 665127257}
+  _keySpawner: {fileID: 301959642}
+  _goalPointSpawner: {fileID: 594627908}
 --- !u!4 &1282344941
 Transform:
   m_ObjectHideFlags: 0
@@ -4367,7 +4502,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1873188344}
+  - {fileID: 665127256}
+  - {fileID: 301959641}
+  - {fileID: 594627909}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1336989208
@@ -6954,6 +7093,53 @@ MonoBehaviour:
   _replayButton: {fileID: 1007369023}
   _selectButton: {fileID: 604936391}
   _gameEndButton: {fileID: 1357868095}
+--- !u!1 &1873188343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1873188344}
+  - component: {fileID: 1873188345}
+  m_Layer: 0
+  m_Name: PlayerSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1873188344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873188343}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1282344941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1873188345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873188343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed040bb968ea1574b88f3b02acd5fa5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.PlayerSpawner
+  _playerPrefab: {fileID: 4083551658152284763, guid: 78d7590be1d3add4d93549951e8cc31f, type: 3}
+  _introCameraSequencer: {fileID: 91412352}
+  _mazeLayerManager: {fileID: 2132763794}
 --- !u!1 &1884619968
 GameObject:
   m_ObjectHideFlags: 0

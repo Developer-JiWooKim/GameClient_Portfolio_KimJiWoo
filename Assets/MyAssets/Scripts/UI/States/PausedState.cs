@@ -1,4 +1,4 @@
-using Assets.MyAssets.Scripts.Utility;
+using Assets.MyAssets.Scripts.Utility.Core;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 
 namespace Assets.MyAssets.Scripts.UI.States
