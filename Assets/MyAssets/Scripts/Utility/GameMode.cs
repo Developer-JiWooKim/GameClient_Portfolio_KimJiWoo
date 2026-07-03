@@ -1,5 +1,8 @@
-public enum GameMode
+namespace Assets.MyAssets.Scripts.Utility
 {
-    Normal,
-    Hard,
+    public enum GameMode
+    {
+        Normal,
+        Hard,
+    }
 }

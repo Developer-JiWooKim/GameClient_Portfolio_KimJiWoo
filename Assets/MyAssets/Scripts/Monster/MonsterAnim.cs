@@ -1,50 +1,53 @@
 using UnityEngine;
 
-public class MonsterAnim : MonoBehaviour
+namespace Assets.MyAssets.Scripts.Monster
 {
-    private Animator _animator;
-
-    private static readonly int IsMovingHash    = Animator.StringToHash("IsMoving");
-    private static readonly int IsRunningHash   = Animator.StringToHash("IsRunning");
-    private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
-
-    // 매 Tick마다 같은 상태(Play*)가 반복 호출돼도 SetBool을 다시 쏘지 않도록 마지막 값 캐싱
-    private bool _lastMoving;
-    private bool _lastRunning;
-    private bool _lastAttacking;
-    private bool _hasSetStateOnce;
-
-    private void Awake()
+    public class MonsterAnim : MonoBehaviour
     {
-        _animator = GetComponentInChildren<Animator>();
-    }
+        private Animator _animator;
 
-    public void PlayWalk()   => SetState(moving: true,  running: false, attacking: false);
-    public void PlayRun()    => SetState(moving: true,  running: true,  attacking: false);
-    public void PlayIdle()   => SetState(moving: false, running: false, attacking: false);
-    public void PlayAttack() => SetState(moving: false, running: false, attacking: true);
+        private static readonly int IsMovingHash    = Animator.StringToHash("IsMoving");
+        private static readonly int IsRunningHash   = Animator.StringToHash("IsRunning");
+        private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
 
-    private void SetState(bool moving, bool running, bool attacking)
-    {
-        if (_animator == null)
+        // 매 Tick마다 같은 상태(Play*)가 반복 호출돼도 SetBool을 다시 쏘지 않도록 마지막 값 캐싱
+        private bool _lastMoving;
+        private bool _lastRunning;
+        private bool _lastAttacking;
+        private bool _hasSetStateOnce;
+
+        private void Awake()
         {
-            Debug.LogError("Animator is null");
-            return;
+            _animator = GetComponentInChildren<Animator>();
         }
 
-        // 상태 클래스가 Tick()마다 같은 Play*()를 계속 호출하므로, 값이 그대로면 SetBool 3회를 그냥 건너뜀
-        if (_hasSetStateOnce && moving == _lastMoving && running == _lastRunning && attacking == _lastAttacking)
+        public void PlayWalk()   => SetState(moving: true,  running: false, attacking: false);
+        public void PlayRun()    => SetState(moving: true,  running: true,  attacking: false);
+        public void PlayIdle()   => SetState(moving: false, running: false, attacking: false);
+        public void PlayAttack() => SetState(moving: false, running: false, attacking: true);
+
+        private void SetState(bool moving, bool running, bool attacking)
         {
-            return;
+            if (_animator == null)
+            {
+                Debug.LogError("Animator is null");
+                return;
+            }
+
+            // 상태 클래스가 Tick()마다 같은 Play*()를 계속 호출하므로, 값이 그대로면 SetBool 3회를 그냥 건너뜀
+            if (_hasSetStateOnce && moving == _lastMoving && running == _lastRunning && attacking == _lastAttacking)
+            {
+                return;
+            }
+
+            _animator.SetBool(IsMovingHash, moving);
+            _animator.SetBool(IsRunningHash, running);
+            _animator.SetBool(IsAttackingHash, attacking);
+
+            _lastMoving      = moving;
+            _lastRunning     = running;
+            _lastAttacking   = attacking;
+            _hasSetStateOnce = true;
         }
-
-        _animator.SetBool(IsMovingHash, moving);
-        _animator.SetBool(IsRunningHash, running);
-        _animator.SetBool(IsAttackingHash, attacking);
-
-        _lastMoving      = moving;
-        _lastRunning     = running;
-        _lastAttacking   = attacking;
-        _hasSetStateOnce = true;
     }
 }

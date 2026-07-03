@@ -1,15 +1,18 @@
-/// <summary>
-/// 타이틀 화면
-/// </summary>
-public class TitleState : IGameFlowState
+namespace Assets.MyAssets.Scripts.UI.States
 {
-    public void Enter(GameUIController controller)
+    /// <summary>
+    /// 타이틀 화면
+    /// </summary>
+    public class TitleState : IGameFlowState
     {
-        controller.TitlePanel.Show();
-    }
+        public void Enter(GameUIController controller)
+        {
+            controller.TitlePanel.Show();
+        }
 
-    public void Exit(GameUIController controller)
-    {
-        controller.TitlePanel.Hide();
+        public void Exit(GameUIController controller)
+        {
+            controller.TitlePanel.Hide();
+        }
     }
 }
