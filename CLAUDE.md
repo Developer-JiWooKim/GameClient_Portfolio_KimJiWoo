@@ -78,7 +78,7 @@ subfolder for singletons), `ScriptableObject/`, and `Obsolete/`.
 
 ### Spawning
 
-- `UnitSpawner` spawns player/monsters/keys/goal point after maze generation, using the active maze's `Cell` list
+- `UnitsSpawner` spawns player/monsters/keys/goal point after maze generation, using the active maze's `Cell` list
   (cell world positions are shared across both layers) as spawn candidates, shuffled via Fisher-Yates, excluding the
   player-start cell (0,0) and goal cell (bottom-right). The Goal Point only spawns once `GameRule.OnAllKeysCollected`
   fires. It also handles the intro→follow Cinemachine camera priority handoff (delayed via `Awaitable`) and registers
@@ -87,7 +87,7 @@ subfolder for singletons), `ScriptableObject/`, and `Obsolete/`.
   instantiated/destroyed per run — `MonsterController.ResetForReuse()`/`ClearTarget()` re-initialize a pooled
   monster's FSM/target/animation state. Follow this pooling pattern for new spawned/despawned unit types rather than
   raw `Instantiate`/`Destroy`.
-- On layer switch, `UnitSpawner` re-`Warp()`s every active monster's `NavMeshAgent` in place, since the two layers'
+- On layer switch, `UnitsSpawner` re-`Warp()`s every active monster's `NavMeshAgent` in place, since the two layers'
   wall layouts differ and a monster's old position/path can end up inside a wall on the newly active layer's NavMesh.
 
 ### Player

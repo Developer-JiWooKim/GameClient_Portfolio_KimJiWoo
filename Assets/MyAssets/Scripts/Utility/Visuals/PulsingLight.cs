@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Visuals
 {
     /// <summary>
     /// Light(Point)의 Intensity를 사인파 기반으로 강하게 펄스시키는 컴포넌트

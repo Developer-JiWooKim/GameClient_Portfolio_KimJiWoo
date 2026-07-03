@@ -1,4 +1,4 @@
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Maze
 {
     public class Cell
     {

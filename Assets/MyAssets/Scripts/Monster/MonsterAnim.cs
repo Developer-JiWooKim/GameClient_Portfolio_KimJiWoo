@@ -10,7 +10,7 @@ namespace Assets.MyAssets.Scripts.Monster
         private static readonly int IsRunningHash   = Animator.StringToHash("IsRunning");
         private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
 
-        // 매 Tick마다 같은 상태(Play*)가 반복 호출돼도 SetBool을 다시 쏘지 않도록 마지막 값 캐싱
+        // 매 Tick마다 같은 상태가 반복 호출돼도 SetBool을 다시 쏘지 않도록 마지막 값 캐싱
         private bool _lastMoving;
         private bool _lastRunning;
         private bool _lastAttacking;

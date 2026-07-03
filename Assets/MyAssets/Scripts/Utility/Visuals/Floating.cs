@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Visuals
 {
     /// <summary>
     /// 오브젝트를 제자리에서 위아래로 천천히 떠다니게 하고, 동시에 회전시키는 비주얼 전용 컴포넌트

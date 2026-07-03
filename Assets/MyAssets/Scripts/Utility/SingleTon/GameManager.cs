@@ -1,3 +1,4 @@
+using Assets.MyAssets.Scripts.Utility.Core;
 using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.SingleTon
@@ -53,7 +54,6 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         public void GameStart()
         {
             _gameRule = new GameRule();
-
             _gameRule.OnKeyCollected += (current, required) => SoundManager.Instance?.PlayKeyCollected();
             _gameRule.OnClear        += _gameTimer.StopTimer;
             _gameRule.OnClear        += () => SoundManager.Instance?.PlayGameClear();

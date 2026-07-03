@@ -1,4 +1,4 @@
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.Core
 {
     /// <summary>
     /// 게임의 클리어 여부와 고유 규칙을 담당하는 순수 클래스

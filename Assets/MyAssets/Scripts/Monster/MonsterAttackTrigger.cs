@@ -16,7 +16,12 @@ namespace Assets.MyAssets.Scripts.Monster
             if (!other.CompareTag("Player")) return;
 
             PlayerInAttackRange = true;
-            Player              = other.GetComponent<PlayerController>();
+
+            Player = other.GetComponent<PlayerController>();
+            if (Player == null)
+            {
+                Debug.LogError($"MonsterAttackTrigger: PlayerController가 없습니다! 대상: {other.name}", other.gameObject);
+            }
         }
 
         private void OnTriggerExit(Collider other)
@@ -24,7 +29,7 @@ namespace Assets.MyAssets.Scripts.Monster
             if (!other.CompareTag("Player")) return;
 
             PlayerInAttackRange = false;
-            Player              = null;
+            Player = null;
         }
 
         /// <summary>
@@ -33,7 +38,7 @@ namespace Assets.MyAssets.Scripts.Monster
         public void ResetTrigger()
         {
             PlayerInAttackRange = false;
-            Player              = null;
+            Player = null;
         }
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 
-namespace Assets.MyAssets.Scripts.Utility
+namespace Assets.MyAssets.Scripts.Utility.TriggerEvent
 {
     public class GoalPoint : MonoBehaviour
     {

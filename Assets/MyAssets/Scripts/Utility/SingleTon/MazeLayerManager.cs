@@ -2,6 +2,8 @@ using FischlWorks_FogWar;
 using Unity.AI.Navigation;
 using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
+using Assets.MyAssets.Scripts.Utility.Maze;
+using Assets.MyAssets.Scripts.Utility.Visuals;
 
 namespace Assets.MyAssets.Scripts.Utility.SingleTon
 {

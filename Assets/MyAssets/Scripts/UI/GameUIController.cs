@@ -1,7 +1,8 @@
 using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
-using Assets.MyAssets.Scripts.Utility;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
+using Assets.MyAssets.Scripts.Utility.Spawners;
+using Assets.MyAssets.Scripts.Utility.Core;
 
 namespace Assets.MyAssets.Scripts.UI
 {
@@ -18,7 +19,7 @@ namespace Assets.MyAssets.Scripts.UI
 
         [Header("참조")]
         [SerializeField] private MazeLayerManager _mazeLayerManager;
-        [SerializeField] private UnitSpawner      _unitSpawner;
+        [SerializeField] private UnitsSpawner     _unitsSpawner;
 
         // #TODO: 이 부분 MazeGenerator에서 SerializeField로 옮기고 항상 이렇게 생성할듯? 아니면 하드 모드일때는 몬스터 수 늘리기?
         [Header("Fixed Size")]
@@ -80,9 +81,7 @@ namespace Assets.MyAssets.Scripts.UI
         }
 
         /// <summary>
-        /// 일시정지 버튼 클릭 처리. 레이어 전환 연출(ripple)이 진행 중일 때는 무시한다.
-        /// 전환은 내부적으로 PauseGame/ResumeGame으로 timeScale을 제어하는데, 그 도중 일시정지로 진입하면
-        /// 전환의 finally ResumeGame()이 PausedState가 기대하는 timeScale=0을 1로 되돌려 게임이 멈추지 않는 문제가 생김
+        /// 일시정지 버튼 클릭 처리 - 레이어 전환 연출(ripple)이 진행 중일 때는 무시
         /// </summary>
         private void HandlePauseClicked()
         {
@@ -102,18 +101,14 @@ namespace Assets.MyAssets.Scripts.UI
 
         private void StartGame(int cols, int rows, int monsterCount)
         {
-            // UnitSpawner.SpawnAll()이 GameRule.OnAllKeysCollected를 구독하므로,
-            // 그보다 먼저 GameStart()를 호출해 이번 판에서 실제로 쓰일 GameRule 인스턴스를 확정해야 함.
-            // 순서가 바뀌면 SpawnAll()이 구독한 인스턴스가 GameStart()에서 교체돼버려
-            // 열쇠를 다 모아도 Goal Point가 생성되지 않는 버그가 생김
             GameManager.Instance.GameStart();
 
             _mazeLayerManager.SetLayersAndMazeGenerate(cols, rows);
 
-            _unitSpawner.SetMonsterCount(monsterCount);
-            _unitSpawner.SpawnAll();
+            _unitsSpawner.SetMonsterCount(monsterCount);
+            _unitsSpawner.SpawnAll();
 
-            _player = _unitSpawner.Player;
+            _player = _unitsSpawner.Player;
 
             SetupInGame();
         }
@@ -127,7 +122,11 @@ namespace Assets.MyAssets.Scripts.UI
 
             _player.OnHPChanged += _inGamePanel.UpdateHp;
             _player.OnHPChanged += (current, max) => _damageflashUI?.Flash();
-            _player.OnDead      += () => gameRule.GameOver();
+            _player.OnDead += () => gameRule.GameOver();
+            if (_player.TryGetComponent(out PlayerInputHandler playerInputHandler))
+            {
+                playerInputHandler.OnPauseRequested += HandlePauseClicked; // ESC 키로도 Pause 버튼과 동일하게 일시정지 진입
+            }
 
             gameRule.OnClear        += () => ShowResult("CLEAR!!");
             gameRule.OnGameOver     += () => ShowResult("GAME OVER..");

@@ -10,7 +10,7 @@
  * so game code can force an immediate fog refresh on replay (bypassing the lerp/update-rate
  * gating in Update()). If this asset is ever re-imported/updated from the original source,
  * re-apply that one-line access modifier change. See MazeLayerManager.ResetFogMemory() /
- * UnitSpawner.SpawnAll() for the call sites that depend on it.
+ * UnitsSpawner.SpawnAll() for the call sites that depend on it.
  */
 
 
