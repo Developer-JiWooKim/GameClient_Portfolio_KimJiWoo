@@ -1,26 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.MyAssets.Scripts.Utility;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
 
-public class SelectPanelUI : BasePanelUI
+namespace Assets.MyAssets.Scripts.UI
 {
-    [SerializeField] private Button _normalButton;
-    [SerializeField] private Button _hardButton;
-    [SerializeField] private Button _backButton;
-
-    public event System.Action OnGameModeConfirmed;
-    public event System.Action OnBackClicked;
-
-    private void Awake()
+    public class SelectPanelUI : BasePanelUI
     {
-        _normalButton.onClick.AddListener(() => Confirm(GameMode.Normal));
-        _hardButton.onClick.AddListener(() => Confirm(GameMode.Hard));
-        _backButton.onClick.AddListener(() => OnBackClicked?.Invoke());
-    }
+        [SerializeField] private Button _normalButton;
+        [SerializeField] private Button _hardButton;
+        [SerializeField] private Button _backButton;
 
-    private void Confirm(GameMode gameMode)
-    {
-        GameManager.CurrentGameMode = gameMode;
+        public event System.Action OnGameModeConfirmed;
+        public event System.Action OnBackClicked;
 
-        OnGameModeConfirmed?.Invoke();
+        private void Awake()
+        {
+            _normalButton.onClick.AddListener(() => Confirm(GameMode.Normal));
+            _hardButton.onClick.AddListener(() => Confirm(GameMode.Hard));
+            _backButton.onClick.AddListener(() => OnBackClicked?.Invoke());
+        }
+
+        private void Confirm(GameMode gameMode)
+        {
+            GameManager.CurrentGameMode = gameMode;
+
+            OnGameModeConfirmed?.Invoke();
+        }
     }
 }

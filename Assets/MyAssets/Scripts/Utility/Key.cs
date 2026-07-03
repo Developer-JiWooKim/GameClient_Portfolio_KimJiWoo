@@ -1,20 +1,22 @@
 using UnityEngine;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
 
-public class Key : MonoBehaviour
+namespace Assets.MyAssets.Scripts.Utility
 {
-    /// <summary>
-    /// 획득 시 발행되는 이벤트, 오브젝트 풀 반납은 구독자(UnitSpawner)가 처리
-    /// </summary>
-    public event System.Action<Key> OnCollected;
-
-    private void OnTriggerEnter(Collider other)
+    public class Key : MonoBehaviour
     {
-        if (!other.CompareTag("Player")) return;
+        /// <summary>
+        /// 획득 시 발행되는 이벤트, 오브젝트 풀 반납은 구독자(UnitSpawner)가 처리
+        /// </summary>
+        public event System.Action<Key> OnCollected;
 
-        GameManager.Instance.GameRule.CollectKey();
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.CompareTag("Player")) return;
 
-        SoundManager.Instance?.PlayKeyCollected();
+            GameManager.Instance.GameRule.CollectKey();
 
-        OnCollected?.Invoke(this);
+            OnCollected?.Invoke(this);
+        }
     }
 }

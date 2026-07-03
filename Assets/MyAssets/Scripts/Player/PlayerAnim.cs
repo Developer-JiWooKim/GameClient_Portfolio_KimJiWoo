@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class PlayerAnim : MonoBehaviour
+namespace Assets.MyAssets.Scripts.Player
 {
-    private Animator _animator;
-
-    private readonly int IsMovingHash = Animator.StringToHash("IsMoving");
-
-    private void Awake()
+    public class PlayerAnim : MonoBehaviour
     {
-        _animator = GetComponentInChildren<Animator>();
-        if (_animator == null)
+        private Animator _animator;
+
+        private readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+
+        private void Awake()
         {
-            Debug.LogError("_animator is null");
+            _animator = GetComponentInChildren<Animator>();
+            if (_animator == null)
+            {
+                Debug.LogError("_animator is null");
+            }
         }
-    }
 
-    public void SetMoving(bool isMoving)
-    {
-        _animator.SetBool(IsMovingHash, isMoving);
+        public void SetMoving(bool isMoving)
+        {
+            _animator.SetBool(IsMovingHash, isMoving);
+        }
     }
 }

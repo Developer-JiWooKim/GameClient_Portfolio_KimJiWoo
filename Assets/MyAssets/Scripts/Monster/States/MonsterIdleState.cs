@@ -1,26 +1,29 @@
-/// <summary>
-/// 순찰 상태 - 타겟을 감지하기 전까지 미로를 돌아다님, 감지되면 Chase로 전환
-/// </summary>
-public class MonsterIdleState : IMonsterState
+namespace Assets.MyAssets.Scripts.Monster.States
 {
-    public bool IsAlertState => false;
-
-    public void Enter(MonsterController controller)
+    /// <summary>
+    /// 순찰 상태 - 타겟을 감지하기 전까지 미로를 돌아다님, 감지되면 Chase로 전환
+    /// </summary>
+    public class MonsterIdleState : IMonsterState
     {
-        controller.Move.ClearPath();
-    }
+        public bool IsAlertState => false;
 
-    public void Exit(MonsterController controller) { }
-
-    public void Tick(MonsterController controller)
-    {
-        if (controller.IsSensed)
+        public void Enter(MonsterController controller)
         {
-            controller.ChangeState(controller.ChaseState);
-            return;
+            controller.Move.ClearPath();
         }
 
-        controller.Move.Patrol();
-        controller.Anim.PlayWalk();
+        public void Exit(MonsterController controller) { }
+
+        public void Tick(MonsterController controller)
+        {
+            if (controller.IsSensed)
+            {
+                controller.ChangeState(controller.ChaseState);
+                return;
+            }
+
+            controller.Move.Patrol();
+            controller.Anim.PlayWalk();
+        }
     }
 }
