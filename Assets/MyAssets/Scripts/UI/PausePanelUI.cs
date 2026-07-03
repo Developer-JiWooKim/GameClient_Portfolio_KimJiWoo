@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace Assets.MyAssets.Scripts.UI
 {
@@ -18,6 +19,7 @@ namespace Assets.MyAssets.Scripts.UI
         public event System.Action OnResumeClicked;
         public event System.Action OnReplayClicked;
         public event System.Action OnEndClicked;
+
 
         private void Awake()
         {

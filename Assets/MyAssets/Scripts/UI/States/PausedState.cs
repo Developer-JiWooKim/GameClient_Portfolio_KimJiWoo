@@ -11,7 +11,7 @@ namespace Assets.MyAssets.Scripts.UI.States
         public void Enter(GameUIController controller)
         {
             GameManager.Instance.PauseGame();
-            controller.SetPlayerInputEnabled(false);
+            controller.SetPlayerControlEnabled(false);
 
             GameRule gameRule = GameManager.Instance.GameRule;
 
