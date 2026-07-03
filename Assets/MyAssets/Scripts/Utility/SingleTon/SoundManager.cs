@@ -13,10 +13,19 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         [Header("Audio Sources")]
         [SerializeField] private AudioSource _sfxSource;
         [SerializeField] private AudioSource _bgmSource;
+        [SerializeField] private float _sfxVolume = 1f;
         [SerializeField] private float _bgmVolume = 0.5f;
+
+        public float SfxVolume => _sfxVolume;
+        public float BgmVolume => _bgmVolume;
+        public bool  IsSfxMuted => _sfxSource != null && _sfxSource.mute;
+        public bool  IsBgmMuted => _bgmSource != null && _bgmSource.mute;
 
         private void Start()
         {
+            if (_sfxSource != null) _sfxSource.volume = _sfxVolume;
+            if (_bgmSource != null) _bgmSource.volume = _bgmVolume;
+
             if (MazeLayerManager.Instance != null)
             {
                 MazeLayerManager.Instance.OnLayerChanged       += PlayBGMForLayer;
@@ -75,6 +84,36 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
             if (_bgmSource == null) return;
 
             _bgmSource.Stop();
+        }
+
+        /// <summary>
+        /// SFX 볼륨 설정 (0~1). 이후 재생되는 효과음부터 즉시 반영됨
+        /// </summary>
+        public void SetSfxVolume(float volume)
+        {
+            _sfxVolume = Mathf.Clamp01(volume);
+
+            if (_sfxSource != null) _sfxSource.volume = _sfxVolume;
+        }
+
+        /// <summary>
+        /// BGM 볼륨 설정 (0~1). 재생 중인 BGM에도 즉시 반영됨
+        /// </summary>
+        public void SetBgmVolume(float volume)
+        {
+            _bgmVolume = Mathf.Clamp01(volume);
+
+            if (_bgmSource != null) _bgmSource.volume = _bgmVolume;
+        }
+
+        public void SetSfxMuted(bool isMuted)
+        {
+            if (_sfxSource != null) _sfxSource.mute = isMuted;
+        }
+
+        public void SetBgmMuted(bool isMuted)
+        {
+            if (_bgmSource != null) _bgmSource.mute = isMuted;
         }
     }
 }

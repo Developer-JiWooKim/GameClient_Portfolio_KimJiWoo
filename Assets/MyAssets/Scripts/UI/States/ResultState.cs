@@ -13,7 +13,7 @@ namespace Assets.MyAssets.Scripts.UI.States
             GameManager.Instance.ResumeGame();
 
             controller.InGamePanel.Hide();
-            controller.SetPlayerInputEnabled(false);
+            controller.SetPlayerControlEnabled(false);
             controller.ResultPanel.Show(controller.PendingResultMessage, GameManager.Instance.GameTimer.GetFormattedTime());
         }
 

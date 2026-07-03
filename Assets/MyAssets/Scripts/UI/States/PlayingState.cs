@@ -10,7 +10,7 @@ namespace Assets.MyAssets.Scripts.UI.States
         public void Enter(GameUIController controller)
         {
             GameManager.Instance.ResumeGame();
-            controller.SetPlayerInputEnabled(true);
+            controller.SetPlayerControlEnabled(true);
             controller.InGamePanel.Show();
         }
 

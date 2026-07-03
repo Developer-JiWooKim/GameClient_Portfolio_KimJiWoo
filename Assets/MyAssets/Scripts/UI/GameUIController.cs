@@ -54,7 +54,7 @@ namespace Assets.MyAssets.Scripts.UI
             _selectPanel.OnBackClicked       += () => _flowFsm.ChangeState(_flowFsm.TitleState);
             _selectPanel.OnGameModeConfirmed += StartNewGame;
 
-            _inGamePanel.OnPauseClicked      += HandlePauseClicked;
+            _inGamePanel.OnPauseClicked      += HandlePauseToggle;
 
             _pausePanel.OnResumeClicked      += () => _flowFsm.ChangeState(_flowFsm.PlayingState);
             _pausePanel.OnReplayClicked      += StartNewGame;
@@ -81,13 +81,21 @@ namespace Assets.MyAssets.Scripts.UI
         }
 
         /// <summary>
-        /// 일시정지 버튼 클릭 처리 - 레이어 전환 연출(ripple)이 진행 중일 때는 무시
+        /// Pause 버튼 클릭 또는 ESC 키 처리 - Playing 중이면 Pause로, Paused 중이면 다시 Playing으로 토글
+        /// 레이어 전환 연출(ripple) 중일 때는 무시
         /// </summary>
-        private void HandlePauseClicked()
+        private void HandlePauseToggle()
         {
             if (_mazeLayerManager != null && _mazeLayerManager.IsTransitioning) return;
 
-            _flowFsm.ChangeState(_flowFsm.PausedState);
+            if (_flowFsm.Current == _flowFsm.PlayingState)
+            {
+                _flowFsm.ChangeState(_flowFsm.PausedState);
+            }
+            else if (_flowFsm.Current == _flowFsm.PausedState)
+            {
+                _flowFsm.ChangeState(_flowFsm.PlayingState);
+            }
         }
 
         /// <summary>
@@ -125,7 +133,7 @@ namespace Assets.MyAssets.Scripts.UI
             _player.OnDead += () => gameRule.GameOver();
             if (_player.TryGetComponent(out PlayerInputHandler playerInputHandler))
             {
-                playerInputHandler.OnPauseRequested += HandlePauseClicked; // ESC 키로도 Pause 버튼과 동일하게 일시정지 진입
+                playerInputHandler.OnPauseRequested += HandlePauseToggle; // ESC 키로 Pause 진입/Resume 토글
             }
 
             gameRule.OnClear        += () => ShowResult("CLEAR!!");
@@ -143,17 +151,17 @@ namespace Assets.MyAssets.Scripts.UI
         }
 
         /// <summary>
-        /// 플레이어의 입력 활성화 여부를 제어 (Pause/Result 진입 시 비활성화, Playing 진입 시 재활성화)
+        /// 플레이어의 이동/레이어 전환 허용 여부를 제어 (Pause/Result 진입 시 비활성화, Playing 진입 시 재활성화)
         /// </summary>
-        public void SetPlayerInputEnabled(bool isEnabled)
+        public void SetPlayerControlEnabled(bool isEnabled)
         {
             if (_player.TryGetComponent<PlayerInputHandler>(out PlayerInputHandler playerInputHandler))
             {
-                playerInputHandler.enabled = isEnabled;
+                playerInputHandler.IsControlEnabled = isEnabled;
             }
             else
             {
-                Debug.LogError("GameUIController SetPlayerInputEnabled(): PlayerInputHandler is null");
+                Debug.LogError("GameUIController SetPlayerControlEnabled(): PlayerInputHandler is null");
             }
         }
     }
