@@ -41,6 +41,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             bool hasNull = false;
 
+            // 현재 내 스크립트의 필드들 전수 조사 (널이 있으면 로그를 찍고 true로 잠금)
             if (_mazeLayerManager == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager가 null임"); hasNull = true; }
             if (_playerSpawner == null) { Debug.LogError("UnitsSpawner: _playerSpawner가 null임"); hasNull = true; }
             if (_monsterSpawner == null) { Debug.LogError("UnitsSpawner: _monsterSpawner가 null임"); hasNull = true; }
@@ -85,7 +86,6 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             GameManager.Instance.GameRule.OnAllKeysCollected += _goalPointSpawner.SpawnGoalPoint;
 
             // 클리어/게임오버 시 몬스터가 플레이어를 계속 쫓지 않도록, MonsterSpawner가 직접 타겟을 끊음
-            // (씬 전체를 FindObjectsByType으로 스캔할 필요가 없어짐)
             GameManager.Instance.GameRule.OnClear += _monsterSpawner.StopAllMonsters;
             GameManager.Instance.GameRule.OnGameOver += _monsterSpawner.StopAllMonsters;
 
@@ -102,7 +102,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
             // 재시작(Replay) 시 MazeLayerManager.ResetFogMemory()로 fogField 자체는 이미 Hidden으로 초기화되지만,
             // 실제로 화면에 그려지는 안개 텍스처(fogPlaneTextureLerpBuffer)는 Update()의 갱신 주기/보간(lerp)을 통해
-            // 서서히 따라가므로, 그동안 이전 판에서 밝혔던 부분이 잠시(혹은 갱신 조건에 따라 계속) 남아 보일 수 있음.
+            // 서서히 따라가므로, 그동안 이전 판에서 밝혔던 부분이 잠시(혹은 갱신 조건에 따라 계속) 남아 보일 수 있음
             // ForceUpdateFog()로 새 플레이어 기준 안개를 즉시 재계산하고 버퍼에 그대로 복사해, 재시작 시에도
             // 처음 시작할 때와 동일하게 안개가 즉시 리셋된 상태로 보이게 함
             fogWar.ForceUpdateFog();

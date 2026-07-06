@@ -12,7 +12,6 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     {
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private IntroCameraSequencer _introCameraSequencer;
-        // [SerializeField] private MazeLayerManager _mazeLayerManager;
 
         private GameObject _playerInstance;
 
@@ -24,7 +23,6 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
             if (_playerPrefab == null) { Debug.LogError("PlayerSpawner: _playerPrefab이 null임"); hasNull = true; }
             if (_introCameraSequencer == null) { Debug.LogError("PlayerSpawner: _introCameraSequencer가 null임"); hasNull = true; }
-            // if (_mazeLayerManager == null) { Debug.LogError("PlayerSpawner: _mazeLayerManager가 null임"); hasNull = true; }
 
             return hasNull;
         }
@@ -42,7 +40,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             // 플레이어의 입력(Tab) 시 미로를 전환하는 이벤트를 연결
             if (_playerInstance.TryGetComponent(out PlayerInputHandler playerInput))
             {
-                mazeLayerManager.RegisterPlayerInput(playerInput);
+                mazeLayerManager?.RegisterPlayerInput(playerInput);
             }
         }
 
