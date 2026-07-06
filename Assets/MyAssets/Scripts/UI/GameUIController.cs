@@ -135,6 +135,12 @@ namespace Assets.MyAssets.Scripts.UI
             {
                 playerInputHandler.OnPauseRequested += HandlePauseToggle; // ESC 키로 Pause 진입/Resume 토글
             }
+            if (_player.TryGetComponent(out PlayerSanity playerSanity))
+            {
+                playerSanity.OnSanityChanged += _inGamePanel.UpdateSanity;
+                playerSanity.OnSanityDepleted += () => gameRule.GameOver();
+                _inGamePanel.UpdateSanity(playerSanity.CurrentSanity, playerSanity.MaxSanity);
+            }
 
             gameRule.OnClear        += () => ShowResult("CLEAR!!");
             gameRule.OnGameOver     += () => ShowResult("GAME OVER..");

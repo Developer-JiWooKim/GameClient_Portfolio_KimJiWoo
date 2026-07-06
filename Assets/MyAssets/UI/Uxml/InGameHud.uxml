@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ctrl="Assets.MyAssets.Scripts.UI.Controls" editor-extension-mode="False">
+    <ui:VisualElement name="hud-screen" class="hud-root">
+        <ui:VisualElement class="corner corner-tl" />
+        <ui:VisualElement class="corner corner-tr" />
+        <ui:VisualElement class="corner corner-bl" />
+        <ui:VisualElement class="corner corner-br" />
+
+        <ui:VisualElement style="position: absolute; top: 80px; left: 100px;">
+            <ui:Label name="hp-text" text="HP : 3 / 3" class="hud-value-text mono" />
+            <ui:Label name="key-count-text" text="Keys : 0 / 5" class="hud-value-text mono" />
+        </ui:VisualElement>
+
+        <ui:VisualElement style="position: absolute; top: 60px; left: 0; right: 0; align-items: center;">
+            <ui:Label name="timer-text" text="00:00" class="hud-value-text mono" />
+        </ui:VisualElement>
+
+        <ui:VisualElement style="position: absolute; bottom: 60px; left: 0; right: 0; align-items: center;">
+            <ui:Label text="SANITY" class="hud-label-text" style="margin-bottom: 8px;" />
+            <ui:VisualElement name="sanity-track" class="gauge-track">
+                <ui:VisualElement name="sanity-fill" class="gauge-fill" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement style="position: absolute; top: 60px; right: 100px; align-items: flex-end;">
+            <ctrl:CutButton name="pause-button" text="PAUSE" class="cut-button ghost" style="min-width: 225px; height: 75px; margin-top: 15px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

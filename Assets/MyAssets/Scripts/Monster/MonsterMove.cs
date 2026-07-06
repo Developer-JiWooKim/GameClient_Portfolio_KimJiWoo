@@ -10,27 +10,27 @@ namespace Assets.MyAssets.Scripts.Monster
     public class MonsterMove : MonoBehaviour
     {
         [Header("Setting")]
-        [SerializeField] private float _patrolSpeed    = 4f;
-        [SerializeField] private float _chaseSpeed     = 8f;
-        [SerializeField] private float _rotateSpeed    = 240f;
-        [SerializeField] private float _arriveDistance = 0.1f; // 목표 지점 도착 판정 거리
+        [SerializeField] private float _patrolSpeed = 4f;
+        [SerializeField] private float _chaseSpeed = 8f;
+        [SerializeField] private float _rotateSpeed = 240f;
+        [SerializeField] private float _arriveDistance = 0.1f; // 목표 지점 도착 판정 거리 
 
         [Header("Hard 난이도")]
         [Tooltip("Hard 난이도 + Arcane 레이어에서 추격 속도에 곱해지는 배율. 플레이어 이동속도(10)보다 빨라지도록 설정")]
-        [SerializeField] private float _hardArcaneChaseSpeedMultiplier = 1.8f;
+        [SerializeField] private float _hardArcaneChaseSpeedMultiplier = 1.6f;
 
         private NavMeshAgent _agent;
-        private Vector3      _patrolTarget;
-        private Vector2Int   _previousCell;
-        private bool         _hasPatrolTarget;
-        private bool         _hasPreviousCell;
+        private Vector3 _patrolTarget;
+        private Vector2Int _previousCell;
+        private bool _hasPatrolTarget;
+        private bool _hasPreviousCell;
 
         private List<Vector2Int> _openNeighbors = new List<Vector2Int>(4);
 
         private void Awake()
         {
-            _agent                = GetComponent<NavMeshAgent>();
-            _agent.speed          = _patrolSpeed; // 시작은 Patrol 속도로 초기화
+            _agent = GetComponent<NavMeshAgent>();
+            _agent.speed = _patrolSpeed; // 시작은 Patrol 속도로 초기화
             _agent.updateRotation = true;
         }
 
@@ -39,12 +39,12 @@ namespace Assets.MyAssets.Scripts.Monster
         /// </summary>
         public void Patrol()
         {
-            _agent.speed     = _patrolSpeed;
+            _agent.speed = _patrolSpeed;
             _agent.isStopped = false;
 
             if (!_hasPatrolTarget || _agent.remainingDistance <= _arriveDistance)
             {
-                if(TryGetRandomPatrolPoint(out Vector3 point))
+                if (TryGetRandomPatrolPoint(out Vector3 point))
                 {
                     _patrolTarget = point;
                     _agent.SetDestination(_patrolTarget);
@@ -144,9 +144,9 @@ namespace Assets.MyAssets.Scripts.Monster
 
             // 현재 셀에서 동서남북 방향에서 벽이 없는 위치를 찾고 벽이 없으면 그 방향에 이웃한 셀을 리스트에 추가
             if (!currentCell.northWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x, currentCellPos.y + 1));
-            if (!currentCell.southWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x,     currentCellPos.y - 1));
-            if (!currentCell.eastWall)  _openNeighbors.Add(new Vector2Int(currentCellPos.x + 1, currentCellPos.y));
-            if (!currentCell.westWall)  _openNeighbors.Add(new Vector2Int(currentCellPos.x - 1, currentCellPos.y));
+            if (!currentCell.southWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x, currentCellPos.y - 1));
+            if (!currentCell.eastWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x + 1, currentCellPos.y));
+            if (!currentCell.westWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x - 1, currentCellPos.y));
 
             if (_hasPreviousCell && _openNeighbors.Count > 1)
             {

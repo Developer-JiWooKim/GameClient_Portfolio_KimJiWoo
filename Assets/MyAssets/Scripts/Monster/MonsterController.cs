@@ -13,14 +13,14 @@ namespace Assets.MyAssets.Scripts.Monster
     [RequireComponent(typeof(MonsterAnim))]
     public class MonsterController : MonoBehaviour
     {
-        private MonsterSight         _monsterSight;
-        private MonsterMove          _monsterMove;
-        private MonsterFSM           _monsterFSM;
+        private MonsterSight _monsterSight;
+        private MonsterMove _monsterMove;
+        private MonsterFSM _monsterFSM;
         private MonsterAttackTrigger _monsterAttackTrigger;
-        private MonsterFieldOfView   _monsterFOV;
-        private MonsterAnim          _monsterAnim;
+        private MonsterFieldOfView _monsterFOV;
+        private MonsterAnim _monsterAnim;
 
-        private bool _isSensed  = false;         // 타겟 감지 여부를 저장하는 bool
+        private bool _isSensed = false;         // 타겟 감지 여부를 저장하는 bool
         private bool _isInRange = false;         // 타겟이 감지 반경 안에 들어와 있는지 여부를 저장하는 bool
         private bool _isDetectingPlayer = false; // Chase/Attack 상태(=발각 상태) 진입 여부, 플레이어 표정 알림용
 
@@ -31,17 +31,17 @@ namespace Assets.MyAssets.Scripts.Monster
             set => _target = value;
         }
 
-        public MonsterMove   Move   => _monsterMove;
-        public MonsterAnim   Anim   => _monsterAnim;
+        public MonsterMove Move => _monsterMove;
+        public MonsterAnim Anim => _monsterAnim;
         public MonsterAttackTrigger AttackTrigger => _monsterAttackTrigger;
 
-        public bool    IsSensed       => _isSensed;
-        public bool    IsInRange      => _isInRange;
+        public bool IsSensed => _isSensed;
+        public bool IsInRange => _isInRange;
 
         public Vector3 TargetPosition => _target != null ? _target.position : transform.position;
 
-        public IMonsterState IdleState   => _monsterFSM.IdleState;
-        public IMonsterState ChaseState  => _monsterFSM.ChaseState;
+        public IMonsterState IdleState => _monsterFSM.IdleState;
+        public IMonsterState ChaseState => _monsterFSM.ChaseState;
         public IMonsterState AttackState => _monsterFSM.AttackState;
 
         public void ChangeState(IMonsterState next) => _monsterFSM.ChangeState(next);
@@ -53,13 +53,13 @@ namespace Assets.MyAssets.Scripts.Monster
         /// </summary>
         private void Initialize()
         {
-            _monsterMove  = GetComponent<MonsterMove>();
+            _monsterMove = GetComponent<MonsterMove>();
             _monsterSight = GetComponent<MonsterSight>();
-            _monsterFSM   = GetComponent<MonsterFSM>();
-            _monsterAnim  = GetComponent<MonsterAnim>();
+            _monsterFSM = GetComponent<MonsterFSM>();
+            _monsterAnim = GetComponent<MonsterAnim>();
 
             _monsterAttackTrigger = GetComponentInChildren<MonsterAttackTrigger>();
-            _monsterFOV           = GetComponentInChildren<MonsterFieldOfView>();
+            _monsterFOV = GetComponentInChildren<MonsterFieldOfView>();
 
             _monsterFSM.OnStateChanged += OnStateChanged;
         }
@@ -77,8 +77,8 @@ namespace Assets.MyAssets.Scripts.Monster
             // 이전 타겟을 감지 중이던 상태로 반납/재사용될 경우, 그 타겟의 표정을 정상으로 되돌려줌
             SetDetectingPlayer(false);
 
-            _target    = target;
-            _isSensed  = false;
+            _target = target;
+            _isSensed = false;
             _isInRange = false;
 
             _monsterFSM.ResetState();              // 상태 초기화
@@ -98,7 +98,7 @@ namespace Assets.MyAssets.Scripts.Monster
         }
 
         /// <summary>
-        /// 상태가 변경되면 실행할 이벤트에 등록된 메소드 - 발각(Alert) 상태 여부를 플레이어에게 알림
+        /// 상태가 변경되면 실행할 이벤트에 등록된 메소드 - 발각(Alert) 상태 여부를 플레이어에게 알림 
         /// </summary>
         private void OnStateChanged(IMonsterState next)
         {
@@ -129,14 +129,14 @@ namespace Assets.MyAssets.Scripts.Monster
             // 타겟 위치가 탐지 거리 안에 있는지 체크
             _isInRange = _monsterSight.IsInRange(targetPos);
 
-            if(_isInRange)
+            if (_isInRange)
             {
                 // 탐지 거리 안에 들어와 있으면 시야각 안에 들어와 있고 그 사이에 벽이 있는지 체크
                 _isSensed = _monsterSight.TargetSense(targetPos);
             }
             else
             {
-                _isSensed = false; // 범위 밖이면 감지 여부 초기화
+                _isSensed = false; // 범위 밖이면 감지 여부 초기화 
             }
         }
 

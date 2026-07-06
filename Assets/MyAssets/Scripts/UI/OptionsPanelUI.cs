@@ -1,6 +1,5 @@
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Assets.MyAssets.Scripts.UI.Controls;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 
 namespace Assets.MyAssets.Scripts.UI
@@ -10,38 +9,34 @@ namespace Assets.MyAssets.Scripts.UI
     /// </summary>
     public class OptionsPanelUI : BasePanelUI
     {
-        [SerializeField] private TextMeshProUGUI _optionText;
-        // 화면 해상도 설정(할지, 안할지 모름)
-        // 화면 흔들림 On/Off 버튼으로 할듯?
-        [SerializeField] private Button _closeButton;
+        private Slider _sfxVolumeSlider;
+        private Toggle _sfxMuteToggle;
+        private Slider _bgmVolumeSlider;
+        private Toggle _bgmMuteToggle;
 
-        [Header("SFX")]
-        [SerializeField] private Slider _sfxVolumeSlider;
-        [SerializeField] private Toggle _sfxMuteToggle;
-
-        [Header("BGM")]
-        [SerializeField] private Slider _bgmVolumeSlider;
-        [SerializeField] private Toggle _bgmMuteToggle;
-
-        private void Awake()
+        protected override void Start()
         {
-            _closeButton.onClick.AddListener(Hide);
-        }
+            base.Start();
 
-        private void Start()
-        {
+            Root.Q<CutButton>("close-button").clicked += Hide;
+
+            _sfxVolumeSlider = Root.Q<Slider>("sfx-volume-slider");
+            _sfxMuteToggle   = Root.Q<Toggle>("sfx-mute-toggle");
+            _bgmVolumeSlider = Root.Q<Slider>("bgm-volume-slider");
+            _bgmMuteToggle   = Root.Q<Toggle>("bgm-mute-toggle");
+
             if (SoundManager.Instance == null) return;
 
-            // 슬라이더/토글 리스너가 곧바로 되쏘지 않도록 Notify 없이 현재 값으로 초기화
+            // 슬라이더/토글 리스너가 곧바로 되쏘지 않도록 SetValueWithoutNotify로 현재 값 초기화
             _sfxVolumeSlider.SetValueWithoutNotify(SoundManager.Instance.SfxVolume);
             _bgmVolumeSlider.SetValueWithoutNotify(SoundManager.Instance.BgmVolume);
-            _sfxMuteToggle.SetIsOnWithoutNotify(SoundManager.Instance.IsSfxMuted);
-            _bgmMuteToggle.SetIsOnWithoutNotify(SoundManager.Instance.IsBgmMuted);
+            _sfxMuteToggle.SetValueWithoutNotify(SoundManager.Instance.IsSfxMuted);
+            _bgmMuteToggle.SetValueWithoutNotify(SoundManager.Instance.IsBgmMuted);
 
-            _sfxVolumeSlider.onValueChanged.AddListener(SoundManager.Instance.SetSfxVolume);
-            _bgmVolumeSlider.onValueChanged.AddListener(SoundManager.Instance.SetBgmVolume);
-            _sfxMuteToggle.onValueChanged.AddListener(SoundManager.Instance.SetSfxMuted);
-            _bgmMuteToggle.onValueChanged.AddListener(SoundManager.Instance.SetBgmMuted);
+            _sfxVolumeSlider.RegisterValueChangedCallback(evt => SoundManager.Instance.SetSfxVolume(evt.newValue));
+            _bgmVolumeSlider.RegisterValueChangedCallback(evt => SoundManager.Instance.SetBgmVolume(evt.newValue));
+            _sfxMuteToggle.RegisterValueChangedCallback(evt => SoundManager.Instance.SetSfxMuted(evt.newValue));
+            _bgmMuteToggle.RegisterValueChangedCallback(evt => SoundManager.Instance.SetBgmMuted(evt.newValue));
         }
     }
 }

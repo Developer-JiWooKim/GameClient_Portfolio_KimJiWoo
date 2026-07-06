@@ -14,12 +14,12 @@ namespace Assets.MyAssets.Scripts.Monster
         private IMonsterState _current;
         public IMonsterState Current => _current;
 
-        private readonly MonsterIdleState   _idleState   = new MonsterIdleState();
-        private readonly MonsterChaseState  _chaseState  = new MonsterChaseState();
+        private readonly MonsterIdleState _idleState = new MonsterIdleState();
+        private readonly MonsterChaseState _chaseState = new MonsterChaseState();
         private readonly MonsterAttackState _attackState = new MonsterAttackState();
 
-        public IMonsterState IdleState   => _idleState;
-        public IMonsterState ChaseState  => _chaseState;
+        public IMonsterState IdleState => _idleState;
+        public IMonsterState ChaseState => _chaseState;
         public IMonsterState AttackState => _attackState;
 
         public event Action<IMonsterState> OnStateChanged;
@@ -27,7 +27,7 @@ namespace Assets.MyAssets.Scripts.Monster
         private void Awake()
         {
             _controller = GetComponent<MonsterController>();
-            _current    = _idleState;
+            _current = _idleState;
         }
 
         /// <summary>

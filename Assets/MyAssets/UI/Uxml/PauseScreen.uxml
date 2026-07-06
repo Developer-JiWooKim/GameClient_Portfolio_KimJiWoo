@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ctrl="Assets.MyAssets.Scripts.UI.Controls" editor-extension-mode="False">
+    <ui:VisualElement name="pause-screen" class="overlay-root">
+        <ui:VisualElement style="background-color: #1A0D28; border-width: 3px; border-color: #3D2860; padding: 84px 126px; align-items: center;">
+            <ui:Label text="PAUSED" class="title-text" style="font-size: 60px; margin-bottom: 42px;" />
+
+            <ui:Label name="hp-text" text="HP : 3 / 3" class="hud-value-text mono" />
+            <ui:Label name="key-count-text" text="Keys : 0 / 5" class="hud-value-text mono" />
+            <ui:Label name="timer-text" text="00:00" class="hud-value-text mono" style="margin-bottom: 42px;" />
+
+            <ctrl:CutButton name="resume-button" text="RESUME" class="cut-button primary" />
+            <ctrl:CutButton name="options-button" text="OPTIONS" class="cut-button ghost" />
+            <ctrl:CutButton name="replay-button" text="REPLAY" class="cut-button ghost" />
+            <ctrl:CutButton name="end-button" text="END" class="cut-button ghost" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

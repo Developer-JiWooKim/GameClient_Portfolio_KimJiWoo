@@ -78,7 +78,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             bool hasNull = false;
 
-            if (_monsterPrefab == null)    { Debug.LogError("MonsterSpawner: _monsterPrefab이 null임");    hasNull = true; }
+            if (_monsterPrefab == null) { Debug.LogError("MonsterSpawner: _monsterPrefab이 null임"); hasNull = true; }
             if (_mazeLayerManager == null) { Debug.LogError("MonsterSpawner: _mazeLayerManager가 null임"); hasNull = true; }
 
             return hasNull;

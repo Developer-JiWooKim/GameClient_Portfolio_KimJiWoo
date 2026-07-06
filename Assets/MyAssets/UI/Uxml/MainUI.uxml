@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../Uss/Variables.uss" />
+    <Style src="../Uss/Common.uss" />
+
+    <ui:Template name="TitleScreen" src="TitleScreen.uxml" />
+    <ui:Template name="SelectScreen" src="SelectScreen.uxml" />
+    <ui:Template name="InGameHud" src="InGameHud.uxml" />
+    <ui:Template name="PauseScreen" src="PauseScreen.uxml" />
+    <ui:Template name="OptionsScreen" src="OptionsScreen.uxml" />
+    <ui:Template name="ResultScreen" src="ResultScreen.uxml" />
+
+    <!--
+      <ui:Instance>가 생성하는 TemplateContainer 래퍼 자체는 항상 display:flex인 채로 전체화면을 덮는
+      Position 피킹 엘리먼트로 남는다. 내부 화면 루트(title-screen 등)의 display:none 토글은 그 안쪽
+      콘텐츠에만 적용되고, 바깥 래퍼는 여전히 클릭을 가로챈다 - 문서 순서상 가장 나중에 오는 형제가
+      전체 화면을 뒤덮어 다른 모든 화면의 클릭을 가로채는 버그가 있었다(panel.Pick으로 실측 확인).
+      래퍼 자체는 순수 배치 목적이라 picking-mode: ignore로 피킹을 완전히 우회시키고, 실제 클릭 판정은
+      안쪽의 표시 중인 화면 루트(display:flex인 것)에게만 맡긴다.
+    -->
+    <ui:Instance template="TitleScreen" name="title-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="SelectScreen" name="select-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="InGameHud" name="hud-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="PauseScreen" name="pause-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="OptionsScreen" name="options-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="ResultScreen" name="result-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+</ui:UXML>
