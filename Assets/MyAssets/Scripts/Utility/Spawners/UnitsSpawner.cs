@@ -15,9 +15,9 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         [SerializeField] private MazeLayerManager _mazeLayerManager;
 
         [Header("Spawners")]
-        [SerializeField] private PlayerSpawner    _playerSpawner;
-        [SerializeField] private MonsterSpawner   _monsterSpawner;
-        [SerializeField] private KeySpawner       _keySpawner;
+        [SerializeField] private PlayerSpawner _playerSpawner;
+        [SerializeField] private MonsterSpawner _monsterSpawner;
+        [SerializeField] private KeySpawner _keySpawner;
         [SerializeField] private GoalPointSpawner _goalPointSpawner;
 
         private float _spawnY = 1f; // 유닛 스폰 y 좌표
@@ -41,11 +41,11 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             bool hasNull = false;
 
-            if (_mazeLayerManager == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager가 null임");  hasNull = true; }
-            if (_playerSpawner == null)    { Debug.LogError("UnitsSpawner: _playerSpawner가 null임");     hasNull = true; }
-            if (_monsterSpawner == null)   { Debug.LogError("UnitsSpawner: _monsterSpawner가 null임");    hasNull = true; }
-            if (_keySpawner == null)       { Debug.LogError("UnitsSpawner: _keySpawner가 null임");        hasNull = true; }
-            if (_goalPointSpawner == null) { Debug.LogError("UnitsSpawner: _goalPointSpawner가 null임");  hasNull = true; }
+            if (_mazeLayerManager == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager가 null임"); hasNull = true; }
+            if (_playerSpawner == null) { Debug.LogError("UnitsSpawner: _playerSpawner가 null임"); hasNull = true; }
+            if (_monsterSpawner == null) { Debug.LogError("UnitsSpawner: _monsterSpawner가 null임"); hasNull = true; }
+            if (_keySpawner == null) { Debug.LogError("UnitsSpawner: _keySpawner가 null임"); hasNull = true; }
+            if (_goalPointSpawner == null) { Debug.LogError("UnitsSpawner: _goalPointSpawner가 null임"); hasNull = true; }
 
             if (hasNull) return true;
 
@@ -86,11 +86,11 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
             // 클리어/게임오버 시 몬스터가 플레이어를 계속 쫓지 않도록, MonsterSpawner가 직접 타겟을 끊음
             // (씬 전체를 FindObjectsByType으로 스캔할 필요가 없어짐)
-            GameManager.Instance.GameRule.OnClear    += _monsterSpawner.StopAllMonsters;
+            GameManager.Instance.GameRule.OnClear += _monsterSpawner.StopAllMonsters;
             GameManager.Instance.GameRule.OnGameOver += _monsterSpawner.StopAllMonsters;
 
             if (_mazeLayerManager.FogWarSystem == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager.FogWarSystem is Null"); return; }
-            if (Player == null)                         { Debug.LogError("UnitsSpawner: Player is Null");                         return; }
+            if (Player == null) { Debug.LogError("UnitsSpawner: Player is Null"); return; }
 
             FischlWorks_FogWar.csFogWar fogWar = _mazeLayerManager.FogWarSystem;
 
@@ -122,7 +122,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             Vector3 spawnPos = _activeMaze.GetCell(_playerStartCell.x, _playerStartCell.y).worldCenter;
             spawnPos.y = _spawnY;
 
-            _playerSpawner.Spawn(spawnPos);
+            _playerSpawner.Spawn(spawnPos, _mazeLayerManager);
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         private void ClearAll()
         {
             GameManager.Instance.GameRule.OnAllKeysCollected -= _goalPointSpawner.SpawnGoalPoint;
-            GameManager.Instance.GameRule.OnClear            -= _monsterSpawner.StopAllMonsters;
-            GameManager.Instance.GameRule.OnGameOver         -= _monsterSpawner.StopAllMonsters;
+            GameManager.Instance.GameRule.OnClear -= _monsterSpawner.StopAllMonsters;
+            GameManager.Instance.GameRule.OnGameOver -= _monsterSpawner.StopAllMonsters;
 
             _playerSpawner.Despawn();
             _monsterSpawner.ReleaseAll();

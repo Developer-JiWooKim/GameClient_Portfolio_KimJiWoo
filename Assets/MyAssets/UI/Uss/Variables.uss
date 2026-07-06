@@ -1,0 +1,18 @@
+/*
+ * UI_Design_Reference.md 의 컬러 팔레트를 USS 커스텀 프로퍼티로 이식.
+ * 값을 바꿀 땐 여기 한 곳만 수정하면 전체 화면에 반영됨.
+ */
+:root {
+    --nm-bg: #0A050F;
+    --nm-panel: #1A0D28;
+    --nm-border: #3D2860;
+    --nm-purple: #7B3FA0;
+    --nm-purple-dim: #4A2260;
+    --nm-dim: #7A6890;
+    --nm-horror: #C8B8DC;
+    --nm-text: #DDD0F0;
+    --nm-red: #C42030;
+    --nm-red-dim: #6B1018;
+    --nm-soul: #6BA8E8;
+    --nm-gold: #D4A020;
+}

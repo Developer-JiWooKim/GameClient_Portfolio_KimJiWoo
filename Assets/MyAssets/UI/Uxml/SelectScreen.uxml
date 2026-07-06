@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ctrl="Assets.MyAssets.Scripts.UI.Controls" editor-extension-mode="False">
+    <ui:VisualElement name="select-screen" class="screen-root">
+        <ui:VisualElement class="corner corner-tl" />
+        <ui:VisualElement class="corner corner-tr" />
+        <ui:VisualElement class="corner corner-bl" />
+        <ui:VisualElement class="corner corner-br" />
+
+        <ui:Label text="SELECT DIFFICULTY" class="subtitle-text" />
+
+        <ui:VisualElement style="flex-direction: row; align-items: center;">
+            <ctrl:CutCard name="normal-card" class="select-card normal" cut-size="18">
+                <ui:Label text="NORMAL" class="card-heading" />
+                <ui:Label text="Standard maze escape." class="card-desc" />
+            </ctrl:CutCard>
+            <ctrl:CutCard name="hard-card" class="select-card hard" cut-size="18">
+                <ui:Label text="HARD" class="card-heading" />
+                <ui:Label text="The Arcane layer always senses you, and it hunts faster." class="card-desc" />
+            </ctrl:CutCard>
+        </ui:VisualElement>
+
+        <ctrl:CutButton name="back-button" text="BACK" class="cut-button ghost" style="margin-top: 84px;" />
+    </ui:VisualElement>
+</ui:UXML>

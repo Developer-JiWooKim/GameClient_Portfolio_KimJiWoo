@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ctrl="Assets.MyAssets.Scripts.UI.Controls" editor-extension-mode="False">
+    <ui:VisualElement name="title-screen" class="screen-root">
+        <ui:VisualElement class="corner corner-tl" />
+        <ui:VisualElement class="corner corner-tr" />
+        <ui:VisualElement class="corner corner-bl" />
+        <ui:VisualElement class="corner corner-br" />
+
+        <ui:Label text="ECHOES OF ME" class="title-text" />
+        <ui:Label text="Run and survive, away from them.." class="subtitle-text" />
+
+        <ui:VisualElement style="flex-direction: column; align-items: center;">
+            <ctrl:CutButton name="start-button" text="START" class="cut-button primary" />
+            <ctrl:CutButton name="options-button" text="OPTIONS" class="cut-button ghost" />
+            <ctrl:CutButton name="exit-button" text="EXIT" class="cut-button ghost" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

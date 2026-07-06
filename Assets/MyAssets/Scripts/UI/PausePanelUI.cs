@@ -1,32 +1,33 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
+using Assets.MyAssets.Scripts.UI.Controls;
 
 namespace Assets.MyAssets.Scripts.UI
 {
     public class PausePanelUI : BasePanelUI
     {
-        [SerializeField] private TextMeshProUGUI _hpText;
-        [SerializeField] private TextMeshProUGUI _timerText;
-        [SerializeField] private TextMeshProUGUI _keyCountText;
-        [SerializeField] private Button _resumeButton;
-        [SerializeField] private Button _optionsButton;
-        [SerializeField] private Button _replayButton;
-        [SerializeField] private Button _endButton;
         [SerializeField] private OptionsPanelUI _optionsPanel;
+
+        private Label _hpText;
+        private Label _timerText;
+        private Label _keyCountText;
 
         public event System.Action OnResumeClicked;
         public event System.Action OnReplayClicked;
         public event System.Action OnEndClicked;
 
-
-        private void Awake()
+        protected override void Start()
         {
-            _resumeButton.onClick.AddListener(() => OnResumeClicked?.Invoke());
-            _optionsButton.onClick.AddListener(() => _optionsPanel.Show());
-            _replayButton.onClick.AddListener(() => OnReplayClicked?.Invoke());
-            _endButton.onClick.AddListener(() => OnEndClicked?.Invoke());
+            base.Start();
+
+            _hpText = Root.Q<Label>("hp-text");
+            _timerText = Root.Q<Label>("timer-text");
+            _keyCountText = Root.Q<Label>("key-count-text");
+
+            Root.Q<CutButton>("resume-button").clicked += () => OnResumeClicked?.Invoke();
+            Root.Q<CutButton>("options-button").clicked += () => _optionsPanel.Show();
+            Root.Q<CutButton>("replay-button").clicked += () => OnReplayClicked?.Invoke();
+            Root.Q<CutButton>("end-button").clicked += () => OnEndClicked?.Invoke();
         }
 
         /// <summary>

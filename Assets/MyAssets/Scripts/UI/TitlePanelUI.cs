@@ -1,25 +1,23 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Assets.MyAssets.Scripts.UI.Controls;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 
 namespace Assets.MyAssets.Scripts.UI
 {
     public class TitlePanelUI : BasePanelUI
     {
-        [SerializeField] private Button _playButton;
-        [SerializeField] private Button _optionButton;
-        [SerializeField] private Button _exitButton;
         [SerializeField] private OptionsPanelUI _optionsPanel;
 
         public event System.Action OnPlayClicked;
 
-        private void Awake()
+        protected override void Start()
         {
-            _playButton.onClick.AddListener(() => OnPlayClicked?.Invoke());
+            base.Start();
 
-            _optionButton.onClick.AddListener(() => _optionsPanel.Show());
-
-            _exitButton.onClick.AddListener(() => GameManager.Instance.GameExit());
+            Root.Q<CutButton>("start-button").clicked += () => OnPlayClicked?.Invoke();
+            Root.Q<CutButton>("options-button").clicked += () => _optionsPanel.Show();
+            Root.Q<CutButton>("exit-button").clicked += () => GameManager.Instance.GameExit();
         }
 
         /// <summary>

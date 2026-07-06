@@ -12,7 +12,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     {
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private IntroCameraSequencer _introCameraSequencer;
-        [SerializeField] private MazeLayerManager _mazeLayerManager;
+        // [SerializeField] private MazeLayerManager _mazeLayerManager;
 
         private GameObject _playerInstance;
 
@@ -22,9 +22,9 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             bool hasNull = false;
 
-            if (_playerPrefab == null)         { Debug.LogError("PlayerSpawner: _playerPrefab이 null임");         hasNull = true; }
+            if (_playerPrefab == null) { Debug.LogError("PlayerSpawner: _playerPrefab이 null임"); hasNull = true; }
             if (_introCameraSequencer == null) { Debug.LogError("PlayerSpawner: _introCameraSequencer가 null임"); hasNull = true; }
-            if (_mazeLayerManager == null)     { Debug.LogError("PlayerSpawner: _mazeLayerManager가 null임");     hasNull = true; }
+            // if (_mazeLayerManager == null) { Debug.LogError("PlayerSpawner: _mazeLayerManager가 null임"); hasNull = true; }
 
             return hasNull;
         }
@@ -32,7 +32,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         /// <summary>
         /// 플레이어를 스폰하고 인트로 카메라, 레이어 전환 입력을 연결하는 메소드
         /// </summary>
-        public void Spawn(Vector3 spawnPos)
+        public void Spawn(Vector3 spawnPos, MazeLayerManager mazeLayerManager)
         {
             _playerInstance = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
@@ -42,7 +42,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             // 플레이어의 입력(Tab) 시 미로를 전환하는 이벤트를 연결
             if (_playerInstance.TryGetComponent(out PlayerInputHandler playerInput))
             {
-                _mazeLayerManager.RegisterPlayerInput(playerInput);
+                mazeLayerManager.RegisterPlayerInput(playerInput);
             }
         }
 

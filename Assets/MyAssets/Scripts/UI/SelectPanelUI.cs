@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Assets.MyAssets.Scripts.UI.Controls;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 using Assets.MyAssets.Scripts.Utility.Core;
 
@@ -7,18 +8,16 @@ namespace Assets.MyAssets.Scripts.UI
 {
     public class SelectPanelUI : BasePanelUI
     {
-        [SerializeField] private Button _normalButton;
-        [SerializeField] private Button _hardButton;
-        [SerializeField] private Button _backButton;
-
         public event System.Action OnGameModeConfirmed;
         public event System.Action OnBackClicked;
 
-        private void Awake()
+        protected override void Start()
         {
-            _normalButton.onClick.AddListener(() => Confirm(GameMode.Normal));
-            _hardButton.onClick.AddListener(() => Confirm(GameMode.Hard));
-            _backButton.onClick.AddListener(() => OnBackClicked?.Invoke());
+            base.Start();
+
+            Root.Q<CutCard>("normal-card").clicked += () => Confirm(GameMode.Normal);
+            Root.Q<CutCard>("hard-card").clicked += () => Confirm(GameMode.Hard);
+            Root.Q<CutButton>("back-button").clicked += () => OnBackClicked?.Invoke();
         }
 
         private void Confirm(GameMode gameMode)

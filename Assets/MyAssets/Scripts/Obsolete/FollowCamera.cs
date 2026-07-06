@@ -12,12 +12,12 @@ namespace Assets.MyAssets.Scripts.Obsolete
         [SerializeField] private float _smoothTime = 0.3f; // 높을수록 더 느리게 따라감
 
         [Header("Quarter View Settings")]
-        [SerializeField] private float _height       = 20f;  // 높이 (Y)
+        [SerializeField] private float _height = 20f;  // 높이 (Y)
         [SerializeField] private float _distanceBack = 18f;  // 뒤로 빠지는 거리 (Z)
-        [SerializeField] private float _pitchAngle   = 45f;  // X축 회전 각도
+        [SerializeField] private float _pitchAngle = 45f;  // X축 회전 각도
 
-        private Vector3   _velocity = Vector3.zero;
-        private Vector3   _cameraOffset;
+        private Vector3 _velocity = Vector3.zero;
+        private Vector3 _cameraOffset;
         private Transform _target;
 
         public Transform Target

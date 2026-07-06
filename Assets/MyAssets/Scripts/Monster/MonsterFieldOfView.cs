@@ -16,19 +16,19 @@ namespace Assets.MyAssets.Scripts.Monster
         [SerializeField] private float _updateInterval = 0.05f;
 
         [Header("Rendering")]
-        [SerializeField] private float    _meshHeight = 0.1f;
+        [SerializeField] private float _meshHeight = 0.1f;
         [SerializeField] private Material _fovMaterial;
 
         private float _updateTimer;
 
         private float _detectionRange = 0f;
-        private float _fieldOfView    = 0f;
+        private float _fieldOfView = 0f;
 
-        private Mesh       _mesh;
+        private Mesh _mesh;
         private MeshFilter _meshFilter;
 
         private Vector3[] _vertices;
-        private int[]     _triangles;
+        private int[] _triangles;
 
         private void Awake() => Initialize();
 
@@ -43,7 +43,7 @@ namespace Assets.MyAssets.Scripts.Monster
             _mesh.MarkDynamic(); // GC 생성을 방지하기 위해 동적 Mesh임을 미리 선언
             _meshFilter.mesh = _mesh;
 
-            _vertices  = new Vector3[_rayCount + 2];
+            _vertices = new Vector3[_rayCount + 2];
             _triangles = new int[_rayCount * 3];
             for (int i = 0; i < _rayCount; i++)
             {
@@ -77,8 +77,8 @@ namespace Assets.MyAssets.Scripts.Monster
             if (_updateTimer > 0f) return;
             _updateTimer = _updateInterval;
 
-            float angleStep   = _fieldOfView / _rayCount;
-            float startAngle  = -_fieldOfView * 0.5f;
+            float angleStep = _fieldOfView / _rayCount;
+            float startAngle = -_fieldOfView * 0.5f;
             float originAngle = monsterTransform.eulerAngles.y;
 
             Vector3 originPos = monsterTransform.position;
@@ -86,12 +86,13 @@ namespace Assets.MyAssets.Scripts.Monster
 
             _vertices[0] = Vector3.zero;
 
-            if(MazeLayerManager.Instance == null)
+            if (MazeLayerManager.Instance == null)
             {
                 Debug.LogError("MazeLayerManager Instance is null");
+                return;
             }
 
-            int wallLayerMask = MazeLayerManager.Instance != null ? MazeLayerManager.Instance.CurrentWallLayerMask : 0;
+            int wallLayerMask = MazeLayerManager.Instance.CurrentWallLayerMask;
 
             for (int i = 0; i <= _rayCount; i++)
             {
@@ -113,7 +114,7 @@ namespace Assets.MyAssets.Scripts.Monster
                 endPoint.y = _meshHeight;
 
                 // monsterTransform 기준으로 로컬 변환(이 스크립트가 붙어있는 FieldOfView가 몬스터 프리팹의 자식으로 붙어있기 때문)
-                _vertices[i + 1]   = monsterTransform.InverseTransformPoint(endPoint);
+                _vertices[i + 1] = monsterTransform.InverseTransformPoint(endPoint);
                 _vertices[i + 1].y = 0f;
             }
 

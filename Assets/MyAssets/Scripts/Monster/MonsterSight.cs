@@ -7,7 +7,7 @@ namespace Assets.MyAssets.Scripts.Monster
     {
         [Header("Setting")]
         [SerializeField] private float _detectionRange = 15f;   // 감지 반경
-        [SerializeField] private float _fieldOfView    = 90f;   // 전체 시야각
+        [SerializeField] private float _fieldOfView = 90f;   // 전체 시야각
 
         [Header("Sense Check")]
         [SerializeField] private bool _isSense = false; // 감지 여부, 현재 몬스터가 플레이어를 감지했는지 에디터에서 확인용
@@ -17,7 +17,7 @@ namespace Assets.MyAssets.Scripts.Monster
         public float FieldOfView => _fieldOfView;
 
         // FOV 절반 각도의 cos값을 미리 계산해둠 - 매 프레임 Acos로 각도를 구하는 대신
-        // dot(cosθ)을 이 값과 직접 비교(dot <= cos(FOV/2) <=> angle >= FOV/2)해서 삼각함수 호출을 없앰
+        // dot(cosθ)을 이 값과 직접 비교해서 삼각함수 호출을 없앰
         private float _cosHalfFieldOfView;
 
         private void Awake()

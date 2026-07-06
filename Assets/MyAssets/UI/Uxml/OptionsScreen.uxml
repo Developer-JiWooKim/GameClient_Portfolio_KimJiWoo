@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ctrl="Assets.MyAssets.Scripts.UI.Controls" editor-extension-mode="False">
+    <ui:VisualElement name="options-screen" class="overlay-root">
+        <ui:VisualElement style="background-color: #1A0D28; border-width: 3px; border-color: #3D2860; padding: 84px 126px; align-items: center; min-width: 720px;">
+            <ui:Label text="OPTIONS" class="title-text" style="font-size: 60px; margin-bottom: 42px;" />
+
+            <ui:Label text="SFX" class="hud-label-text" style="align-self: flex-start;" />
+            <ui:Slider name="sfx-volume-slider" low-value="0" high-value="1" style="width: 570px;" />
+            <ui:Toggle name="sfx-mute-toggle" label="Mute" style="margin-bottom: 42px;" />
+
+            <ui:Label text="BGM" class="hud-label-text" style="align-self: flex-start;" />
+            <ui:Slider name="bgm-volume-slider" low-value="0" high-value="1" style="width: 570px;" />
+            <ui:Toggle name="bgm-mute-toggle" label="Mute" style="margin-bottom: 42px;" />
+
+            <ctrl:CutButton name="close-button" text="CLOSE" class="cut-button ghost" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

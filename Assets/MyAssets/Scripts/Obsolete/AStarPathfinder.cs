@@ -13,13 +13,13 @@ namespace Assets.MyAssets.Scripts.Obsolete
     {
         [SerializeField] private MazeGenerator _mazeGenerator;
 
-        private readonly List<Vector2Int>                   _openSet        = new List<Vector2Int>();
-        private readonly HashSet<Vector2Int>                _closedSet      = new HashSet<Vector2Int>();
-        private readonly Dictionary<Vector2Int, Vector2Int> _cameFrom       = new Dictionary<Vector2Int, Vector2Int>();
-        private readonly Dictionary<Vector2Int, int>        _gCost          = new Dictionary<Vector2Int, int>();
-        private readonly List<Vector2Int>                   _cachedPath     = new List<Vector2Int>();
-        private readonly List<Vector2Int>                   _neighborResult = new List<Vector2Int>(4);
-        private readonly List<Vector3>                      _worldPath      = new List<Vector3>();
+        private readonly List<Vector2Int> _openSet = new List<Vector2Int>();
+        private readonly HashSet<Vector2Int> _closedSet = new HashSet<Vector2Int>();
+        private readonly Dictionary<Vector2Int, Vector2Int> _cameFrom = new Dictionary<Vector2Int, Vector2Int>();
+        private readonly Dictionary<Vector2Int, int> _gCost = new Dictionary<Vector2Int, int>();
+        private readonly List<Vector2Int> _cachedPath = new List<Vector2Int>();
+        private readonly List<Vector2Int> _neighborResult = new List<Vector2Int>(4);
+        private readonly List<Vector3> _worldPath = new List<Vector3>();
 
         private int _cost = 10; // 한 셀 이동 비용
 
@@ -53,7 +53,7 @@ namespace Assets.MyAssets.Scripts.Obsolete
         {
             // 시작 지점과 목표지점의 셀을 구함
             Vector2Int start = _mazeGenerator.WorldToCell(startWorld);
-            Vector2Int goal  = _mazeGenerator.WorldToCell(goalWorld);
+            Vector2Int goal = _mazeGenerator.WorldToCell(goalWorld);
 
             // 시작 지점과 목표 지점이 같으면 null
             if (start == goal) return null;
@@ -73,7 +73,7 @@ namespace Assets.MyAssets.Scripts.Obsolete
                 Vector2Int current = GetLowestF(_openSet, _gCost, goal);
 
                 // 현재 위치가 목표지점과 같으면 cameFrom으로 최종 경로를 만들고 탐색 종료
-                if(current == goal)
+                if (current == goal)
                 {
                     return BuildPath(_cameFrom, current);
                 }
@@ -94,7 +94,7 @@ namespace Assets.MyAssets.Scripts.Obsolete
                         _cameFrom[neighbor] = current;
                         _gCost[neighbor] = newGCost;
 
-                        if(!_openSet.Contains(neighbor))
+                        if (!_openSet.Contains(neighbor))
                         {
                             _openSet.Add(neighbor);
                         }
@@ -124,7 +124,7 @@ namespace Assets.MyAssets.Scripts.Obsolete
             _cachedPath.Reverse();
 
             // 첫 번째 노드 제거, 몬스터가 이동 중 자신의 셀 중앙으로 가기 위해 뒤로 이동하는 현상 방어
-            if(_cachedPath.Count > 1)
+            if (_cachedPath.Count > 1)
             {
                 _cachedPath.RemoveAt(0);
             }
@@ -154,10 +154,10 @@ namespace Assets.MyAssets.Scripts.Obsolete
             // 4방향(한 셀에 존재하는 4방향의 벽 기반)으로 이동 가능한 셀 구함
             // true면 벽 있음 - 이동 불가
             // false면 벽 없음 - 이동 가능
-            if (!cell.northWall) _neighborResult.Add(new Vector2Int(node.x,     node.y + 1));
-            if (!cell.southWall) _neighborResult.Add(new Vector2Int(node.x,     node.y - 1));
-            if (!cell.eastWall)  _neighborResult.Add(new Vector2Int(node.x + 1, node.y));
-            if (!cell.westWall)  _neighborResult.Add(new Vector2Int(node.x - 1, node.y));
+            if (!cell.northWall) _neighborResult.Add(new Vector2Int(node.x, node.y + 1));
+            if (!cell.southWall) _neighborResult.Add(new Vector2Int(node.x, node.y - 1));
+            if (!cell.eastWall) _neighborResult.Add(new Vector2Int(node.x + 1, node.y));
+            if (!cell.westWall) _neighborResult.Add(new Vector2Int(node.x - 1, node.y));
 
             return _neighborResult;
         }
@@ -171,10 +171,10 @@ namespace Assets.MyAssets.Scripts.Obsolete
 
             int bestF = GetF(best, gCost, goal);
 
-            for(int i = 1; i < openSet.Count; i++)
+            for (int i = 1; i < openSet.Count; i++)
             {
                 int f = GetF(openSet[i], gCost, goal);
-                if(f < bestF)
+                if (f < bestF)
                 {
                     best = openSet[i];
                     bestF = f;
