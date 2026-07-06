@@ -30,6 +30,10 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
                 // 시작은 항상 Physical이므로 그 기준으로 한 번 맞춰둠
                 ApplyLayer(MazeLayerManager.Instance.CurrentLayer);
             }
+            else
+            {
+                Debug.LogError("LayerLightingController - Start(): MazeLayerManager.Instance is Null!!");
+            }
         }
 
         private void OnDisable()
@@ -38,13 +42,17 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
             {
                 MazeLayerManager.Instance.OnLayerChanged -= ApplyLayer;
             }
+            else
+            {
+                Debug.LogError("LayerLightingController - OnDisable(): MazeLayerManager.Instance is Null!!");
+            }
         }
 
         private void ApplyLayer(MazeLayerManager.LayerType layer)
         {
             bool isPhysical = layer == MazeLayerManager.LayerType.Physical;
 
-            if(_directionalLight != null)
+            if (_directionalLight != null)
             {
                 _directionalLight.color = isPhysical ? _physicalLightColor : _arcaneLightColor;
                 _directionalLight.intensity = isPhysical ? _physicalLightIntensity : _arcaneLightIntensity;

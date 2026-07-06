@@ -59,7 +59,10 @@ namespace Assets.MyAssets.Scripts.Monster
             _monsterAnim = GetComponent<MonsterAnim>();
 
             _monsterAttackTrigger = GetComponentInChildren<MonsterAttackTrigger>();
+            if (_monsterAttackTrigger == null) Debug.LogError($"{gameObject.name}: 자식 오브젝트에서 MonsterAttackTrigger를 찾을 수 없습니다!");
+
             _monsterFOV = GetComponentInChildren<MonsterFieldOfView>();
+            if (_monsterFOV == null) Debug.LogError($"{gameObject.name}: 자식 오브젝트에서 MonsterFieldOfView를 찾을 수 없습니다!");
 
             _monsterFSM.OnStateChanged += OnStateChanged;
         }

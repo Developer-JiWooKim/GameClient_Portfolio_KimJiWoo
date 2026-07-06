@@ -1,7 +1,7 @@
 namespace Assets.MyAssets.Scripts.Monster.States
 {
     /// <summary>
-    /// 몬스터 AI 상태의 행동과 전환 조건을 정의하는 인터페이스
+    /// 몬스터 AI 상태의 행동과 전환 조건을 정의하는 interface
     /// </summary>
     public interface IMonsterState
     {

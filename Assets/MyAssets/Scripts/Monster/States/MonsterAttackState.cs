@@ -1,7 +1,7 @@
 namespace Assets.MyAssets.Scripts.Monster.States
 {
     /// <summary>
-    /// 공격 상태 - 타겟을 바라보며 공격, 공격 범위를 벗어나면 Chase로 복귀
+    /// Attack 상태 - 타겟을 바라보며 공격, 공격 범위를 벗어나면 Chase로 복귀
     /// </summary>
     public class MonsterAttackState : IMonsterState
     {

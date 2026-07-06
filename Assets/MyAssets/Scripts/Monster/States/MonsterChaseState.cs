@@ -1,7 +1,7 @@
 namespace Assets.MyAssets.Scripts.Monster.States
 {
     /// <summary>
-    /// 추격 상태 - 타겟을 향해 이동, 감지 범위를 벗어나면 Idle로, 공격 범위에 들어오면 Attack으로 전환
+    /// Chase 상태 - 타겟을 향해 이동, 감지 범위를 벗어나면 Idle로, 공격 범위에 들어오면 Attack으로 전환
     /// </summary>
     public class MonsterChaseState : IMonsterState
     {
