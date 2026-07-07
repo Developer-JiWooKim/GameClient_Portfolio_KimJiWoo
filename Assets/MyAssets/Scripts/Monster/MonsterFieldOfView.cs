@@ -1,5 +1,5 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Monster
 {

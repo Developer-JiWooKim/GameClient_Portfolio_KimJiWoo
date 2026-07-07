@@ -1,44 +1,45 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
+using Assets.MyAssets.Scripts.Utility.Core;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 using Assets.MyAssets.Scripts.Utility.Spawners;
-using Assets.MyAssets.Scripts.Utility.Core;
+using Unity.Cinemachine;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.UI
 {
     public class GameUIController : MonoBehaviour
     {
         [Header("Panels")]
-        [SerializeField] private TitlePanelUI   _titlePanel;
-        [SerializeField] private SelectPanelUI  _selectPanel;
-        [SerializeField] private InGamePanelUI  _inGamePanel;
-        [SerializeField] private PausePanelUI   _pausePanel;
+        [SerializeField] private TitlePanelUI _titlePanel;
+        [SerializeField] private SelectPanelUI _selectPanel;
+        [SerializeField] private InGamePanelUI _inGamePanel;
+        [SerializeField] private PausePanelUI _pausePanel;
         [SerializeField] private OptionsPanelUI _optionsPanel;
-        [SerializeField] private ResultPanelUI  _resultPanel;
-        [SerializeField] private DamageflashUI  _damageflashUI;
+        [SerializeField] private ResultPanelUI _resultPanel;
+        [SerializeField] private DamageflashUI _damageflashUI;
+
+        [Header("Layer Switch Blocked FX")]
+        [SerializeField] private DamageflashUI _layerSwitchBlockedFlashUI;
+        [SerializeField] private CinemachineImpulseSource _layerSwitchBlockedImpulseSource;
+
+        [Header("Setting Monster Count")]
+        [SerializeField] private int _monsterCount = 10;
 
         [Header("참조")]
         [SerializeField] private MazeLayerManager _mazeLayerManager;
-        [SerializeField] private UnitsSpawner     _unitsSpawner;
-
-        // #TODO: 이 부분 MazeGenerator에서 SerializeField로 옮기고 항상 이렇게 생성할듯? 아니면 하드 모드일때는 몬스터 수 늘리기?
-        [Header("Fixed Size")]
-        [Tooltip("고정 미로 크기/몬스터 수")]
-        [SerializeField] private int  _fixedCols = 20;
-        [SerializeField] private int  _fixedRows = 20;
-        [SerializeField] private int  _fixedMonsterCnt = 10;
+        [SerializeField] private UnitsSpawner _unitsSpawner;
 
         private PlayerController _player;
         public PlayerController Player => _player;
 
         private GameFlowFSM _flowFsm;
 
-        public TitlePanelUI   TitlePanel   => _titlePanel;
-        public SelectPanelUI  SelectPanel  => _selectPanel;
-        public InGamePanelUI  InGamePanel  => _inGamePanel;
-        public PausePanelUI   PausePanel   => _pausePanel;
+        public TitlePanelUI TitlePanel => _titlePanel;
+        public SelectPanelUI SelectPanel => _selectPanel;
+        public InGamePanelUI InGamePanel => _inGamePanel;
+        public PausePanelUI PausePanel => _pausePanel;
         public OptionsPanelUI OptionsPanel => _optionsPanel;
-        public ResultPanelUI  ResultPanel  => _resultPanel;
+        public ResultPanelUI ResultPanel => _resultPanel;
 
         public string PendingResultMessage { get; private set; }
 
@@ -49,19 +50,21 @@ namespace Assets.MyAssets.Scripts.UI
 
         private void Start()
         {
-            _titlePanel.OnPlayClicked        += () => _flowFsm.ChangeState(_flowFsm.SelectState);
+            _titlePanel.OnPlayClicked += () => _flowFsm.ChangeState(_flowFsm.SelectState);
 
-            _selectPanel.OnBackClicked       += () => _flowFsm.ChangeState(_flowFsm.TitleState);
+            _selectPanel.OnBackClicked += () => _flowFsm.ChangeState(_flowFsm.TitleState);
             _selectPanel.OnGameModeConfirmed += StartNewGame;
 
-            _inGamePanel.OnPauseClicked      += HandlePauseToggle;
+            _inGamePanel.OnPauseClicked += HandlePauseToggle;
 
-            _pausePanel.OnResumeClicked      += () => _flowFsm.ChangeState(_flowFsm.PlayingState);
-            _pausePanel.OnReplayClicked      += StartNewGame;
-            _pausePanel.OnEndClicked         += () => GameManager.Instance.GameRule.GameOver();
+            _pausePanel.OnResumeClicked += () => _flowFsm.ChangeState(_flowFsm.PlayingState);
+            _pausePanel.OnReplayClicked += StartNewGame;
+            _pausePanel.OnEndClicked += () => GameManager.Instance.GameRule.GameOver();
 
-            _resultPanel.OnReplayClicked     += StartNewGame;
-            _resultPanel.OnSelectClicked     += () => _flowFsm.ChangeState(_flowFsm.SelectState);
+            _resultPanel.OnReplayClicked += StartNewGame;
+            _resultPanel.OnSelectClicked += () => _flowFsm.ChangeState(_flowFsm.SelectState);
+
+            _mazeLayerManager.OnLayerSwitchBlocked += HandleLayerSwitchBlocked;
 
             _selectPanel.Hide();
             _inGamePanel.Hide();
@@ -99,19 +102,29 @@ namespace Assets.MyAssets.Scripts.UI
         }
 
         /// <summary>
+        /// 레이어 전환이 벽에 막혔을 때 살짝 카메라 흔들림 + 보라색 화면 플래시로 피드백
+        /// </summary>
+        private void HandleLayerSwitchBlocked()
+        {
+            _layerSwitchBlockedImpulseSource?.GenerateImpulse();
+            _layerSwitchBlockedFlashUI?.Flash();
+            _inGamePanel.ShowLayerBlockedWarning();
+        }
+
+        /// <summary>
         /// 난이도 선택 확정, Pause의 Replay, Result의 Replay - 새 판을 시작하는 모든 진입점이 공통으로 호출
         /// </summary>
         private void StartNewGame()
         {
-            StartGame(_fixedCols, _fixedRows, _fixedMonsterCnt);
+            StartGame(_monsterCount);
             _flowFsm.ChangeState(_flowFsm.PlayingState);
         }
 
-        private void StartGame(int cols, int rows, int monsterCount)
+        private void StartGame(int monsterCount)
         {
             GameManager.Instance.GameStart();
 
-            _mazeLayerManager.SetLayersAndMazeGenerate(cols, rows);
+            _mazeLayerManager.SetLayersAndMazeGenerate();
 
             _unitsSpawner.SetMonsterCount(monsterCount);
             _unitsSpawner.SpawnAll();
@@ -142,8 +155,8 @@ namespace Assets.MyAssets.Scripts.UI
                 _inGamePanel.UpdateSanity(playerSanity.CurrentSanity, playerSanity.MaxSanity);
             }
 
-            gameRule.OnClear        += () => ShowResult("CLEAR!!");
-            gameRule.OnGameOver     += () => ShowResult("GAME OVER..");
+            gameRule.OnClear += () => ShowResult("CLEAR!!");
+            gameRule.OnGameOver += () => ShowResult("GAME OVER..");
             gameRule.OnKeyCollected += _inGamePanel.UpdateKeyCount;
 
             _inGamePanel.UpdateHp(_player.CurrentHp, _player.MaxHp);

@@ -1,7 +1,7 @@
-using UnityEngine;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
 using FischlWorks_FogWar;
 using Unity.Cinemachine;
-using Assets.MyAssets.Scripts.Utility.SingleTon;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Player
 {
@@ -13,21 +13,21 @@ namespace Assets.MyAssets.Scripts.Player
     public class PlayerController : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private float _moveSpeed          = 10f;
-        [SerializeField] private int   _maxHp              = 3;
-        [SerializeField] private float _sightRange         = 10f;
+        [SerializeField] private float _moveSpeed = 10f;
+        [SerializeField] private int _maxHp = 3;
+        [SerializeField] private float _sightRange = 10f;
         [SerializeField] private float _invincibleDuration = 1.5f;
 
-        private PlayerInputHandler   _playerInputHandler;
-        private PlayerMove           _playerMove;
-        private PlayerAnim           _playerAnim;
+        private PlayerInputHandler _playerInputHandler;
+        private PlayerMove _playerMove;
+        private PlayerAnim _playerAnim;
         private PlayerFaceController _faceController;
 
         private CinemachineImpulseSource _impulseSource;
 
-        private csFogWar             _fogWarSystem;
+        private csFogWar _fogWarSystem;
         private csFogWar.FogRevealer _myRevealer;
-        private int                  _fogRevealerIndex = -1;
+        private int _fogRevealerIndex = -1;
 
         private int _currentHp;
 
@@ -39,17 +39,17 @@ namespace Assets.MyAssets.Scripts.Player
         public int MaxHp => _maxHp;
 
         public event System.Action<int, int> OnHPChanged;  // 체력이 변경됐을 때 (현재, 최대) 이벤트
-        public event System.Action           OnDead;       // 플레이어 체력이 0이 되어 죽었을 때 이벤트
+        public event System.Action OnDead;                 // 플레이어 체력이 0이 되어 죽었을 때 이벤트
 
         private void Awake() => Initialize();
         private void Initialize()
         {
-            _faceController     = GetComponent<PlayerFaceController>();
+            _faceController = GetComponent<PlayerFaceController>();
             _playerInputHandler = GetComponent<PlayerInputHandler>();
-            _playerMove         = GetComponent<PlayerMove>();
-            _playerAnim         = GetComponent<PlayerAnim>();
+            _playerMove = GetComponent<PlayerMove>();
+            _playerAnim = GetComponent<PlayerAnim>();
 
-            _impulseSource      = GetComponent<CinemachineImpulseSource>();
+            _impulseSource = GetComponent<CinemachineImpulseSource>();
 
             _currentHp = _maxHp;
         }
@@ -74,7 +74,7 @@ namespace Assets.MyAssets.Scripts.Player
         }
 
         /// <summary>
-        /// 파괴되기 전 안개 시스템에서 자신의 리빌러를 제거하는 메소드.
+        /// 파괴되기 전 안개 시스템에서 자신의 리빌러를 제거하는 메소드
         /// 재시작(Replay) 시 이전 플레이어의 리빌러가 안개 시스템에 계속 쌓이는 것을 방지
         /// </summary>
         public void UnregisterFromFogSystem()
@@ -87,7 +87,7 @@ namespace Assets.MyAssets.Scripts.Player
 
         private void Update()
         {
-            if(_invincibleTimer > 0)
+            if (_invincibleTimer > 0)
             {
                 _invincibleTimer -= Time.deltaTime;
             }
@@ -99,7 +99,7 @@ namespace Assets.MyAssets.Scripts.Player
 
             _playerAnim.SetMoving(hasInput);
 
-            if(hasInput)
+            if (hasInput)
             {
                 _playerMove.Move(dir, _moveSpeed);
             }
@@ -110,7 +110,7 @@ namespace Assets.MyAssets.Scripts.Player
         /// </summary>
         public bool TakeDamage()
         {
-            if(_currentHp <= 0) return false;
+            if (_currentHp <= 0) return false;
             if (_invincibleTimer > 0f) return false;
 
             _currentHp--;

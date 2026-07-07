@@ -14,10 +14,6 @@ namespace Assets.MyAssets.Scripts.UI.States
             controller.InGamePanel.Show();
         }
 
-        public void Exit(GameUIController controller)
-        {
-            // InGamePanel은 Paused 중에도 뒤에 계속 보여야 하므로 여기서 숨기지 않음.
-            // 진짜로 숨겨야 하는 시점(Result/Title 진입)은 각 상태의 Enter가 책임짐.
-        }
+        public void Exit(GameUIController controller) { }
     }
 }

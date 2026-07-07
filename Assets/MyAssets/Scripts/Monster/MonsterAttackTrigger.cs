@@ -1,5 +1,5 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Monster
 {
@@ -8,8 +8,8 @@ namespace Assets.MyAssets.Scripts.Monster
     /// </summary>
     public class MonsterAttackTrigger : MonoBehaviour
     {
-        public bool PlayerInAttackRange { get; private set; } = false;
         public PlayerController Player { get; private set; }
+        public bool PlayerInAttackRange { get; private set; } = false;
 
         private void OnTriggerEnter(Collider other)
         {

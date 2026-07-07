@@ -16,9 +16,12 @@ namespace Assets.MyAssets.Scripts.Monster
         private bool _lastAttacking;
         private bool _hasSetStateOnce;
 
+        private bool _isSetAnimator = false; // 애니메이터 컴포넌트 Null 체크용 bool
+
         private void Awake()
         {
             _animator = GetComponentInChildren<Animator>();
+            _isSetAnimator = _animator;
         }
 
         public void PlayWalk() => SetState(moving: true, running: false, attacking: false);
@@ -28,9 +31,7 @@ namespace Assets.MyAssets.Scripts.Monster
 
         private void SetState(bool moving, bool running, bool attacking)
         {
-            // TODO#: 이 부분 질문, 유니티에서 null 체크는 가짜 널(Fake Null)을 검사하기에 연산을 많이 잡아먹는데, 
-            // 이를 Tick안에서 매번 검사하면 꽤 무거울거로 예상됨 -> Awake에서 한번만 검사하고 bool에 저장 후 매 프레임에서 불값만 비교하는게 안전한가?
-            if (_animator == null)
+            if (!_isSetAnimator)
             {
                 Debug.LogError("Animator is null");
                 return;
@@ -50,6 +51,12 @@ namespace Assets.MyAssets.Scripts.Monster
             _lastRunning = running;
             _lastAttacking = attacking;
             _hasSetStateOnce = true;
+        }
+
+        void OnValidate()
+        {
+            _animator = GetComponentInChildren<Animator>();
+            _isSetAnimator = _animator;
         }
     }
 }

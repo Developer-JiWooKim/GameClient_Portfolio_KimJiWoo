@@ -7,14 +7,14 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
     public class MazeGenerator : MonoBehaviour
     {
         [Header("Gird")]
-        [SerializeField] private int    _cols = 20; // 가로
-        [SerializeField] private int    _rows = 20; // 세로
-        [SerializeField] private float  _cellSize = 5f;
+        [SerializeField] private int _cols = 20; // 가로
+        [SerializeField] private int _rows = 20; // 세로
+        [SerializeField] private float _cellSize = 5f;
 
         [Header("Walls")]
         [SerializeField] private GameObject _wallPrefab;
-        [SerializeField] private float      _wallThickness = 0.3f;
-        [SerializeField] private float      _wallHeight    = 3f;
+        [SerializeField] private float _wallThickness = 0.3f;
+        [SerializeField] private float _wallHeight = 3f;
 
         [Header("Random Seed")]
         [SerializeField] private int _seed = -1;
@@ -28,8 +28,8 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         private struct WallEntry
         {
             public GameObject gameObject;
-            public Renderer   renderer;
-            public Collider   collider;
+            public Renderer renderer;
+            public Collider collider;
         }
 
         private Vector2 worldStart;
@@ -38,16 +38,16 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         private List<Cell> _allCells = new List<Cell>();
 
         private readonly List<WallEntry> _wallEntries = new List<WallEntry>();
-        private ObjectPool<GameObject>   _wallPool; // 재사용 대기 중인(비활성화된) 벽 오브젝트 풀
+        private ObjectPool<GameObject> _wallPool; // 재사용 대기 중인(비활성화된) 벽 오브젝트 풀
 
-        private Transform _wallParent; // 벽 오브젝트들의 공통 부모, Generate()마다 새로 만들지 않고 재사용
+        private Transform _wallParent; // 벽 오브젝트들의 공통 부모 Transform
 
-        private readonly List<Cell>  _neighborCache = new List<Cell>(4);
-        private readonly Stack<Cell> _dfsStack      = new Stack<Cell>();
+        private readonly List<Cell> _neighborCache = new List<Cell>(4);
+        private readonly Stack<Cell> _dfsStack = new Stack<Cell>();
 
         public IReadOnlyList<Cell> AllCells => _allCells;
-        public int Cols  => _cols;
-        public int Rows  => _rows;
+        public int Cols => _cols;
+        public int Rows => _rows;
         public float CellSize => _cellSize;
 
         private void Awake()
@@ -77,17 +77,6 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         }
 
         /// <summary>
-        /// 미로 사이즈 설정 메소드
-        /// </summary>
-        public void SetSize(int cols, int rows)
-        {
-            _cols = cols;
-            _rows = rows;
-
-            worldStart = new Vector2(-cols * _cellSize * 0.5f, -rows * _cellSize * 0.5f);
-        }
-
-        /// <summary>
         /// 시드값을 직접 지정해 미로를 생성하는 메소드
         /// </summary>
         public void SetSeed(int seed)
@@ -107,11 +96,11 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         }
 
         /// <summary>
-        /// 생성된 벽들을 파괴하지 않고 풀에 반납하는 메소드
+        /// 생성된 모든 벽을 풀에 반납하는 메소드
         /// </summary>
         public void ClearWalls()
         {
-            foreach (var entry in _wallEntries)
+            foreach (WallEntry entry in _wallEntries)
             {
                 if (entry.gameObject != null)
                 {
@@ -198,9 +187,9 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
             int r = cell.row;
 
             if (r + 1 < _rows && !_grid[c, r + 1].visited) _neighborCache.Add(_grid[c, r + 1]); // north
-            if (r - 1 >= 0    && !_grid[c, r - 1].visited) _neighborCache.Add(_grid[c, r - 1]); // south
+            if (r - 1 >= 0 && !_grid[c, r - 1].visited) _neighborCache.Add(_grid[c, r - 1]);    // south
             if (c + 1 < _cols && !_grid[c + 1, r].visited) _neighborCache.Add(_grid[c + 1, r]); // east
-            if (c - 1 >= 0    && !_grid[c - 1, r].visited) _neighborCache.Add(_grid[c - 1, r]); // west
+            if (c - 1 >= 0 && !_grid[c - 1, r].visited) _neighborCache.Add(_grid[c - 1, r]);    // west
 
             return _neighborCache;
         }
@@ -215,10 +204,10 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
             int dr = b.row - a.row;
 
             // 두 셀은 벽을 공유하므로 양쪽 셀 모두 해당 방향 벽을 제거
-            if      (dr == 1)   { a.northWall = false; b.southWall = false; }
-            else if (dr == -1)  { a.southWall = false; b.northWall = false; }
-            else if (dc == 1)   { a.eastWall  = false; b.westWall  = false; }
-            else if (dc == -1)  { a.westWall  = false; b.eastWall  = false; }
+            if (dr == 1) { a.northWall = false; b.southWall = false; }
+            else if (dr == -1) { a.southWall = false; b.northWall = false; }
+            else if (dc == 1) { a.eastWall = false; b.westWall = false; }
+            else if (dc == -1) { a.westWall = false; b.eastWall = false; }
         }
 
         /// <summary>
@@ -274,7 +263,7 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
 
             wall.transform.SetPositionAndRotation(position, Quaternion.identity);
             wall.transform.localScale = isVertical ?
-                    new Vector3(_wallThickness, _wallHeight, _cellSize) : 
+                    new Vector3(_wallThickness, _wallHeight, _cellSize) :
                     new Vector3(_cellSize, _wallHeight, _wallThickness);
 
             if (wallLayer != -1)
@@ -289,7 +278,7 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
                 collider = wall.GetComponent<Collider>()
             };
 
-            // 풀에서 재사용된 벽은 이전 레이어에서 비활성(트리거) 상태였던 이력이 남아있을 수 있음.
+            // 풀에서 재사용된 벽은 이전 레이어에서 비활성(트리거) 상태였던 이력이 남아있을 수 있음
             // NavMesh Bake는 트리거 콜라이더를 장애물로 잡지 않으므로, Bake 전에 반드시 솔리드 상태로 리셋해둬야
             // 나중에 SetActiveLayer()가 다시 트리거로 내려도 이미 구워진 NavMesh에 구멍이 남지 않음
             if (entry.renderer != null) entry.renderer.enabled = true;
@@ -365,12 +354,12 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
             {
                 WallEntry entry = _wallEntries[i];
 
-                if(entry.renderer != null)
+                if (entry.renderer != null)
                 {
                     entry.renderer.enabled = isActiveLayer;
                 }
 
-                if(entry.collider != null)
+                if (entry.collider != null)
                 {
                     entry.collider.isTrigger = !isActiveLayer;
                 }
@@ -380,26 +369,26 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         /// <summary>
         /// 에디터에서 그리드 확인용
         /// </summary>
-        private void OnDrawGizmos()
-        {
-            // 월드 범위 테두리
-            Gizmos.color = Color.green;
-            float totalW = _cols * _cellSize;
-            float totalH = _rows * _cellSize;
-            Vector3 center = new Vector3(worldStart.x + totalW * 0.5f, 0, worldStart.y + totalH * 0.5f);
-            Gizmos.DrawWireCube(center, new Vector3(totalW, 0.1f, totalH));
+        // private void OnDrawGizmos()
+        // {
+        //     // 월드 범위 테두리
+        //     Gizmos.color = Color.green;
+        //     float totalW = _cols * _cellSize;
+        //     float totalH = _rows * _cellSize;
+        //     Vector3 center = new Vector3(worldStart.x + totalW * 0.5f, 0, worldStart.y + totalH * 0.5f);
+        //     Gizmos.DrawWireCube(center, new Vector3(totalW, 0.1f, totalH));
 
-            // 셀 그리드
-            Gizmos.color = new Color(1, 1, 0, 0.2f);
-            for (int r = 0; r < _rows; r++)
-            {
-                for (int c = 0; c < _cols; c++)
-                {
-                    float cx = worldStart.x + c * _cellSize + _cellSize * 0.5f;
-                    float cz = worldStart.y + r * _cellSize + _cellSize * 0.5f;
-                    Gizmos.DrawWireCube(new Vector3(cx, 0, cz), new Vector3(_cellSize - 0.1f, 0.1f, _cellSize - 0.1f));
-                }
-            }
-        }
+        //     // 셀 그리드
+        //     Gizmos.color = new Color(1, 1, 0, 0.2f);
+        //     for (int r = 0; r < _rows; r++)
+        //     {
+        //         for (int c = 0; c < _cols; c++)
+        //         {
+        //             float cx = worldStart.x + c * _cellSize + _cellSize * 0.5f;
+        //             float cz = worldStart.y + r * _cellSize + _cellSize * 0.5f;
+        //             Gizmos.DrawWireCube(new Vector3(cx, 0, cz), new Vector3(_cellSize - 0.1f, 0.1f, _cellSize - 0.1f));
+        //         }
+        //     }
+        // }
     }
 }

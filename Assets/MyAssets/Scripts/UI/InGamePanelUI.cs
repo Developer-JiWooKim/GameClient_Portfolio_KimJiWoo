@@ -12,6 +12,9 @@ namespace Assets.MyAssets.Scripts.UI
         private IVisualElementScheduledItem _sanityPulseSchedule;
         private bool _sanityPulseOn;
 
+        private Label _layerBlockedWarningText;
+        private IVisualElementScheduledItem _layerBlockedWarningHideSchedule;
+
         public event System.Action OnPauseClicked;
 
         protected override void Start()
@@ -22,6 +25,7 @@ namespace Assets.MyAssets.Scripts.UI
             _timerText = Root.Q<Label>("timer-text");
             _keyCountText = Root.Q<Label>("key-count-text");
             _sanityFill = Root.Q<VisualElement>("sanity-fill");
+            _layerBlockedWarningText = Root.Q<Label>("layer-blocked-warning-text");
 
             Root.Q<CutButton>("pause-button").clicked += () => OnPauseClicked?.Invoke();
         }
@@ -39,6 +43,21 @@ namespace Assets.MyAssets.Scripts.UI
         public void UpdateTimer(string formattedTime)
         {
             _timerText.text = formattedTime;
+        }
+
+        /// <summary>
+        /// 레이어 전환이 벽에 막혔을 때 "미로를 전환할 수 없습니다" 문구를 잠깐 띄웠다가 자동으로 숨김
+        /// </summary>
+        public void ShowLayerBlockedWarning()
+        {
+            _layerBlockedWarningHideSchedule?.Pause();
+
+            _layerBlockedWarningText.EnableInClassList("visible", true);
+
+            _layerBlockedWarningHideSchedule = _layerBlockedWarningText.schedule.Execute(() =>
+            {
+                _layerBlockedWarningText.EnableInClassList("visible", false);
+            }).StartingIn(1200);
         }
 
         public void UpdateSanity(float current, float max)

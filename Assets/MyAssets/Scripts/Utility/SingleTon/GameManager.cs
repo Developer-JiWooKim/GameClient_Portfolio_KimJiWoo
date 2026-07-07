@@ -12,6 +12,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
 
         private GameRule _gameRule;
         public GameRule GameRule => _gameRule;
+
         public bool IsPaused { get; private set; }
 
         protected override void Awake()
@@ -55,10 +56,10 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         {
             _gameRule = new GameRule();
             _gameRule.OnKeyCollected += (current, required) => SoundManager.Instance?.PlayKeyCollected();
-            _gameRule.OnClear        += _gameTimer.StopTimer;
-            _gameRule.OnClear        += () => SoundManager.Instance?.PlayGameClear();
-            _gameRule.OnGameOver     += _gameTimer.StopTimer;
-            _gameRule.OnGameOver     += () => SoundManager.Instance?.PlayGameOver();
+            _gameRule.OnClear += _gameTimer.StopTimer;
+            _gameRule.OnClear += () => SoundManager.Instance?.PlayGameClear();
+            _gameRule.OnGameOver += _gameTimer.StopTimer;
+            _gameRule.OnGameOver += () => SoundManager.Instance?.PlayGameOver();
 
             _gameTimer.StartTimer();
         }

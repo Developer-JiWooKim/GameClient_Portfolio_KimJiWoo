@@ -4,12 +4,6 @@ using UnityEngine.UIElements;
 
 namespace Assets.MyAssets.Scripts.UI.Controls
 {
-    /// <summary>
-    /// UI_Design_Reference.md의 비대칭 절단 버튼(clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%))을
-    /// USS에 clip-path가 없어 Painter2D로 직접 그리는 커스텀 컨트롤.
-    /// Button을 상속하면 내부 텍스트 렌더링과 같은 generateVisualContent 이벤트를 공유해 그림 순서가 꼬이므로,
-    /// VisualElement + 자식 Label + Clickable 매니퓰레이터 조합으로 구성한다(자식은 항상 부모 콘텐츠 위에 그려짐).
-    /// </summary>
     [UxmlElement]
     public partial class CutButton : VisualElement
     {

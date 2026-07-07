@@ -1,9 +1,9 @@
-using FischlWorks_FogWar;
-using Unity.AI.Navigation;
-using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
 using Assets.MyAssets.Scripts.Utility.Maze;
 using Assets.MyAssets.Scripts.Utility.Visuals;
+using FischlWorks_FogWar;
+using Unity.AI.Navigation;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.SingleTon
 {
@@ -31,9 +31,9 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
 
         [Header("Layer Transition FX")]
         [SerializeField] private ScreenRippleController _rippleController;
-        [SerializeField] private float _rippleInDuration   = 0.1f;
+        [SerializeField] private float _rippleInDuration = 0.1f;
         [SerializeField] private float _rippleHoldDuration = 0.05f; // 일렁임이 최고조일 때 실제로 미로를 바꿔치기하는 구간
-        [SerializeField] private float _rippleOutDuration  = 0.1f;
+        [SerializeField] private float _rippleOutDuration = 0.1f;
 
         private bool _isTransitioning = false;
         public bool IsTransitioning => _isTransitioning; // 전환 연출 중 일시정지 등 다른 흐름 진입을 막기 위한 상태 노출
@@ -54,7 +54,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         public LayerType CurrentLayer => _currentLayer;
 
         public event System.Action<LayerType> OnLayerChanged;
-        public event System.Action            OnLayerSwitchBlocked; // 전환 실패(벽에 끼임) 시 호출, 사운드/전환 불가 UI 혹은 화면 쉐이킹?
+        public event System.Action OnLayerSwitchBlocked; // 전환 실패(벽에 끼임) 시 호출, 사운드/전환 불가 UI 혹은 화면 쉐이킹?
 
         protected override void Awake()
         {
@@ -62,14 +62,14 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
             if (!IsValidInstance) return; // 중복 인스턴스는 base.Awake()가 파괴 처리하므로 초기화 생략
 
             _physicalWallMask = LayerMask.GetMask("Wall_Physical");
-            _arcaneWallMask   = LayerMask.GetMask("Wall_Arcane");
+            _arcaneWallMask = LayerMask.GetMask("Wall_Arcane");
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            if(_playerInputHandler != null)
+            if (_playerInputHandler != null)
             {
                 _playerInputHandler.OnLayerSwitchRequested -= SwitchLayer;
             }
@@ -78,27 +78,25 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         public void RandomSeed()
         {
             _physicalSeed = Random.Range(0, 1100);
-            _arcaneSeed   = Random.Range(1100, 2200);
+            _arcaneSeed = Random.Range(1100, 2200);
         }
 
         /// <summary>
-        /// 미로 생성 후 레이어 설정
+        /// 미로 생성 후 레이어 설정. 미로 크기는 각 MazeGenerator의 SerializeField(_cols/_rows)에 고정으로 설정됨
         /// </summary>
-        public void SetLayersAndMazeGenerate(int cols, int rows)
+        public void SetLayersAndMazeGenerate()
         {
             RandomSeed();
 
             ResetFogMemory();
 
             _physicalMaze.SetSeed(_physicalSeed);
-            _physicalMaze.SetSize(cols, rows);
             _physicalMaze.Generate();
 
             Physics.SyncTransforms();
             _physicalNavMeshSurface.BuildNavMesh(); // Physical 전용 NavMeshSurface Bake
 
             _arcaneMaze.SetSeed(_arcaneSeed);
-            _arcaneMaze.SetSize(cols, rows);
             _arcaneMaze.Generate();
 
             Physics.SyncTransforms();
@@ -131,7 +129,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
 
             bool isBlocked = Physics.CheckSphere(playerPosition, _overlapCheckRadius, targetWallMask);
 
-            if(isBlocked)
+            if (isBlocked)
             {
                 OnLayerSwitchBlocked?.Invoke();
                 return;
@@ -145,7 +143,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         /// </summary>
         private async Awaitable PlayLayerTransition(LayerType targetLayer)
         {
-            if(_playerInputHandler == null)
+            if (_playerInputHandler == null)
             {
                 Debug.LogError("MazeLayerManager PlayLayerTransition(): _playerInputHandler is Null");
                 return;
@@ -160,7 +158,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
                 GameManager.Instance.PauseGame();
 
                 // PlayerInputHandler.OnDisable()에서 입력값도 같이 초기화됨
-               _playerInputHandler.enabled = false;
+                _playerInputHandler.enabled = false;
 
                 await FadeRipple(0f, 1f, _rippleInDuration);
                 await WaitUnscaled(_rippleHoldDuration);
@@ -244,7 +242,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
             _physicalMaze.SetWallsActiveState(physicalActive);
             _arcaneMaze.SetWallsActiveState(!physicalActive);
 
-            if(physicalActive)
+            if (physicalActive)
             {
                 _physicalNavMeshSurface.AddData();
                 _arcaneNavMeshSurface.RemoveData();
@@ -255,7 +253,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
                 _physicalNavMeshSurface.RemoveData();
             }
 
-            if(_fogWarSystem != null)
+            if (_fogWarSystem != null)
             {
                 _fogWarSystem.ScanLevel();
             }
