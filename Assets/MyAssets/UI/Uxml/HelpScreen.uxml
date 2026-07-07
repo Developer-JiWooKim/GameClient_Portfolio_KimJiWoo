@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ctrl="Assets.MyAssets.Scripts.UI.Controls" editor-extension-mode="False">
+    <ui:VisualElement name="help-screen" class="overlay-root">
+        <ui:VisualElement style="background-color: #1A0D28; border-width: 3px; border-color: #3D2860; padding: 72px 96px; align-items: center; min-width: 1450px;">
+            <ui:Label text="HOW TO PLAY" class="title-text" style="font-size: 56px; margin-bottom: 36px;" />
+
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:VisualElement style="width: 600px; margin-right: 60px;">
+                    <ui:Label text="CONTROLS" class="hud-label-text help-section-heading" />
+                    <ui:Label text="Move - WASD / Arrow Keys" class="help-body-text" />
+                    <ui:Label text="Switch Maze Layer (Physical / Arcane) - Tab" class="help-body-text" />
+                    <ui:Label text="Pause - Esc" class="help-body-text" />
+
+                    <ui:Label text="OBJECTIVE" class="hud-label-text help-section-heading" style="margin-top: 36px;" />
+                    <ui:Label text="Collect all 5 keys hidden in the maze, then reach the Goal Point (it appears once every key is collected)." class="help-body-text" />
+                </ui:VisualElement>
+
+                <ui:VisualElement style="width: 600px;">
+                    <ui:Label text="GAME OVER" class="hud-label-text help-section-heading" />
+                    <ui:Label text="Taking 3 hits from the monster ends the run." class="help-body-text" />
+                    <ui:Label text="Sanity reaching 0 also ends the run." class="help-body-text" />
+
+                    <ui:Label text="HARD MODE" class="hud-label-text help-section-heading" style="margin-top: 36px; color: #C42030;" />
+                    <ui:Label text="In the Arcane layer the monster always senses you and chases 1.6x faster - faster than you can run." class="help-body-text" />
+                    <ui:Label text="Sanity drains 2x faster in the Arcane layer, and recovers less than half as fast in the Physical layer." class="help-body-text" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ctrl:CutButton name="close-button" text="CLOSE" class="cut-button ghost" style="margin-top: 36px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

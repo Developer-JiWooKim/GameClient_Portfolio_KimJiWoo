@@ -12,11 +12,11 @@ namespace Assets.MyAssets.Scripts.UI
         private IGameFlowState _current;
         public IGameFlowState Current => _current;
 
-        public readonly TitleState   TitleState   = new TitleState();
-        public readonly SelectState  SelectState  = new SelectState();
+        public readonly TitleState TitleState = new TitleState();
+        public readonly SelectState SelectState = new SelectState();
         public readonly PlayingState PlayingState = new PlayingState();
-        public readonly PausedState  PausedState  = new PausedState();
-        public readonly ResultState  ResultState  = new ResultState();
+        public readonly PausedState PausedState = new PausedState();
+        public readonly ResultState ResultState = new ResultState();
 
         public GameFlowFSM(GameUIController controller)
         {

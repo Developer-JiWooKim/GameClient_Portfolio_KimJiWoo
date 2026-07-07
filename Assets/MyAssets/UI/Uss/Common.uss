@@ -123,10 +123,41 @@ Toggle Label {
     background-color: #C42030;
 }
 
-/* 정신력 위험 수위(25% 이하)일 때 InGamePanelUI가 0.5초 간격으로 이 클래스를 토글해서
-   opacity 트랜지션(0.6s)과 겹치며 서서히 깜빡이는 경고 펄스를 만든다 */
 .gauge-fill.pulse {
     opacity: 0.35;
+}
+
+.hud-warning-text {
+    position: absolute;
+    bottom: 240px;
+    left: 0;
+    right: 0;
+    font-size: 32px;
+    color: #C86BE8;
+    letter-spacing: 4px;
+    -unity-text-align: middle-center;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+}
+
+.hud-warning-text.visible {
+    opacity: 1;
+}
+
+/* ---------- 헬프 화면 ---------- */
+
+.help-section-heading {
+    margin-bottom: 12px;
+}
+
+.help-body-text {
+    font-size: 24px;
+    color: #DDD0F0;
+    white-space: normal;
+    margin-bottom: 12px;
+    -unity-text-align: upper-left;
 }
 
 .result-title-text {

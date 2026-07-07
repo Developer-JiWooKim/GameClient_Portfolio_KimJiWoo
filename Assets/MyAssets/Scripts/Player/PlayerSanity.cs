@@ -1,16 +1,17 @@
 using System;
-using UnityEngine;
 using Assets.MyAssets.Scripts.Utility.Core;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Player
 {
     /// <summary>
-    /// Arcane 레이어에 머무는 동안 정신력이 깎이고 Physical로 돌아오면 회복되는 스탯.
-    /// 0이 되면 즉시 게임오버(GameClient에 적용할 내용.txt 기획 노트 반영) - 하드 난이도가 더 가혹함.
+    /// Arcane 레이어에 머무는 동안 정신력이 깎이고 Physical로 돌아오면 회복되는 스탯
+    /// 0이 되면 즉시 게임오버
     /// </summary>
     public class PlayerSanity : MonoBehaviour
     {
+        [Header("Max Sanity")]
         [SerializeField] private float _maxSanity = 100f;
 
         [Header("Arcane 체류 시 드레인/초")]

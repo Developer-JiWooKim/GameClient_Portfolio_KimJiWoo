@@ -1,6 +1,6 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Monster.States;
 using Assets.MyAssets.Scripts.Player;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Monster
 {

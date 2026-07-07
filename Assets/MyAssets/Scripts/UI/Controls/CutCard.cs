@@ -4,11 +4,6 @@ using UnityEngine.UIElements;
 
 namespace Assets.MyAssets.Scripts.UI.Controls
 {
-    /// <summary>
-    /// 난이도 선택 카드용 커스텀 컨트롤. UI_Design_Reference.md의 카드 절단 모서리
-    /// (clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)))를
-    /// Painter2D로 그린다(우상단/좌하단 모서리가 대각선으로 잘린 육각형). 자식(제목/설명 Label)은 UXML에서 자유롭게 구성.
-    /// </summary>
     [UxmlElement]
     public partial class CutCard : VisualElement
     {

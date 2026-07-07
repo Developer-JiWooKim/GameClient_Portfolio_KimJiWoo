@@ -8,6 +8,7 @@ namespace Assets.MyAssets.Scripts.UI
     public class TitlePanelUI : BasePanelUI
     {
         [SerializeField] private OptionsPanelUI _optionsPanel;
+        [SerializeField] private HelpPanelUI _helpPanel;
 
         public event System.Action OnPlayClicked;
 
@@ -17,15 +18,17 @@ namespace Assets.MyAssets.Scripts.UI
 
             Root.Q<CutButton>("start-button").clicked += () => OnPlayClicked?.Invoke();
             Root.Q<CutButton>("options-button").clicked += () => _optionsPanel.Show();
+            Root.Q<CutButton>("help-button").clicked += () => _helpPanel.Show();
             Root.Q<CutButton>("exit-button").clicked += () => GameManager.Instance.GameExit();
         }
 
         /// <summary>
-        /// 타이틀에서 다른 화면으로 넘어갈 때 옵션 패널이 열려있는 채로 남지 않도록 함께 닫음
+        /// 타이틀에서 다른 화면으로 넘어갈 때 옵션/헬프 패널이 열려있는 채로 남지 않도록 함께 닫음
         /// </summary>
         public override void Hide()
         {
             _optionsPanel.Hide();
+            _helpPanel.Hide();
             base.Hide();
         }
     }

@@ -7,6 +7,7 @@
     <ui:Template name="InGameHud" src="InGameHud.uxml" />
     <ui:Template name="PauseScreen" src="PauseScreen.uxml" />
     <ui:Template name="OptionsScreen" src="OptionsScreen.uxml" />
+    <ui:Template name="HelpScreen" src="HelpScreen.uxml" />
     <ui:Template name="ResultScreen" src="ResultScreen.uxml" />
 
     <!--
@@ -22,5 +23,6 @@
     <ui:Instance template="InGameHud" name="hud-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
     <ui:Instance template="PauseScreen" name="pause-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
     <ui:Instance template="OptionsScreen" name="options-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="HelpScreen" name="help-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
     <ui:Instance template="ResultScreen" name="result-instance" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
 </ui:UXML>

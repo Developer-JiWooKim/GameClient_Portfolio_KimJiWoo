@@ -1,7 +1,7 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 using Assets.MyAssets.Scripts.Utility.Visuals;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.Spawners
 {
@@ -15,7 +15,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
         private GameObject _playerInstance;
 
-        public PlayerController Player => _playerInstance?.GetComponent<PlayerController>();
+        public PlayerController Player { get; private set; } // => _playerInstance?.GetComponent<PlayerController>();
 
         public bool CheckSerializeFieldIsNull()
         {
@@ -42,6 +42,12 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             {
                 mazeLayerManager?.RegisterPlayerInput(playerInput);
             }
+
+            // 생성한 플레이어 인스턴스의 PlayerController 컴포넌트를 Player 프로퍼티에 연결
+            if (_playerInstance.TryGetComponent<PlayerController>(out PlayerController playerController))
+            {
+                Player = playerController;
+            }
         }
 
         /// <summary>
@@ -52,13 +58,11 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             if (_playerInstance == null) return;
 
             // 안개 시스템에 리빌러가 계속 쌓이지 않도록 파괴 전에 해제
-            if (_playerInstance.TryGetComponent(out PlayerController pc))
-            {
-                pc.UnregisterFromFogSystem();
-            }
+            Player.UnregisterFromFogSystem();
 
             Destroy(_playerInstance);
             _playerInstance = null;
+            Player = null;
         }
     }
 }

@@ -1,5 +1,5 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.Visuals
 {
@@ -41,10 +41,6 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
             if (MazeLayerManager.Instance != null)
             {
                 MazeLayerManager.Instance.OnLayerChanged -= ApplyLayer;
-            }
-            else
-            {
-                Debug.LogError("LayerLightingController - OnDisable(): MazeLayerManager.Instance is Null!!");
             }
         }
 
