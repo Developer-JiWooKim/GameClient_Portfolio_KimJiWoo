@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using Assets.MyAssets.Scripts.Monster;
+using Assets.MyAssets.Scripts.Utility.Maze;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
-using Assets.MyAssets.Scripts.Monster;
-using Assets.MyAssets.Scripts.Utility.SingleTon;
-using Assets.MyAssets.Scripts.Utility.Maze;
 
 namespace Assets.MyAssets.Scripts.Utility.Spawners
 {
@@ -78,8 +78,8 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             bool hasNull = false;
 
-            if (_monsterPrefab == null) { Debug.LogError("MonsterSpawner: _monsterPrefab이 null임"); hasNull = true; }
-            if (_mazeLayerManager == null) { Debug.LogError("MonsterSpawner: _mazeLayerManager가 null임"); hasNull = true; }
+            if (_monsterPrefab == null) { Debug.LogError("MonsterSpawner: _monsterPrefab is null"); hasNull = true; }
+            if (_mazeLayerManager == null) { Debug.LogError("MonsterSpawner: _mazeLayerManager is null"); hasNull = true; }
 
             return hasNull;
         }

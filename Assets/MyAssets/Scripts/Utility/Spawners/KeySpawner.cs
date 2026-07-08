@@ -35,7 +35,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             if (_keyPrefab == null)
             {
-                Debug.LogError("KeySpawner: _keyPrefab이 null임");
+                Debug.LogError("KeySpawner: _keyPrefab is null");
                 return true;
             }
 

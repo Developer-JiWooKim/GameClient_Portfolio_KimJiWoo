@@ -1,6 +1,6 @@
-using UnityEngine;
-using Assets.MyAssets.Scripts.Utility.SingleTon;
 using Assets.MyAssets.Scripts.Utility.Maze;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.Spawners
 {
@@ -21,7 +21,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             if (_goalPointPrefab == null)
             {
-                Debug.LogError("GoalPointSpawner: _goalPointPrefab이 null임");
+                Debug.LogError("GoalPointSpawner: _goalPointPrefab is null");
                 return true;
             }
 
@@ -34,8 +34,8 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         public void SetSpawnContext(MazeGenerator activeMaze, Vector2Int goalCell, float spawnY)
         {
             _activeMaze = activeMaze;
-            _goalCell   = goalCell;
-            _spawnY     = spawnY;
+            _goalCell = goalCell;
+            _spawnY = spawnY;
         }
 
         /// <summary>
