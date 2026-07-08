@@ -54,12 +54,12 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         public LayerType CurrentLayer => _currentLayer;
 
         public event System.Action<LayerType> OnLayerChanged;
-        public event System.Action OnLayerSwitchBlocked; // 전환 실패(벽에 끼임) 시 호출, 사운드/전환 불가 UI 혹은 화면 쉐이킹?
+        public event System.Action OnLayerSwitchBlocked; // 전환 실패(벽에 끼임) 시 호출, 사운드/전환 불가 UI, 화면 쉐이킹
 
         protected override void Awake()
         {
             base.Awake();
-            if (!IsValidInstance) return; // 중복 인스턴스는 base.Awake()가 파괴 처리하므로 초기화 생략
+            if (!IsValidInstance) return;
 
             _physicalWallMask = LayerMask.GetMask("Wall_Physical");
             _arcaneWallMask = LayerMask.GetMask("Wall_Arcane");

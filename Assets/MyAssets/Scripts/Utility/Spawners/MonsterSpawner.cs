@@ -87,9 +87,9 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         /// <summary>
         /// 몬스터들을 미로의 랜덤한 위치에 스폰하는 메소드
         /// </summary>
-        public void SpawnMonsters(MazeGenerator activeMaze, Vector2Int excludeA, Vector2Int excludeB, float spawnY, Transform target)
+        public void SpawnMonsters(MazeGenerator activeMaze, float spawnY, Transform target, params Vector2Int[] excludeCells)
         {
-            List<Cell> candidates = activeMaze.GetShuffledCandidateCells(excludeA, excludeB);
+            List<Cell> candidates = activeMaze.GetShuffledCandidateCells(excludeCells);
 
             int spawnCount = Mathf.Min(_monsterCount, candidates.Count);
 
