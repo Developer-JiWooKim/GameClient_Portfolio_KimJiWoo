@@ -1,7 +1,7 @@
-using UnityEngine;
 using Assets.MyAssets.Scripts.Player;
-using Assets.MyAssets.Scripts.Utility.SingleTon;
 using Assets.MyAssets.Scripts.Utility.Maze;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.Spawners
 {
@@ -34,6 +34,19 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         /// </summary>
         public Awaitable SwitchToFollowCameraAsync() => _playerSpawner.SwitchToFollowCameraAsync();
 
+        private void Initialize()
+        {
+            _activeMaze = _mazeLayerManager.GetActiveMaze();
+            if (_activeMaze == null)
+            {
+                Debug.LogError("UnitsSpawner Initialize(): _activeMaze is null");
+            }
+
+            _playerStartCell = new Vector2Int(0, 0);
+
+            _goalCell = new Vector2Int(_activeMaze.Cols - 1, _activeMaze.Rows - 1);
+        }
+
         /// <summary>
         /// 몬스터 수 설정 메소드
         /// </summary>
@@ -47,11 +60,11 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             bool hasNull = false;
 
             // 현재 내 스크립트의 필드들 전수 조사 (널이 있으면 로그를 찍고 true로 잠금)
-            if (_mazeLayerManager == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager가 null임"); hasNull = true; }
-            if (_playerSpawner == null) { Debug.LogError("UnitsSpawner: _playerSpawner가 null임"); hasNull = true; }
-            if (_monsterSpawner == null) { Debug.LogError("UnitsSpawner: _monsterSpawner가 null임"); hasNull = true; }
-            if (_keySpawner == null) { Debug.LogError("UnitsSpawner: _keySpawner가 null임"); hasNull = true; }
-            if (_goalPointSpawner == null) { Debug.LogError("UnitsSpawner: _goalPointSpawner가 null임"); hasNull = true; }
+            if (_mazeLayerManager == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager is null"); hasNull = true; }
+            if (_playerSpawner == null) { Debug.LogError("UnitsSpawner: _playerSpawner is null"); hasNull = true; }
+            if (_monsterSpawner == null) { Debug.LogError("UnitsSpawner: _monsterSpawner is null"); hasNull = true; }
+            if (_keySpawner == null) { Debug.LogError("UnitsSpawner: _keySpawner is null"); hasNull = true; }
+            if (_goalPointSpawner == null) { Debug.LogError("UnitsSpawner: _goalPointSpawner is null"); hasNull = true; }
 
             if (hasNull) return true;
 
@@ -76,16 +89,15 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             SpawnPlayer();
 
             // 몬스터는 플레이어의 Transform을 타겟으로 필요로 하므로 반드시 플레이어 스폰 이후에 실행
-            _monsterSpawner.SpawnMonsters(_activeMaze, _playerStartCell, _goalCell, _spawnY, Player?.transform);
-            _keySpawner.SpawnKeys(_activeMaze, _playerStartCell, _goalCell, _spawnY);
+            _monsterSpawner.SpawnMonsters(_activeMaze, _spawnY, Player.transform, _playerStartCell, _goalCell);
+            _keySpawner.SpawnKeys(_activeMaze, _spawnY, _playerStartCell, _goalCell);
+            _goalPointSpawner.SetSpawnContext(_activeMaze, _goalCell, _spawnY);
 
             if (GameManager.Instance == null)
             {
                 Debug.LogError("UnitsSpawner SpawnAll(): GameManager.Instance가 Null임");
                 return;
             }
-
-            _goalPointSpawner.SetSpawnContext(_activeMaze, _goalCell, _spawnY);
 
             // 열쇠를 전부 모으면 골 포인트를 생성하도록 구독
             GameManager.Instance.GameRule.OnAllKeysCollected += _goalPointSpawner.SpawnGoalPoint;
@@ -94,8 +106,10 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             GameManager.Instance.GameRule.OnClear += _monsterSpawner.StopAllMonsters;
             GameManager.Instance.GameRule.OnGameOver += _monsterSpawner.StopAllMonsters;
 
-            if (_mazeLayerManager.FogWarSystem == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager.FogWarSystem is Null"); return; }
-            if (Player == null) { Debug.LogError("UnitsSpawner: Player is Null"); return; }
+            if (_mazeLayerManager.FogWarSystem == null)
+            {
+                { Debug.LogError("UnitsSpawner: _mazeLayerManager.FogWarSystem is Null"); return; }
+            }
 
             FischlWorks_FogWar.csFogWar fogWar = _mazeLayerManager.FogWarSystem;
 
@@ -111,15 +125,6 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             // ForceUpdateFog()로 새 플레이어 기준 안개를 즉시 재계산하고 버퍼에 그대로 복사해, 재시작 시에도
             // 처음 시작할 때와 동일하게 안개가 즉시 리셋된 상태로 보이게 함
             fogWar.ForceUpdateFog();
-        }
-
-        private void Initialize()
-        {
-            _activeMaze = _mazeLayerManager.GetActiveMaze();
-
-            _playerStartCell = new Vector2Int(0, 0);
-
-            _goalCell = new Vector2Int(_activeMaze.Cols - 1, _activeMaze.Rows - 1);
         }
 
         private void SpawnPlayer()

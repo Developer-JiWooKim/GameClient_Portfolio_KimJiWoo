@@ -51,7 +51,6 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
 
         /// <summary>
         /// 새 판을 시작할 때 호출하는 메소드
-        /// 타이머는 여기서 바로 시작하지 않음 - 카메라 전환/인트로 애니메이션 연출이 끝난 뒤 호출자가 GameTimer.StartTimer()를 직접 호출
         /// </summary>
         public void GameStart()
         {

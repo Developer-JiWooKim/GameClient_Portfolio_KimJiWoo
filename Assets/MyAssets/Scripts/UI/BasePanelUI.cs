@@ -9,7 +9,6 @@ namespace Assets.MyAssets.Scripts.UI
         [SerializeField] protected string _rootElementName;
 
         private VisualElement _root;
-
         protected VisualElement Root => _root ??= _document.rootVisualElement.Q<VisualElement>(_rootElementName);
 
         protected virtual void Start() { }

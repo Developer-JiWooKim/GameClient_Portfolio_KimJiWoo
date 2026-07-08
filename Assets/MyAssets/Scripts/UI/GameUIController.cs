@@ -16,6 +16,8 @@ namespace Assets.MyAssets.Scripts.UI
         [SerializeField] private PausePanelUI _pausePanel;
         [SerializeField] private OptionsPanelUI _optionsPanel;
         [SerializeField] private ResultPanelUI _resultPanel;
+
+        [Header("Damage Flash FX")]
         [SerializeField] private DamageflashUI _damageflashUI;
 
         [Header("Layer Switch Blocked FX")]

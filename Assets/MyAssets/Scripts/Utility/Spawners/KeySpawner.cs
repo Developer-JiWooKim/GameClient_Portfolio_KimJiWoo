@@ -46,9 +46,9 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         /// 시작/목표 셀을 제외한 랜덤 셀에 열쇠를 배치하는 메소드.
         /// 레이어 간 셀 좌표(worldCenter)는 공유되므로, 활성 레이어 기준 셀 정보만 읽어와도 충분함.
         /// </summary>
-        public void SpawnKeys(MazeGenerator activeMaze, Vector2Int excludeA, Vector2Int excludeB, float spawnY)
+        public void SpawnKeys(MazeGenerator activeMaze, float spawnY, params Vector2Int[] excludeCells)
         {
-            List<Cell> candidates = activeMaze.GetShuffledCandidateCells(excludeA, excludeB);
+            List<Cell> candidates = activeMaze.GetShuffledCandidateCells(excludeCells);
 
             int spawnCount = Mathf.Min(_keyCount, candidates.Count);
 

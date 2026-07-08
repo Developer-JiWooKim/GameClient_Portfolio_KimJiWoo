@@ -320,19 +320,30 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         }
 
         /// <summary>
-        /// 전체 셀 중 두 셀(주로 시작/목표 지점)을 제외한 나머지를 Fisher-Yates로 섞어 반환하는 메소드.
-        /// 스포너들이 각자 독립적으로 호출하므로, 호출할 때마다 새로 섞인 리스트를 반환함
+        /// 전체 셀 중 제외할 셀(없으면 전체)을 제외한 나머지를 Fisher-Yates로 섞어 반환하는 메소드
         /// </summary>
-        public List<Cell> GetShuffledCandidateCells(Vector2Int excludeA, Vector2Int excludeB)
+        public List<Cell> GetShuffledCandidateCells(params Vector2Int[] excludeCells)
         {
-            List<Cell> candidates = new List<Cell>();
+            List<Cell> candidates = new List<Cell>(_allCells.Count);
 
-            foreach (Cell cell in _allCells)
+            // 제외할 셀이 없으면 전체 셀을 후보군으로
+            if (excludeCells is null || excludeCells.Length == 0)
             {
-                if (cell.col == excludeA.x && cell.row == excludeA.y) continue;
-                if (cell.col == excludeB.x && cell.row == excludeB.y) continue;
+                candidates.AddRange(_allCells);
+            }
+            else
+            {
+                HashSet<Vector2Int> excludeSet = new HashSet<Vector2Int>(excludeCells);
 
-                candidates.Add(cell);
+                foreach (Cell cell in _allCells)
+                {
+                    if (excludeSet.Contains(cell.GridPos))
+                    {
+                        continue;
+                    }
+
+                    candidates.Add(cell);
+                }
             }
 
             for (int i = candidates.Count - 1; i > 0; i--)
