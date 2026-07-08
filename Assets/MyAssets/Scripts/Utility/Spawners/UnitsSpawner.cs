@@ -95,7 +95,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
             if (GameManager.Instance == null)
             {
-                Debug.LogError("UnitsSpawner SpawnAll(): GameManager.Instance가 Null임");
+                Debug.LogError("UnitsSpawner SpawnAll(): GameManager.Instance is Null");
                 return;
             }
 
