@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 using Assets.MyAssets.Scripts.Monster.States;
+using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Monster
 {
@@ -40,9 +40,9 @@ namespace Assets.MyAssets.Scripts.Monster
 
             do
             {
-                before = _current; // 최신 상태 저장
+                before = _current;           // 최신 상태 저장
                 _current?.Tick(_controller); // 현재 상태의 행동 실행
-                safety++; // 실행횟수 +1
+                safety++;                    // 실행횟수 +1
             }
             while (_current != before && safety < 3); // 방금 실행하는 동안 상태가 바뀌었고, 실행 횟수가 3미만이면 반복
         }

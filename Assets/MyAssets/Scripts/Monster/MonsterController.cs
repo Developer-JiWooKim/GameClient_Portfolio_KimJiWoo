@@ -13,6 +13,11 @@ namespace Assets.MyAssets.Scripts.Monster
     [RequireComponent(typeof(MonsterAnim))]
     public class MonsterController : MonoBehaviour
     {
+        [Header("감지 여부")]
+        [SerializeField] private bool _isSensed = false;          // 타겟 감지 여부를 저장하는 bool
+        [SerializeField] private bool _isInRange = false;         // 타겟이 감지 반경 안에 들어와 있는지 여부를 저장하는 bool
+        [SerializeField] private bool _isDetectingPlayer = false; // Chase/Attack 상태(=발각 상태) 진입 여부, 플레이어 표정 알림용
+
         private MonsterSight _monsterSight;
         private MonsterMove _monsterMove;
         private MonsterFSM _monsterFSM;
@@ -20,9 +25,9 @@ namespace Assets.MyAssets.Scripts.Monster
         private MonsterFieldOfView _monsterFOV;
         private MonsterAnim _monsterAnim;
 
-        private bool _isSensed = false;         // 타겟 감지 여부를 저장하는 bool
-        private bool _isInRange = false;         // 타겟이 감지 반경 안에 들어와 있는지 여부를 저장하는 bool
-        private bool _isDetectingPlayer = false; // Chase/Attack 상태(=발각 상태) 진입 여부, 플레이어 표정 알림용
+        public MonsterMove Move => _monsterMove;
+        public MonsterAnim Anim => _monsterAnim;
+        public MonsterAttackTrigger AttackTrigger => _monsterAttackTrigger;
 
         private Transform _target;
         public Transform Target
@@ -30,10 +35,6 @@ namespace Assets.MyAssets.Scripts.Monster
             get => _target;
             set => _target = value;
         }
-
-        public MonsterMove Move => _monsterMove;
-        public MonsterAnim Anim => _monsterAnim;
-        public MonsterAttackTrigger AttackTrigger => _monsterAttackTrigger;
 
         public bool IsSensed => _isSensed;
         public bool IsInRange => _isInRange;
@@ -59,10 +60,16 @@ namespace Assets.MyAssets.Scripts.Monster
             _monsterAnim = GetComponent<MonsterAnim>();
 
             _monsterAttackTrigger = GetComponentInChildren<MonsterAttackTrigger>();
-            if (_monsterAttackTrigger == null) Debug.LogError($"{gameObject.name}: 자식 오브젝트에서 MonsterAttackTrigger를 찾을 수 없습니다!");
+            if (_monsterAttackTrigger == null)
+            {
+                Debug.LogError($"{gameObject.name}: 자식 오브젝트에서 MonsterAttackTrigger를 찾을 수 없습니다!");
+            }
 
             _monsterFOV = GetComponentInChildren<MonsterFieldOfView>();
-            if (_monsterFOV == null) Debug.LogError($"{gameObject.name}: 자식 오브젝트에서 MonsterFieldOfView를 찾을 수 없습니다!");
+            if (_monsterFOV == null)
+            {
+                Debug.LogError($"{gameObject.name}: 자식 오브젝트에서 MonsterFieldOfView를 찾을 수 없습니다!");
+            }
 
             _monsterFSM.OnStateChanged += OnStateChanged;
         }
@@ -81,8 +88,8 @@ namespace Assets.MyAssets.Scripts.Monster
             SetDetectingPlayer(false);
 
             _target = target;
-            _isSensed = false;
-            _isInRange = false;
+
+            _isInRange = _isSensed = false;
 
             _monsterFSM.ResetState();              // 상태 초기화
             _monsterMove.Warp(position);           // 미로의 랜덤한 위치에 재배치
@@ -131,7 +138,6 @@ namespace Assets.MyAssets.Scripts.Monster
 
             // 타겟 위치가 탐지 거리 안에 있는지 체크
             _isInRange = _monsterSight.IsInRange(targetPos);
-
             if (_isInRange)
             {
                 // 탐지 거리 안에 들어와 있으면 시야각 안에 들어와 있고 그 사이에 벽이 있는지 체크

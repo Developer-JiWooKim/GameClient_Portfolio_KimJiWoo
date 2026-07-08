@@ -16,13 +16,12 @@ namespace Assets.MyAssets.Scripts.Player
         [SerializeField] private float _moveSpeed = 10f;
         [SerializeField] private int _maxHp = 3;
         [SerializeField] private float _sightRange = 10f;
-        [SerializeField] private float _invincibleDuration = 1.5f;
+        [SerializeField] private float _invincibleDuration = 1.5f; // 무적 시간
 
         private PlayerInputHandler _playerInputHandler;
         private PlayerMove _playerMove;
         private PlayerAnim _playerAnim;
         private PlayerFaceController _faceController;
-
         private CinemachineImpulseSource _impulseSource;
 
         private csFogWar _fogWarSystem;
@@ -30,10 +29,8 @@ namespace Assets.MyAssets.Scripts.Player
         private int _fogRevealerIndex = -1;
 
         private int _currentHp;
-
         private float _invincibleTimer;
-
-        private int _detectingMonsterCount; // 현재 나를 발각(추격)중인 몬스터 수, 여러 마리가 동시에 감지할 수 있으므로 카운트로 관리
+        private int _detectingMonsterCount; // 현재 나를 감지한(추격)중인 몬스터 수, 여러 마리가 동시에 감지할 수 있으므로 카운트로 관리
 
         public int CurrentHp => _currentHp;
         public int MaxHp => _maxHp;
@@ -48,7 +45,6 @@ namespace Assets.MyAssets.Scripts.Player
             _playerInputHandler = GetComponent<PlayerInputHandler>();
             _playerMove = GetComponent<PlayerMove>();
             _playerAnim = GetComponent<PlayerAnim>();
-
             _impulseSource = GetComponent<CinemachineImpulseSource>();
 
             _currentHp = _maxHp;
@@ -60,21 +56,20 @@ namespace Assets.MyAssets.Scripts.Player
         public void RegisterToFogSystem(csFogWar fogWarSystem)
         {
             _fogWarSystem = fogWarSystem;
-
             if (_fogWarSystem != null)
             {
-                // 에셋 규칙에 맞는 전용 생성자를 사용하여 객체를 생성
-                // 인자 순서: (추적할 Transform, 시야 반지름, Update에서 움직일때만)
                 _myRevealer = new csFogWar.FogRevealer(this.transform, (int)_sightRange, true);
 
-                // private 리스트인 _fogRevealers에 직접 접근하는 대신,
-                // 에셋 내부 전용 공개 메서드인 'AddFogRevealer'를 호출하여 등록
                 _fogRevealerIndex = _fogWarSystem.AddFogRevealer(_myRevealer);
+            }
+            else
+            {
+                Debug.LogError("RegisterToFogSystem(): Parameter fogWarSystem is null!!");
             }
         }
 
         /// <summary>
-        /// 파괴되기 전 안개 시스템에서 자신의 리빌러를 제거하는 메소드
+        /// 파괴되기 전 csFogWar(FogWarSystem)에서 자신의 리빌러를 제거하는 메소드
         /// 재시작(Replay) 시 이전 플레이어의 리빌러가 안개 시스템에 계속 쌓이는 것을 방지
         /// </summary>
         public void UnregisterFromFogSystem()
@@ -97,13 +92,20 @@ namespace Assets.MyAssets.Scripts.Player
 
             bool hasInput = dir.sqrMagnitude > 0.0001f;
 
+            // 움직임 여부에 따라 애니메이션 재생
             _playerAnim.SetMoving(hasInput);
 
+            // 움직였을때만 플레이어 위치 이동
             if (hasInput)
             {
                 _playerMove.Move(dir, _moveSpeed);
             }
         }
+
+        /// <summary>
+        /// 스폰 시 재생되는 인트로 애니메이션이 끝날 때까지 대기하는 메소드
+        /// </summary>
+        public Awaitable PlayIntroAnimationAsync() => _playerAnim.PlayIntroAsync();
 
         /// <summary>
         /// 몬스터 공격 범위 안에 닿았을 때 호출될 메소드
@@ -129,13 +131,12 @@ namespace Assets.MyAssets.Scripts.Player
         }
 
         /// <summary>
-        /// 몬스터가 이 플레이어를 발각(Chase/Attack 진입, 이탈)했을 때 호출하는 메소드
+        /// 몬스터가 플레이어를 발각(Chase/Attack 진입, 이탈)했을 때 호출하는 메소드
         /// 동시에 여러 몬스터가 감지할 수 있으므로 카운트가 0보다 큰 동안만 발각 표정을 유지
         /// </summary>
         public void NotifyDetected(bool isDetected)
         {
             _detectingMonsterCount = Mathf.Max(0, _detectingMonsterCount + (isDetected ? 1 : -1));
-
             if (_detectingMonsterCount > 0)
             {
                 _faceController?.SetCaughtExpression();

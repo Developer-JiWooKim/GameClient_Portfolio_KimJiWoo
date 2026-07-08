@@ -6,6 +6,7 @@ namespace Assets.MyAssets.Scripts.Monster
     {
         private Animator _animator;
 
+        // Animator의 파라미터 ID 값을 미리 캐싱
         private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
         private static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
         private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
@@ -15,15 +16,14 @@ namespace Assets.MyAssets.Scripts.Monster
         private bool _lastRunning;
         private bool _lastAttacking;
         private bool _hasSetStateOnce;
-
         private bool _isSetAnimator = false; // 애니메이터 컴포넌트 Null 체크용 bool
 
         private void Awake()
         {
-            _animator = GetComponentInChildren<Animator>();
-            _isSetAnimator = _animator;
+            _isSetAnimator = _animator = GetComponentInChildren<Animator>();
         }
 
+        // State Helper
         public void PlayWalk() => SetState(moving: true, running: false, attacking: false);
         public void PlayRun() => SetState(moving: true, running: true, attacking: false);
         public void PlayIdle() => SetState(moving: false, running: false, attacking: false);
@@ -31,6 +31,7 @@ namespace Assets.MyAssets.Scripts.Monster
 
         private void SetState(bool moving, bool running, bool attacking)
         {
+            // Animator 컴포넌트 Null 체크
             if (!_isSetAnimator)
             {
                 Debug.LogError("Animator is null");
@@ -43,6 +44,7 @@ namespace Assets.MyAssets.Scripts.Monster
                 return;
             }
 
+            // 상황에 맞는 애니메이션 실행
             _animator.SetBool(IsMovingHash, moving);
             _animator.SetBool(IsRunningHash, running);
             _animator.SetBool(IsAttackingHash, attacking);
@@ -55,8 +57,7 @@ namespace Assets.MyAssets.Scripts.Monster
 
         void OnValidate()
         {
-            _animator = GetComponentInChildren<Animator>();
-            _isSetAnimator = _animator;
+            _isSetAnimator = _animator = GetComponentInChildren<Animator>();
         }
     }
 }

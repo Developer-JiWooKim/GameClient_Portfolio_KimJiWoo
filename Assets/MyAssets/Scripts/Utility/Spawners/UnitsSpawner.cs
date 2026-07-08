@@ -30,6 +30,11 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         public PlayerController Player => _playerSpawner.Player;
 
         /// <summary>
+        /// 인트로 카메라에서 팔로우 카메라로 전환하는 메소드 (플레이어 인트로 애니메이션이 끝난 뒤 호출됨)
+        /// </summary>
+        public Awaitable SwitchToFollowCameraAsync() => _playerSpawner.SwitchToFollowCameraAsync();
+
+        /// <summary>
         /// 몬스터 수 설정 메소드
         /// </summary>
         public void SetMonsterCount(int count)

@@ -34,8 +34,9 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             _playerInstance = Instantiate(_playerPrefab, spawnPos, Quaternion.identity);
 
-            // 인트로->팔로우 카메라 전환 연출은 IntroCameraSequencer가 전담
-            _introCameraSequencer.PlayIntro(_playerInstance.transform);
+            // 인트로 카메라로 즉시 컷 - 팔로우 카메라로의 전환은 플레이어 인트로 애니메이션이 끝난 뒤
+            // SwitchToFollowCameraAsync()를 통해 별도로 트리거됨
+            _introCameraSequencer.CutToIntroCamera(_playerInstance.transform);
 
             // 플레이어의 입력(Tab) 시 미로를 전환하는 이벤트를 연결
             if (_playerInstance.TryGetComponent(out PlayerInputHandler playerInput))
@@ -49,6 +50,11 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
                 Player = playerController;
             }
         }
+
+        /// <summary>
+        /// 인트로 카메라에서 팔로우 카메라로 전환하는 메소드 (플레이어 인트로 애니메이션이 끝난 뒤 호출됨)
+        /// </summary>
+        public Awaitable SwitchToFollowCameraAsync() => _introCameraSequencer.SwitchToFollowCamera();
 
         /// <summary>
         /// 재시작 시 이전 플레이어를 파괴하는 메소드

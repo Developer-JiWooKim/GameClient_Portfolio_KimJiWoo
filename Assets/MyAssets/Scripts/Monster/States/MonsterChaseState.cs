@@ -13,15 +13,18 @@ namespace Assets.MyAssets.Scripts.Monster.States
 
         public void Tick(MonsterController controller)
         {
+            // 감지 범위를 벗어나면 Idle상태로 전환
             if (!controller.IsInRange)
             {
                 controller.ChangeState(controller.IdleState);
                 return;
             }
 
+            // 타겟(플레이어)을 향해 이동 및 추격 애니메이션 재생
             controller.Move.MoveToTarget(controller.TargetPosition);
             controller.Anim.PlayRun();
 
+            // 추격 중 플레이어가 공격 범위 안에 들어오면(TriggerEnter로 체크) Attack상태로 전환
             if (controller.AttackTrigger.PlayerInAttackRange)
             {
                 controller.ChangeState(controller.AttackState);

@@ -9,6 +9,10 @@ namespace Assets.MyAssets.Scripts.UI.States
     {
         public void Enter(GameUIController controller)
         {
+            // 게임 시작 연출(카메라 전환 + 인트로 애니메이션) 중에는 GameUIController가 연출 완료 시점에
+            // 직접 재개/입력허용/HUD표시를 처리하므로 여기서는 건너뜀
+            if (controller.IsGameStarting) return;
+
             GameManager.Instance.ResumeGame();
             controller.SetPlayerControlEnabled(true);
             controller.InGamePanel.Show();

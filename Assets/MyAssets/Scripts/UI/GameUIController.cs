@@ -34,6 +34,10 @@ namespace Assets.MyAssets.Scripts.UI
 
         private GameFlowFSM _flowFsm;
 
+        // 게임 시작 연출(카메라 전환 + 플레이어 인트로 애니메이션) 진행 중 여부
+        private bool _isGameStarting;
+        public bool IsGameStarting => _isGameStarting;
+
         public TitlePanelUI TitlePanel => _titlePanel;
         public SelectPanelUI SelectPanel => _selectPanel;
         public InGamePanelUI InGamePanel => _inGamePanel;
@@ -90,6 +94,7 @@ namespace Assets.MyAssets.Scripts.UI
         private void HandlePauseToggle()
         {
             if (_mazeLayerManager != null && _mazeLayerManager.IsTransitioning) return;
+            if (_isGameStarting) return; // 게임 시작 연출 중에는 Pause 진입을 막음
 
             if (_flowFsm.Current == _flowFsm.PlayingState)
             {
@@ -116,8 +121,40 @@ namespace Assets.MyAssets.Scripts.UI
         /// </summary>
         private void StartNewGame()
         {
+            _ = RunGameStartSequence();
+        }
+
+        /// <summary>
+        /// 유닛 스폰 후 플레이어 인트로 애니메이션이 끝나면 카메라를 인트로->팔로우로 전환하고,
+        /// 그것까지 끝날 때까지 타이머/몬스터 이동/플레이어 입력을 정지시켰다가 한번에 게임을 시작하는 시퀀스
+        /// </summary>
+        private async Awaitable RunGameStartSequence()
+        {
+            _isGameStarting = true;
+
             StartGame(_monsterCount);
+
+            // 이전 패널(Select/Pause/Result)은 여기서 즉시 닫히지만, PlayingState.Enter는 IsGameStarting 때문에
+            // 재개/입력허용/HUD표시를 건너뜀 - 연출이 끝나면 아래에서 직접 처리
             _flowFsm.ChangeState(_flowFsm.PlayingState);
+
+            // Pause는 InGamePanel을 숨기지 않고 그 위에 오버레이만 띄우는 방식이라(PausedState 참고),
+            // Pause -> Replay 경로에서는 HUD가 계속 떠 있는 상태로 넘어옴 - 연출 중에는 무조건 숨겨야 함
+            _inGamePanel.Hide();
+
+            GameManager.Instance.PauseGame();
+            SetPlayerControlEnabled(false);
+
+            // 플레이어 인트로 애니메이션이 끝난 뒤에야 카메라를 인트로 -> 팔로우로 전환
+            await _player.PlayIntroAnimationAsync();
+            await _unitsSpawner.SwitchToFollowCameraAsync();
+
+            _isGameStarting = false;
+
+            GameManager.Instance.GameTimer.StartTimer();
+            GameManager.Instance.ResumeGame();
+            SetPlayerControlEnabled(true);
+            _inGamePanel.Show();
         }
 
         private void StartGame(int monsterCount)
