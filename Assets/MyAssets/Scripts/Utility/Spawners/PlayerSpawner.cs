@@ -21,8 +21,8 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         {
             bool hasNull = false;
 
-            if (_playerPrefab == null) { Debug.LogError("PlayerSpawner: _playerPrefab이 null임"); hasNull = true; }
-            if (_introCameraSequencer == null) { Debug.LogError("PlayerSpawner: _introCameraSequencer가 null임"); hasNull = true; }
+            if (_playerPrefab == null) { Debug.LogError("PlayerSpawner: _playerPrefab is null"); hasNull = true; }
+            if (_introCameraSequencer == null) { Debug.LogError("PlayerSpawner: _introCameraSequencer is null"); hasNull = true; }
 
             return hasNull;
         }
