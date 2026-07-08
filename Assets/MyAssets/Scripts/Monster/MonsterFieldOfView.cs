@@ -20,7 +20,6 @@ namespace Assets.MyAssets.Scripts.Monster
         [SerializeField] private Material _fovMaterial;
 
         private float _updateTimer;
-
         private float _detectionRange = 0f;
         private float _fieldOfView = 0f;
 

@@ -9,6 +9,7 @@ namespace Assets.MyAssets.Scripts.Monster.States
 
         public void Enter(MonsterController controller)
         {
+            // Patrol하기 전 Target(이동할 목표 지점) 초기화, isStopped = false
             controller.Move.ClearPath();
         }
 
@@ -16,6 +17,7 @@ namespace Assets.MyAssets.Scripts.Monster.States
 
         public void Tick(MonsterController controller)
         {
+            // Idle 상태에서(Patrol 중에) 타겟(플레이어)이 감지되면 Chase상태로 전환
             if (controller.IsSensed)
             {
                 controller.ChangeState(controller.ChaseState);

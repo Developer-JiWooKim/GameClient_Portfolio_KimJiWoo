@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Assets.MyAssets.Scripts.Utility.Maze;
+using Assets.MyAssets.Scripts.Utility.SingleTon;
 using UnityEngine;
 using UnityEngine.AI;
-using Assets.MyAssets.Scripts.Utility.SingleTon;
-using Assets.MyAssets.Scripts.Utility.Maze;
 
 namespace Assets.MyAssets.Scripts.Monster
 {
@@ -16,7 +16,7 @@ namespace Assets.MyAssets.Scripts.Monster
         [SerializeField] private float _arriveDistance = 0.1f; // 목표 지점 도착 판정 거리 
 
         [Header("Hard 난이도")]
-        [Tooltip("Hard 난이도 + Arcane 레이어에서 추격 속도에 곱해지는 배율. 플레이어 이동속도(10)보다 빨라지도록 설정")]
+        [Tooltip("Hard 난이도 + Arcane 레이어에서 추격 속도에 곱해지는 배율. 플레이어 이동속도 보다 빨라지도록 설정")]
         [SerializeField] private float _hardArcaneChaseSpeedMultiplier = 1.6f;
 
         private NavMeshAgent _agent;
@@ -89,7 +89,17 @@ namespace Assets.MyAssets.Scripts.Monster
         }
 
         /// <summary>
-        /// 순찰 목표 초기화(NavMesh 경로 초기화) 메소드
+        ///  dir 방향으로 회전 - NavMeshAgent의 Angular Speed와 동일한 모델
+        /// </summary>
+        private void RotateToward(Vector3 dir)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(dir, Vector3.up);
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotateSpeed * Time.deltaTime);
+        }
+
+        /// <summary>
+        /// 순찰 목표 초기화 메소드
         /// </summary>
         public void ClearPath()
         {
@@ -113,8 +123,8 @@ namespace Assets.MyAssets.Scripts.Monster
         }
 
         /// <summary>
-        /// 현재 셀 기준으로 벽이 없는 인접 셀 중 하나를 골라 순찰 목표로 반환하는 메소드
-        /// 방금 왔던 셀은 막다른 길이 아닌 이상 후보에서 제외 -> 핑퐁 이동 방지
+        /// 현재 셀 기준으로 벽이 없는 방향의 인접 셀 중 하나를 골라 순찰 목표(정해진 셀의 Center)로 반환하는 메소드
+        /// 이전 셀은 막다른 길이 아닌 이상 후보에서 제외 -> 핑퐁 이동 방지
         /// </summary>
         private bool TryGetRandomPatrolPoint(out Vector3 result)
         {
@@ -122,7 +132,7 @@ namespace Assets.MyAssets.Scripts.Monster
 
             if (MazeLayerManager.Instance == null)
             {
-                Debug.LogError("MonsterMove: MazeLayerManager Instance is null");
+                Debug.LogError("MonsterMove TryGetRandomPatrolPoint(): MazeLayerManager Instance is null");
                 result = myPos;
                 return false;
             }
@@ -135,7 +145,7 @@ namespace Assets.MyAssets.Scripts.Monster
 
             if (currentCell is null)
             {
-                Debug.LogError("MonsterMove: TryGetRandomPatrolPoint currentCell is null");
+                Debug.LogError("MonsterMove TryGetRandomPatrolPoint(): currentCell is null");
                 result = myPos;
                 return false;
             }
@@ -148,6 +158,7 @@ namespace Assets.MyAssets.Scripts.Monster
             if (!currentCell.eastWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x + 1, currentCellPos.y));
             if (!currentCell.westWall) _openNeighbors.Add(new Vector2Int(currentCellPos.x - 1, currentCellPos.y));
 
+            // 이전 셀이 있고, 이동 가능한 셀이  
             if (_hasPreviousCell && _openNeighbors.Count > 1)
             {
                 _openNeighbors.Remove(_previousCell);
@@ -172,16 +183,6 @@ namespace Assets.MyAssets.Scripts.Monster
             result.y = myPos.y;
 
             return true;
-        }
-
-        /// <summary>
-        ///  dir 방향으로 고정 각속도(도/초)로 회전 - NavMeshAgent의 Angular Speed와 동일한 모델
-        /// </summary>
-        private void RotateToward(Vector3 dir)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(dir, Vector3.up);
-
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotateSpeed * Time.deltaTime);
         }
     }
 }

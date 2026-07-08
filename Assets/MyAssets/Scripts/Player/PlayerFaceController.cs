@@ -12,29 +12,34 @@ namespace Assets.MyAssets.Scripts.Player
         [SerializeField] private SkinnedMeshRenderer _faceRenderer;
 
         [Header("Face")]
-        [SerializeField] private string _fsadName  = "Fsad";
+        [SerializeField] private string _fsadName = "Fsad";
         [SerializeField] private string _fhideName = "Fhide";
-        [SerializeField] private string _fdamName  = "Fdam";
+        [SerializeField] private string _fdamName = "Fdam";
 
         [Header("Blink Cycle")]
         [SerializeField] private float _blinkIntervalMin = 2f;
         [SerializeField] private float _blinkIntervalMax = 3f;
-        [SerializeField] private float _blinkDuration    = 0.15f;
+        [SerializeField] private float _blinkDuration = 0.15f;
+
+        [Header("Blend Shape Weight Value")]
+        [Tooltip("표정 강도 수치")]
+        [SerializeField] private float _blendShapeWeightMax = 100f;
+        [SerializeField] private float _blendShapeWeightMin = 0f;
 
         private int _fsadIndex;
         private int _fhideIndex;
         private int _fdamIndex;
 
-        private bool _isCaught; // 몬스터에게 발각 여부
-
         private float _blinkTimer;
         private float _nextBlinkInterval;
 
+        private bool _isCaught; // 몬스터에게 발각 여부
+
         private void Awake()
         {
-            _fsadIndex  = _faceRenderer.sharedMesh.GetBlendShapeIndex(_fsadName);
+            _fsadIndex = _faceRenderer.sharedMesh.GetBlendShapeIndex(_fsadName);
             _fhideIndex = _faceRenderer.sharedMesh.GetBlendShapeIndex(_fhideName);
-            _fdamIndex  = _faceRenderer.sharedMesh.GetBlendShapeIndex(_fdamName);
+            _fdamIndex = _faceRenderer.sharedMesh.GetBlendShapeIndex(_fdamName);
         }
 
         private void OnEnable()
@@ -63,13 +68,13 @@ namespace Assets.MyAssets.Scripts.Player
             if (blinkProgress >= 1f)
             {
                 // 깜빡임 한 번 끝남 - 다음 깜빡임까지 다시 타이머/간격 리셋
-                _faceRenderer.SetBlendShapeWeight(_fhideIndex, 0f);
+                _faceRenderer.SetBlendShapeWeight(_fhideIndex, _blendShapeWeightMin);
                 _blinkTimer = 0f;
                 _nextBlinkInterval = Random.Range(_blinkIntervalMin, _blinkIntervalMax);
                 return;
             }
 
-            float weight = Mathf.Sin(blinkProgress * Mathf.PI) * 100f;
+            float weight = Mathf.Sin(blinkProgress * Mathf.PI) * _blendShapeWeightMax;
 
             _faceRenderer.SetBlendShapeWeight(_fhideIndex, weight);
         }
@@ -82,9 +87,9 @@ namespace Assets.MyAssets.Scripts.Player
         {
             _isCaught = true;
 
-            _faceRenderer.SetBlendShapeWeight(_fsadIndex, 0f);
-            _faceRenderer.SetBlendShapeWeight(_fhideIndex, 0f);
-            _faceRenderer.SetBlendShapeWeight(_fdamIndex, 100f);
+            _faceRenderer.SetBlendShapeWeight(_fsadIndex, _blendShapeWeightMin);
+            _faceRenderer.SetBlendShapeWeight(_fhideIndex, _blendShapeWeightMin);
+            _faceRenderer.SetBlendShapeWeight(_fdamIndex, _blendShapeWeightMax);
         }
 
         /// <summary>
@@ -94,8 +99,8 @@ namespace Assets.MyAssets.Scripts.Player
         {
             _isCaught = false;
 
-            _faceRenderer.SetBlendShapeWeight(_fsadIndex, 100f);
-            _faceRenderer.SetBlendShapeWeight(_fdamIndex, 0f);
+            _faceRenderer.SetBlendShapeWeight(_fsadIndex, _blendShapeWeightMax);
+            _faceRenderer.SetBlendShapeWeight(_fdamIndex, _blendShapeWeightMin);
 
             _blinkTimer = 0f;
             _nextBlinkInterval = Random.Range(_blinkIntervalMin, _blinkIntervalMax);
