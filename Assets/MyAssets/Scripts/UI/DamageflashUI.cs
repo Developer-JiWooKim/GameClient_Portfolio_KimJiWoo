@@ -16,7 +16,7 @@ namespace Assets.MyAssets.Scripts.UI
 
         private Image _flashImage;
 
-        private bool  _isFlashing;
+        private bool _isFlashing;
         private float _flashTimer;
 
         private void Awake()
@@ -74,7 +74,7 @@ namespace Assets.MyAssets.Scripts.UI
             }
             catch (System.OperationCanceledException oce)
             {
-                Debug.LogException(oce);
+                Debug.Log(oce);
             }
             finally
             {
