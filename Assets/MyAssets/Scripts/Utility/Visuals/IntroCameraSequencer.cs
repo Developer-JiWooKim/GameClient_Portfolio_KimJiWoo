@@ -72,7 +72,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
             }
             catch (System.OperationCanceledException oce)
             {
-                Debug.LogException(oce);
+                Debug.Log(oce);
             }
         }
 
