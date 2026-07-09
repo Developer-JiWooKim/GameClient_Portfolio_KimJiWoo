@@ -7,6 +7,7 @@ namespace Assets.MyAssets.Scripts.Monster
     /// <summary>
     /// 몬스터의 상태 전환을 관리하는 State Machine
     /// </summary>
+    [RequireComponent(typeof(MonsterController))]
     public class MonsterFSM : MonoBehaviour
     {
         private MonsterController _controller;
