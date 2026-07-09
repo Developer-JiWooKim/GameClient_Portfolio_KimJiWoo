@@ -2916,11 +2916,6 @@ MonoBehaviour:
   _rippleInDuration: 0.1
   _rippleHoldDuration: 0.05
   _rippleOutDuration: 0.1
-  _physicalGrimeMaterial: {fileID: 2100000, guid: 08460f0bec9b4d53acf7a792876e1b06,
-    type: 2}
-  _grimeCycleInterval: 30
-  _grimeStep: 0.25
-  _grimeFadeDuration: 3
 --- !u!4 &2132763795
 Transform:
   m_ObjectHideFlags: 0
