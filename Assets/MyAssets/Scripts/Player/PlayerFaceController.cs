@@ -22,7 +22,7 @@ namespace Assets.MyAssets.Scripts.Player
         [SerializeField] private float _blinkDuration = 0.15f;
 
         [Header("Blend Shape Weight Value")]
-        [Tooltip("표정 강도 수치")]
+        [Tooltip("표정 강도(최소:0 / 최대:100)")]
         [SerializeField] private float _blendShapeWeightMax = 100f;
         [SerializeField] private float _blendShapeWeightMin = 0f;
 

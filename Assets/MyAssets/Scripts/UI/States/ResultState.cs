@@ -3,7 +3,7 @@ using Assets.MyAssets.Scripts.Utility.SingleTon;
 namespace Assets.MyAssets.Scripts.UI.States
 {
     /// <summary>
-    /// 클리어/게임오버 결과 화면
+    /// 게임 클리어/오버 후 결과를 나타내는 상태
     /// </summary>
     public class ResultState : IGameFlowState
     {

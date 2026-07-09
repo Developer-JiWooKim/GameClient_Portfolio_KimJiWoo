@@ -142,7 +142,6 @@ namespace Assets.MyAssets.Scripts.Monster
             Vector2Int currentCellPos = mazeGenenrator.WorldToCell(myPos);
 
             Cell currentCell = mazeGenenrator.GetCell(currentCellPos.x, currentCellPos.y);
-
             if (currentCell is null)
             {
                 Debug.LogError("MonsterMove TryGetRandomPatrolPoint(): currentCell is null");

@@ -883,8 +883,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 20, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2100000012}
+  m_Children: []
   m_Father: {fileID: 1255066969}
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &656802223
@@ -1345,7 +1344,7 @@ MonoBehaviour:
   _resultPanel: {fileID: 1849296584}
   _damageflashUI: {fileID: 1067837771}
   _layerSwitchBlockedFlashUI: {fileID: 2100000003}
-  _layerSwitchBlockedImpulseSource: {fileID: 2100000013}
+  _layerSwitchBlockedImpulseSource: {fileID: 0}
   _monsterCount: 10
   _mazeLayerManager: {fileID: 2132763794}
   _unitsSpawner: {fileID: 1282344940}
@@ -2702,91 +2701,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2100000001}
   m_CullTransparentMesh: 1
---- !u!1 &2100000011
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100000012}
-  - component: {fileID: 2100000013}
-  m_Layer: 0
-  m_Name: LayerSwitchBlockedImpulseSource
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2100000012
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000011}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 656802222}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2100000013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
-  ImpulseDefinition:
-    ImpulseChannel: 1
-    ImpulseShape: 2
-    CustomImpulseShape:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    ImpulseDuration: 0.06
-    ImpulseType: 1
-    DissipationRate: 0.35
-    RawSignal: {fileID: 0}
-    AmplitudeGain: 0.18
-    FrequencyGain: 1
-    RepeatMode: 0
-    Randomize: 1
-    TimeEnvelope:
-      AttackShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      DecayShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      AttackTime: 0
-      SustainTime: 0.2
-      DecayTime: 0.7
-      ScaleWithImpact: 1
-      HoldForever: 0
-    ImpactRadius: 100
-    DirectionMode: 0
-    DissipationMode: 2
-    DissipationDistance: 100
-    PropagationSpeed: 343
-  DefaultVelocity: {x: 0.3, y: 0, z: 0}
 --- !u!1 &2132763793
 GameObject:
   m_ObjectHideFlags: 0
@@ -2797,6 +2711,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2132763795}
   - component: {fileID: 2132763794}
+  - component: {fileID: 2132763798}
+  - component: {fileID: 2132763797}
+  - component: {fileID: 2132763796}
   m_Layer: 0
   m_Name: MazeLayerManager
   m_TagString: Untagged
@@ -2818,21 +2735,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MazeLayerManager
   _physicalMaze: {fileID: 466176218}
   _arcaneMaze: {fileID: 1013836944}
-  _overlapCheckRadius: 0.5
+  _overlapCheckRadius: 0.3
   _fogWarSystem: {fileID: 1179157518}
   _physicalNavMeshSurface: {fileID: 988057090}
   _arcaneNavMeshSurface: {fileID: 133995910}
-  _rippleController: {fileID: 1939876767}
-  _rippleInDuration: 0.1
-  _rippleHoldDuration: 0.05
-  _rippleOutDuration: 0.1
-  _idleWaverStartDelay: 60
-  _idleWaverAmplitude: 0.08
-  _idleWaverFrequency: 0.6
-  _physicalGrimeMaterial: {fileID: 2100000, guid: 08460f0bec9b4d53acf7a792876e1b06, type: 2}
-  _grimeCycleInterval: 30
-  _grimeStep: 0.25
-  _grimeFadeDuration: 3
 --- !u!4 &2132763795
 Transform:
   m_ObjectHideFlags: 0
@@ -2848,6 +2754,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2071794230}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2132763796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132763793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50d2110047f661a4c9b34ee59c8cf552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.Visuals.LayerTransitionSequencer
+  _rippleController: {fileID: 1939876767}
+  _rippleInDuration: 0.1
+  _rippleHoldDuration: 0.05
+  _rippleOutDuration: 0.1
+--- !u!114 &2132763797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132763793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e411ae159af5242906ce73724f627a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.Visuals.HardModeIdleWaver
+  _rippleController: {fileID: 1939876767}
+  _idleWaverStartDelay: 30
+  _idleWaverAmplitude: 0.07
+  _idleWaverFrequency: 0.6
+--- !u!114 &2132763798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132763793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 212e48336dcf80e40ac392169ec91a56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Assets.MyAssets.Scripts.Utility.Visuals.PhysicalWallGrimeCycler
+  _physicalGrimeMaterial: {fileID: 2100000, guid: 08460f0bec9b4d53acf7a792876e1b06, type: 2}
+  _grimeCycleInterval: 30
+  _grimeStep: 0.25
+  _grimeFadeDuration: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -97,6 +97,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
                 _keyPool.Release(key);
             }
+
             _spawnedKeys.Clear();
         }
     }

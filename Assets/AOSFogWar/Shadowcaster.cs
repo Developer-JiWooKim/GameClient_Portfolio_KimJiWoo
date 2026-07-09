@@ -3,8 +3,18 @@
  * Author :     SeungGeon Kim (keithrek@hanmail.net)
  * Project :    FogWar
  * Filename :   Shadowcaster.cs (non-static module)
- * 
+ *
  * All Content (C) 2022 Unlimited Fischl Works, all rights reserved.
+ *
+ * [PROJECT CUSTOMIZATION] FogField.GetColors() below originally called `levelRow.Count()` (with
+ * parentheses) instead of the `levelRow.Count` property. List<T> has no Count() method, so that
+ * call was silently resolving to System.Linq.Enumerable.Count<T>() instead of the plain property.
+ * Project Auditor flagged this as a Major-severity Linq usage: GetColors() runs this inside a
+ * nested double for-loop (levelDimensionX * levelDimensionY iterations, e.g. 400x for a 20x20
+ * maze) every time csFogWar.Update() refreshes the fog texture (at FogRefreshRate cadence), so the
+ * accidental Linq dispatch fired hundreds of times per refresh. Changed to `levelRow.Count`
+ * (property access, no allocation/dispatch) since levelRow's size never changes during the loop.
+ * If this asset is ever re-imported/updated from the original source, re-apply this one-line fix.
  */
 
 /*
@@ -76,7 +86,11 @@ namespace FischlWorks_FogWar
                         }
 
                         // The reason that the darker side is the revealed ones is to let users customize fog's color
-                        colors[levelRow.Count() * (xIterator + 1) - (yIterator + 1)] =
+                        // [PROJECT CUSTOMIZATION] was `levelRow.Count()` (Linq Enumerable.Count<T>(), Major severity
+                        // per Project Auditor) - this loop runs it up to levelDimensionX*levelDimensionY times per
+                        // fog refresh; levelRow's size is fixed during the loop, so the plain Count property is
+                        // equivalent and avoids the per-iteration Linq dispatch
+                        colors[levelRow.Count * (xIterator + 1) - (yIterator + 1)] =
                         new Color(1, 1, 1, (tileOpacity) * fogPlaneAlpha);
                     }
                 }

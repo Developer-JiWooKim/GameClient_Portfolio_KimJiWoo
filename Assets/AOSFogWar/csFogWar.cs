@@ -11,6 +11,14 @@
  * gating in Update()). If this asset is ever re-imported/updated from the original source,
  * re-apply that one-line access modifier change. See MazeLayerManager.ResetFogMemory() /
  * UnitsSpawner.SpawnAll() for the call sites that depend on it.
+ *
+ * [PROJECT CUSTOMIZATION] UpdateFog()'s `foreach (FogRevealer fogRevealer in fogRevealers)` loop
+ * below was changed from a foreach with `fogRevealer == fogRevealers.Last()` to an indexed for
+ * loop with `i == fogRevealers.Count - 1`. List<T> has no Last() method, so that call was
+ * silently resolving to System.Linq.Enumerable.Last<T>() (Major severity per Project Auditor) -
+ * this runs every frame this per-revealer check is reached. Behavior is unchanged; only the
+ * last-element check no longer goes through Linq. If this asset is ever re-imported/updated from
+ * the original source, re-apply this change.
  */
 
 
@@ -442,8 +450,14 @@ namespace FischlWorks_FogWar
                 FogRefreshRateTimer -= 1 / FogRefreshRate;
             }
 
-            foreach (FogRevealer fogRevealer in fogRevealers)
+            // [PROJECT CUSTOMIZATION] was `foreach (FogRevealer fogRevealer in fogRevealers)` with
+            // `fogRevealer == fogRevealers.Last()` below (Linq Enumerable.Last<T>(), Major severity
+            // per Project Auditor, re-evaluated every iteration of this per-frame loop) - switched
+            // to an indexed for loop so the last-element check is a plain int comparison instead
+            for (int i = 0; i < fogRevealers.Count; i++)
             {
+                FogRevealer fogRevealer = fogRevealers[i];
+
                 if (fogRevealer._UpdateOnlyOnMove == false)
                 {
                     break;
@@ -456,7 +470,7 @@ namespace FischlWorks_FogWar
                     break;
                 }
 
-                if (fogRevealer == fogRevealers.Last())
+                if (i == fogRevealers.Count - 1)
                 {
                     return;
                 }

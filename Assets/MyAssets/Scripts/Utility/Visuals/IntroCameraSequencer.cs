@@ -1,3 +1,4 @@
+using Assets.MyAssets.Scripts.Utility.Core;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -28,14 +29,14 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
 
             if (_cinemachineBrain != null)
             {
-                // 게임 시작 연출 게이팅 중 Time.timeScale이 0으로 멈춰있어도 카메라 블렌드가 실제로 진행되게 함
+                // 게임 시작 연출 대기 중 Time.timeScale이 0으로 멈춰있어도 카메라 블렌드가 실제로 진행되게
                 _cinemachineBrain.IgnoreTimeScale = true;
             }
         }
 
         /// <summary>
         /// 인트로 카메라로 즉시 컷하는 메소드 - 팔로우 카메라로의 전환은 SwitchToFollowCamera()가 별도로 처리
-        /// (플레이어 인트로 애니메이션이 끝난 뒤 호출되도록 함)
+        /// 플레이어 인트로 애니메이션이 끝난 뒤 호출되도록
         /// </summary>
         public void CutToIntroCamera(Transform target)
         {
@@ -44,9 +45,8 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
             _followPlayerCamera.Priority = _introCamera.Priority - 1;
 
             // Replay 시 브레인에 이전 판의 카메라 상태가 남아있으면, 인트로 카메라로 우선순위가 바뀌는 순간
-            // 이전 위치 -> 인트로 로 블렌드가 걸려 인트로로 움직이려다 바로 팔로우로 되돌아가는 것처럼 보임
-            // ResetState()로 블렌딩 없이 즉시 인트로 카메라를 선택시켜, 첫 시작 때처럼 인트로 컷 -> 팔로우 블렌드만 보이게
-            _cinemachineBrain?.ResetState();
+            // 이전 위치 -> 인트로 로 블렌드가 걸려 인트로로 움직이려다 바로 팔로우로 되돌아가는 것처럼 보이는 현상 방지
+            _cinemachineBrain?.ResetState(); // ResetState()로 즉시 인트로 카메라를 선택
 
             _followPlayerCamera.Target.TrackingTarget = target;
         }
@@ -57,37 +57,15 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
         /// </summary>
         public async Awaitable SwitchToFollowCamera()
         {
-            try
-            {
-                // 게임 시작 연출 게이팅 중에는 Time.timeScale이 0으로 멈춰있을 수 있으므로,
-                // Awaitable.WaitForSecondsAsync(scaled time) 대신 unscaled time으로 직접 대기
-                await WaitUnscaled(_introHoldDuration);
+            // 게임 시작 연출 대기 중에는 Time.timeScale이 0으로 멈춰있을 수 있으므로, unscaled time으로 대기
+            await AwaitableUtil.WaitUnscaled(_introHoldDuration, destroyCancellationToken);
 
-                _followPlayerCamera.Priority = _introCamera.Priority + 1;
+            _followPlayerCamera.Priority = _introCamera.Priority + 1;
 
-                // CinemachineBrain.IsBlending 폴링은 프레임 타이밍에 따라 실제 블렌드보다 먼저 끝난 것처럼
-                // 보일 수 있어 신뢰할 수 없으므로, _followBlendDuration만큼 고정된 시간을 그대로 기다림
-                // (CinemachineBrain의 Default Blend Time 설정과 값을 맞춰야 함)
-                await WaitUnscaled(_followBlendDuration);
-            }
-            catch (System.OperationCanceledException oce)
-            {
-                Debug.Log(oce);
-            }
-        }
-
-        /// <summary>
-        /// Time.timeScale과 무관하게 실제 시간 기준으로 대기하는 메소드 (MazeLayerManager.WaitUnscaled와 동일한 패턴)
-        /// </summary>
-        private async Awaitable WaitUnscaled(float duration)
-        {
-            float elapsed = 0f;
-
-            while (elapsed < duration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                await Awaitable.NextFrameAsync(destroyCancellationToken);
-            }
+            // CinemachineBrain.IsBlending 폴링은 프레임 타이밍에 따라 실제 블렌드보다 먼저 끝난 것처럼
+            // 보일 수 있어 신뢰할 수 없으므로, _followBlendDuration만큼 고정된 시간을 그대로 기다림
+            // (CinemachineBrain의 Default Blend Time 설정과 값을 맞춰야 함)
+            await AwaitableUtil.WaitUnscaled(_followBlendDuration, destroyCancellationToken);
         }
     }
 }

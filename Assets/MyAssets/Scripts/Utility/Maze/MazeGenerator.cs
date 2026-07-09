@@ -380,26 +380,26 @@ namespace Assets.MyAssets.Scripts.Utility.Maze
         /// <summary>
         /// 에디터에서 그리드 확인용
         /// </summary>
-        // private void OnDrawGizmos()
-        // {
-        //     // 월드 범위 테두리
-        //     Gizmos.color = Color.green;
-        //     float totalW = _cols * _cellSize;
-        //     float totalH = _rows * _cellSize;
-        //     Vector3 center = new Vector3(worldStart.x + totalW * 0.5f, 0, worldStart.y + totalH * 0.5f);
-        //     Gizmos.DrawWireCube(center, new Vector3(totalW, 0.1f, totalH));
+        private void OnDrawGizmos()
+        {
+            // 월드 범위 테두리
+            Gizmos.color = Color.green;
+            float totalW = _cols * _cellSize;
+            float totalH = _rows * _cellSize;
+            Vector3 center = new Vector3(worldStart.x + totalW * 0.5f, 0, worldStart.y + totalH * 0.5f);
+            Gizmos.DrawWireCube(center, new Vector3(totalW, 0.1f, totalH));
 
-        //     // 셀 그리드
-        //     Gizmos.color = new Color(1, 1, 0, 0.2f);
-        //     for (int r = 0; r < _rows; r++)
-        //     {
-        //         for (int c = 0; c < _cols; c++)
-        //         {
-        //             float cx = worldStart.x + c * _cellSize + _cellSize * 0.5f;
-        //             float cz = worldStart.y + r * _cellSize + _cellSize * 0.5f;
-        //             Gizmos.DrawWireCube(new Vector3(cx, 0, cz), new Vector3(_cellSize - 0.1f, 0.1f, _cellSize - 0.1f));
-        //         }
-        //     }
-        // }
+            // 셀 그리드
+            Gizmos.color = new Color(1, 1, 0, 0.2f);
+            for (int r = 0; r < _rows; r++)
+            {
+                for (int c = 0; c < _cols; c++)
+                {
+                    float cx = worldStart.x + c * _cellSize + _cellSize * 0.5f;
+                    float cz = worldStart.y + r * _cellSize + _cellSize * 0.5f;
+                    Gizmos.DrawWireCube(new Vector3(cx, 0, cz), new Vector3(_cellSize - 0.1f, 0.1f, _cellSize - 0.1f));
+                }
+            }
+        }
     }
 }

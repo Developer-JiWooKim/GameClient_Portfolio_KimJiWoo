@@ -256,7 +256,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSight
   _detectionRange: 15
   _fieldOfView: 90
-  _isSense: 0
 --- !u!114 &5455248322757765073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +272,7 @@ MonoBehaviour:
   _chaseSpeed: 8
   _rotateSpeed: 15
   _arriveDistance: 0.5
+  _hardArcaneChaseSpeedMultiplier: 1.6
 --- !u!114 &5455916527998377572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,6 +285,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420a4ce1a8be0364482c4b1c734b8150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterController
+  _isSensed: 0
+  _isInRange: 0
+  _isDetectingPlayer: 0
 --- !u!114 &262672887263307539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,7 +300,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d8522d3160d2674690fc6321b24e958, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterFSM
-  _current: 0
 --- !u!114 &8101909464042342427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +334,26 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 2
+--- !u!114 &5555555555555555551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7092602877218490808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1001 &7054091069973251397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -449,24 +471,3 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: -0.1}
---- !u!114 &5555555555555555551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7092602877218490808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  m_SerializedVersion: 0
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents:
-  - -1
