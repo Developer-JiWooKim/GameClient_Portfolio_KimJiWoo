@@ -1,4 +1,5 @@
 using Assets.MyAssets.Scripts.Player;
+using Assets.MyAssets.Scripts.Utility.Core;
 using Assets.MyAssets.Scripts.Utility.Maze;
 using Assets.MyAssets.Scripts.Utility.SingleTon;
 using UnityEngine;
@@ -99,12 +100,12 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
                 return;
             }
 
-            // 열쇠를 전부 모으면 골 포인트를 생성하도록 구독
-            GameManager.Instance.GameRule.OnAllKeysCollected += _goalPointSpawner.SpawnGoalPoint;
+            GameRule gameRule = GameManager.Instance.GameRule;
+            gameRule.OnAllKeysCollected += _goalPointSpawner.SpawnGoalPoint; // 열쇠를 전부 모으면 골 포인트를 생성하도록 구독
 
             // 클리어/게임오버 시 몬스터가 플레이어를 계속 쫓지 않도록, MonsterSpawner가 직접 타겟을 끊음
-            GameManager.Instance.GameRule.OnClear += _monsterSpawner.StopAllMonsters;
-            GameManager.Instance.GameRule.OnGameOver += _monsterSpawner.StopAllMonsters;
+            gameRule.OnClear += _monsterSpawner.StopAllMonsters;
+            gameRule.OnGameOver += _monsterSpawner.StopAllMonsters;
 
             if (_mazeLayerManager.FogWarSystem == null)
             {
@@ -140,9 +141,10 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         /// </summary>
         private void ClearAll()
         {
-            GameManager.Instance.GameRule.OnAllKeysCollected -= _goalPointSpawner.SpawnGoalPoint;
-            GameManager.Instance.GameRule.OnClear -= _monsterSpawner.StopAllMonsters;
-            GameManager.Instance.GameRule.OnGameOver -= _monsterSpawner.StopAllMonsters;
+            GameRule gameRule = GameManager.Instance.GameRule;
+            gameRule.OnAllKeysCollected -= _goalPointSpawner.SpawnGoalPoint;
+            gameRule.OnClear -= _monsterSpawner.StopAllMonsters;
+            gameRule.OnGameOver -= _monsterSpawner.StopAllMonsters;
 
             _playerSpawner.Despawn();
             _monsterSpawner.ReleaseAll();

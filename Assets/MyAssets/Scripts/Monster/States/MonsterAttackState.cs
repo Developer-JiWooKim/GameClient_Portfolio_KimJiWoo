@@ -1,3 +1,5 @@
+using Assets.MyAssets.Scripts.Player;
+
 namespace Assets.MyAssets.Scripts.Monster.States
 {
     /// <summary>
@@ -18,16 +20,19 @@ namespace Assets.MyAssets.Scripts.Monster.States
             controller.Move.StopMovement();
             controller.Move.LookAtTarget(controller.TargetPosition);
 
+            MonsterAttackTrigger attackTrigger = controller.AttackTrigger;
+
             // 타겟(플레이어)이 공격 범위 안에 들어와 공격할 수 있는지 Trigger 체크 결과가 false면
-            if (!controller.AttackTrigger.PlayerInAttackRange)
+            if (!attackTrigger.PlayerInAttackRange)
             {
                 // 추격 상태로 전환
                 controller.ChangeState(controller.ChaseState);
                 return;
             }
 
-            // 현재 공격 가능한 상태인지 체크
-            bool didAttack = controller.AttackTrigger.Player != null && controller.AttackTrigger.Player.TakeDamage();
+            PlayerController player = attackTrigger.Player;
+
+            bool didAttack = player != null && player.TakeDamage(); // 현재 공격 가능한 상태인지 체크
 
             // 공격 가능하면 Attack 애니메이션, 불가능 하면 Idle애니메이션
             if (didAttack)

@@ -1,10 +1,10 @@
-using UnityEngine.UIElements;
 using Assets.MyAssets.Scripts.UI.Controls;
+using UnityEngine.UIElements;
 
 namespace Assets.MyAssets.Scripts.UI
 {
     /// <summary>
-    /// 게임 규칙 안내 UI - 텍스트만 표시하는 읽기 전용 패널 (닫기 버튼 외 상호작용 없음)
+    /// 게임 규칙 안내 UI
     /// </summary>
     public class HelpPanelUI : BasePanelUI
     {

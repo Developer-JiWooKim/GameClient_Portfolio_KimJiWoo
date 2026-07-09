@@ -88,7 +88,8 @@ namespace Assets.MyAssets.Scripts.Player
             }
 
             // PlayerInputHandler가 onActionTriggered 콜백으로 갱신해둔 입력값을 그대로 읽어서 사용
-            Vector3 dir = new Vector3(_playerInputHandler.InputVector.x, 0, _playerInputHandler.InputVector.y);
+            Vector2 input = _playerInputHandler.InputVector;
+            Vector3 dir = new Vector3(input.x, 0, input.y);
 
             bool hasInput = dir.sqrMagnitude > 0.0001f;
 

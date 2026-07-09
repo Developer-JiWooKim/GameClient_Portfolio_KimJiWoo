@@ -7,12 +7,16 @@ namespace Assets.MyAssets.Scripts.Utility.Core
         private float _elapsedTime = 0f;
         private bool _isRunning = false;
 
+        private int _lastFormattedSeconds = -1;
+        private string _cachedFormattedTime = "00:00";
+
         public bool IsRunning => _isRunning;
 
         public void StartTimer()
         {
             _elapsedTime = 0f;
             _isRunning = true;
+            _lastFormattedSeconds = -1;
         }
 
         public void StopTimer()
@@ -27,10 +31,19 @@ namespace Assets.MyAssets.Scripts.Utility.Core
 
         public string GetFormattedTime()
         {
-            int minutes = (int)(_elapsedTime / 60f);
-            int seconds = (int)(_elapsedTime % 60f);
+            int totalSeconds = (int)_elapsedTime;
 
-            return $"{minutes:D2}:{seconds:D2}";
+            if (totalSeconds != _lastFormattedSeconds)
+            {
+                _lastFormattedSeconds = totalSeconds;
+
+                int minutes = totalSeconds / 60;
+                int seconds = totalSeconds % 60;
+
+                _cachedFormattedTime = minutes.ToString("D2") + ":" + seconds.ToString("D2");
+            }
+
+            return _cachedFormattedTime;
         }
     }
 }
