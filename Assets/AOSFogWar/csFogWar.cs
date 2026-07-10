@@ -19,16 +19,39 @@
  * this runs every frame this per-revealer check is reached. Behavior is unchanged; only the
  * last-element check no longer goes through Linq. If this asset is ever re-imported/updated from
  * the original source, re-apply this change.
+ *
+ * [PROJECT CUSTOMIZATION] UpdateFogPlaneTextureBuffer()/UpdateFogPlaneTextureTarget() below were
+ * changed from Texture2D.GetPixels()/SetPixels() (Major severity per Project Auditor - both
+ * allocate/marshal managed Color[] arrays, and UpdateFogPlaneTextureBuffer() runs unconditionally
+ * every frame regardless of FogRefreshRate) to Texture2D.GetRawTextureData<Color32>(), which
+ * returns a NativeArray view directly onto the texture's native memory - writes go straight to
+ * the texture with no managed array round-trip, so SetPixels() is no longer needed at all.
+ * Shadowcaster.FogField.GetColors() was renamed to WriteColors() and now writes into that
+ * NativeArray<Color32> instead of allocating/caching its own Color[]. Precision drops from
+ * float to byte (RGBA32) per channel, which is not visually distinguishable for the fog alpha
+ * gradient. If this asset is ever re-imported/updated from the original source, re-apply this
+ * change.
+ *
+ * [PROJECT CUSTOMIZATION] InitializeFog()/UpdateFogPlaneTextureTarget()'s two
+ * `.GetComponent<MeshRenderer>().material` calls below were changed to `.sharedMaterial`
+ * (Major severity per Project Auditor - the `.material` getter auto-instantiates a per-renderer
+ * copy of the shared material the first time it's called, breaking batching). The fog plane's
+ * renderer is already given a dedicated instance explicitly via `.material = new
+ * Material(fogPlaneMaterial)` earlier in InitializeFog(), so by the time these two calls run,
+ * `.sharedMaterial` returns that exact same instance with no behavior change - it just skips the
+ * getter's redundant "already instantiated?" check. If this asset is ever re-imported/updated
+ * from the original source, re-apply this change.
  */
 
 
 
 using System;                       // Convert
+using System.Collections.Generic;   // List
 using System.IO;                    // Directory
 using System.Linq;                  // Enumerable
-using System.Collections.Generic;   // List
-using UnityEngine;                  // Monobehaviour
+using Unity.Collections;            // NativeArray
 using UnityEditor;                  // Handles
+using UnityEngine;                  // Monobehaviour
 
 
 
@@ -60,8 +83,10 @@ namespace FischlWorks_FogWar
             }
 
             // Indexer definition
-            public LevelColumn this[int index] {
-                get {
+            public LevelColumn this[int index]
+            {
+                get
+                {
                     if (index >= 0 && index < levelRow.Count)
                     {
                         return levelRow[index];
@@ -73,7 +98,8 @@ namespace FischlWorks_FogWar
                         return null;
                     }
                 }
-                set {
+                set
+                {
                     if (index >= 0 && index < levelRow.Count)
                     {
                         levelRow[index] = value;
@@ -117,27 +143,30 @@ namespace FischlWorks_FogWar
             }
 
             // Indexer definition
-            public ETileState this[int index] {
-                get {
+            public ETileState this[int index]
+            {
+                get
+                {
                     if (index >= 0 && index < levelColumn.Count)
                     {
                         return levelColumn[index];
                     }
                     else
                     {
-                       // Debug.LogErrorFormat("index given in y axis is out of range");
+                        // Debug.LogErrorFormat("index given in y axis is out of range");
 
                         return ETileState.Empty;
                     }
                 }
-                set {
+                set
+                {
                     if (index >= 0 && index < levelColumn.Count)
                     {
                         levelColumn[index] = value;
                     }
                     else
                     {
-                       // Debug.LogErrorFormat("index given in y axis is out of range");
+                        // Debug.LogErrorFormat("index given in y axis is out of range");
 
                         return;
                     }
@@ -184,8 +213,10 @@ namespace FischlWorks_FogWar
             public bool _UpdateOnlyOnMove => updateOnlyOnMove;
 
             private Vector2Int currentLevelCoordinates = new Vector2Int();
-            public Vector2Int _CurrentLevelCoordinates {
-                get {
+            public Vector2Int _CurrentLevelCoordinates
+            {
+                get
+                {
                     lastSeenAt = currentLevelCoordinates;
 
                     return currentLevelCoordinates;
@@ -411,7 +442,7 @@ namespace FischlWorks_FogWar
 
             fogPlane.GetComponent<MeshRenderer>().material = new Material(fogPlaneMaterial);
 
-            fogPlane.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", fogPlaneTextureLerpBuffer);
+            fogPlane.GetComponent<MeshRenderer>().sharedMaterial.SetTexture("_MainTex", fogPlaneTextureLerpBuffer);
 
             fogPlane.GetComponent<MeshCollider>().enabled = false;
         }
@@ -504,8 +535,8 @@ namespace FischlWorks_FogWar
         // Doing shader business on the script, if we pull this out as a shader pass, same operations must be repeated
         private void UpdateFogPlaneTextureBuffer()
         {
-            Color[] bufferPixels = fogPlaneTextureLerpBuffer.GetPixels();
-            Color[] targetPixels = fogPlaneTextureLerpTarget.GetPixels();
+            NativeArray<Color32> bufferPixels = fogPlaneTextureLerpBuffer.GetRawTextureData<Color32>();
+            NativeArray<Color32> targetPixels = fogPlaneTextureLerpTarget.GetRawTextureData<Color32>();
 
             if (bufferPixels.Length != targetPixels.Length)
             {
@@ -517,8 +548,6 @@ namespace FischlWorks_FogWar
             {
                 bufferPixels[i] = Color.Lerp(bufferPixels[i], targetPixels[i], fogLerpSpeed * Time.deltaTime);
             }
-            
-            fogPlaneTextureLerpBuffer.SetPixels(bufferPixels);
 
             fogPlaneTextureLerpBuffer.Apply();
         }
@@ -527,9 +556,9 @@ namespace FischlWorks_FogWar
 
         private void UpdateFogPlaneTextureTarget()
         {
-            fogPlane.GetComponent<MeshRenderer>().material.SetColor("_Color", fogColor);
+            fogPlane.GetComponent<MeshRenderer>().sharedMaterial.SetColor("_Color", fogColor);
 
-            fogPlaneTextureLerpTarget.SetPixels(shadowcaster.fogField.GetColors(fogPlaneAlpha, this));
+            shadowcaster.fogField.WriteColors(fogPlaneAlpha, this, fogPlaneTextureLerpTarget.GetRawTextureData<Color32>());
 
             fogPlaneTextureLerpTarget.Apply();
         }
@@ -696,7 +725,7 @@ namespace FischlWorks_FogWar
 
             if (additionalRadius == 0)
             {
-                return shadowcaster.fogField[levelCoordinates.x][levelCoordinates.y] == 
+                return shadowcaster.fogField[levelCoordinates.x][levelCoordinates.y] ==
                     Shadowcaster.LevelColumn.ETileVisibility.Revealed;
             }
 
@@ -707,7 +736,7 @@ namespace FischlWorks_FogWar
                 for (int yIterator = -1; yIterator < additionalRadius + 1; yIterator++)
                 {
                     if (CheckLevelGridRange(new Vector2Int(
-                        levelCoordinates.x + xIterator, 
+                        levelCoordinates.x + xIterator,
                         levelCoordinates.y + yIterator)) == false)
                     {
                         scanResult = 0;
@@ -716,7 +745,7 @@ namespace FischlWorks_FogWar
                     }
 
                     scanResult += Convert.ToInt32(
-                        shadowcaster.fogField[levelCoordinates.x + xIterator][levelCoordinates.y + yIterator] == 
+                        shadowcaster.fogField[levelCoordinates.x + xIterator][levelCoordinates.y + yIterator] ==
                         Shadowcaster.LevelColumn.ETileVisibility.Revealed);
                 }
             }
@@ -747,8 +776,8 @@ namespace FischlWorks_FogWar
         public Vector3 GetWorldVector(Vector2Int worldCoordinates)
         {
             return new Vector3(
-                GetWorldX(worldCoordinates.x + (levelDimensionX / 2)), 
-                0, 
+                GetWorldX(worldCoordinates.x + (levelDimensionX / 2)),
+                0,
                 GetWorldY(worldCoordinates.y + (levelDimensionY / 2)));
         }
 
@@ -878,7 +907,8 @@ namespace FischlWorks_FogWar
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class ShowIfAttribute : PropertyAttribute
     {
-        public string _BaseCondition {
+        public string _BaseCondition
+        {
             get { return mBaseCondition; }
         }
 
@@ -895,7 +925,8 @@ namespace FischlWorks_FogWar
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class BigHeaderAttribute : PropertyAttribute
     {
-        public string _Text {
+        public string _Text
+        {
             get { return mText; }
         }
 

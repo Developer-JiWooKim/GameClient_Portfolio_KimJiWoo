@@ -21,8 +21,8 @@ namespace Assets.MyAssets.Scripts.Monster
 
         private NavMeshAgent _agent;
         private Vector3 _patrolTarget;
-        private Vector2Int _previousCell;
         private bool _hasPatrolTarget;
+        private Vector2Int _previousCell;
         private bool _hasPreviousCell;
 
         private List<Vector2Int> _openNeighbors = new List<Vector2Int>(4);
@@ -42,6 +42,7 @@ namespace Assets.MyAssets.Scripts.Monster
             _agent.speed = _patrolSpeed;
             _agent.isStopped = false;
 
+            // 목표 지점이 이미 있거나, 도착 지점에 도달하지 못했으면 새로운 목표 지점을 찾지 않음
             if (!_hasPatrolTarget || _agent.remainingDistance <= _arriveDistance)
             {
                 if (TryGetRandomPatrolPoint(out Vector3 point))

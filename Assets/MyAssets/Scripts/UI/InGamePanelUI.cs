@@ -1,5 +1,5 @@
-using UnityEngine.UIElements;
 using Assets.MyAssets.Scripts.UI.Controls;
+using UnityEngine.UIElements;
 
 namespace Assets.MyAssets.Scripts.UI
 {
@@ -32,12 +32,12 @@ namespace Assets.MyAssets.Scripts.UI
 
         public void UpdateHp(int current, int max)
         {
-            _hpText.text = $"HP : {current} / {max}";
+            _hpText.text = "HP : " + current.ToString() + " / " + max.ToString();
         }
 
         public void UpdateKeyCount(int current, int required)
         {
-            _keyCountText.text = $"Keys : {current} / {required}";
+            _keyCountText.text = "Keys : " + current.ToString() + " / " + required.ToString();
         }
 
         public void UpdateTimer(string formattedTime)

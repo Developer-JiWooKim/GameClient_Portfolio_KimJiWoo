@@ -1,48 +1,100 @@
-# 게임 엔진 포트폴리오 과제
+# 게임 포트폴리오 과제
 
-게임 컨셉 : 악몽에 갇힌 플레이어, 미로에서 열쇠(영혼? 조각? 명칭은 안정함)를 찾아 악몽에서 빠져나가기(Goal Point)
+## 프로젝트 개요
 
-추가되는 룰:
-	노멀 난이도	
-		현재 상태 유지(벽 오브젝트만 좀 다르게 바꾸고 말듯, 현재의 기형적인 무늬가 나오는 Physical Wall을 하드 난이도에서 활용)
-	하드 난이도
-		타임 제한 설정(일단은 3분으로 설정, 추후 조정 가능)
-		미로를 전환할때 리스크 증가
-			Arcane 미로로 전환 시 몬스터의 이동속도가 플레이어보다 빨라짐
-			어디에 있든 항상 플레이어를 감지함
-			플레이어 정신력? 게이지 만들어서 Arcane미로에 오래 머물수록 정신력이 깎이고 정신력 게이지가 0이되면 곧바로 게임이 종료되게? 정신력 게이지는 Physical 상태일때는 조금씩 회복
-		시간이 지남에 따라 Physical Maze에도 영향이 감
-			30초? 혹은 1분?이 지날때마다 조금씩 벽에 기형적인 무늬(지금 Physical에 적용된 머테리얼)가 조금씩 늘어나고 마지막30초에는 현재 Physical에 적용된 머테리얼이 그대로 적용
-			위에 처럼 바뀔때마다 화면도 조금씩 흔들리게 해서 플레이어 이동 방해, 마지막 30초쯤에는 플레이하는 유저가 멀미가 일정도로 흔들리게 or 화면 일러이는 효과(우리가 만든 레이어 전환 쉐이더 그래프 활용)
-			브금도 점점 고조되게 바꿀듯
+플레이어는 꿈의 미로에 갇혀 있습니다. 미로 곳곳에 흩어진 **꿈의 조각(열쇠)**를 모두 모으면 미로 오른쪽 위 구석에 **Goal Point**가 생성되고, 그곳에 도달하면 탈출(클리어)합니다. 
 
+이 꿈의 미로는 특정 커맨드를 입력하여 전환할 수 있습니다.
+- *Physical*
+- *Arcane*
 
-게임 인트로 연출 제작
-	캐릭터 모델링, 표정이 다 들어있어서 이걸로 침대에 누워있는 캐릭터가 고개를 찌푸리며 악몽을 꾸는 연출을 타임라인으로 인트로 영상? 연출? 만들어서 게임 플레이 도입부에 넣고
-	Title UI로 넘어가기
-		title UI : 게임 이름 / 시작버튼 / 종료 버튼 / 옵션 설정?버튼
-		Select UI : 난이도 설정(노말, 하드), 캐릭터 설정(시간이 되면 추가), 뒤로가기
+게임 오버 조건
+- 미로 안에는 몬스터가 돌아다니고 있으며, 플레이어를 발견 시 추격·공격(공격 범위 안에 들어올 시)하며, 3회 공격당해 HP가 0이 되면 게임 오버입니다.
 
-	게임 시작 시 -> 화면으로 빨려들어가는 연출? 후 현재 제작한 인트로 화면에서 플레이어 추적 카메라로 전환되는 연출 
-	-> 카메라 전환이 완료되면 미로에 쓰러져있던 캐릭터가 일어나서 주변을 두리번 거리는 애니메이션 재생 후 게임 시간이 흘러가면서 게임 시작
-	
-벽 오브젝트 꾸미기
-	좀더 카툰렌더링 모델에 어울리게 장난감이나 색다른 블럭을 Wall로 설정후, 우리가 만든 일그러지는 패턴 쉐이더로 시간이 지남에 따라 벽에 기하학적인 무늬가 생기게 해서 공포 분위기 연출
-	
+- `Arcane`미로 안에서는 지속적으로 정신력이 소모됩니다. 이 정신력이 0이 되면 게임 오버입니다.
 
-UI 꾸미기
-	카툰렌더링 모델을 사용하므로 공포 분위기와 카툰느낌이 어우러지게 바꿀듯
+| 항목 | 내용 |
+|---|---|
+| 유니티 버전 | Unity 6 (6000.4.9f1) |
+| 렌더 파이프라인 | URP |
+| 장르 | 미로 탈출 / 추격 회피 |
+| 메인 씬 | `Assets/MyAssets/Scenes/GameClientAssignment.unity` |
 
+---
 
-누워서 고통스러워 하는 연출
-	페이스 하이드100
-		새드 100
+## 시연 방법
 
-애니메이션 -> StandB
+1. Unity 6(6000.4.9f1, URP)로 프로젝트 열기
+2. `Assets/MyAssets/Scenes/GameClientAssignment.unity` 씬 열고 Play
+3. 타이틀 화면 → 난이도(Normal/Hard) 선택 → Intro 연출 후 InGameUI가 나오면 게임 시작
 
-	--> 이렇게하면 찡그린 표정으로 고개 좌우로 움직임 -> 침대 위에 눕혀놓고 이렇게 설정하고 카메라를 얼굴쪽으로 조금씩 확대하면 연출될듯
+---
 
-	
+### 조작법
 
+| 입력 | 기능 |
+|---|---|
+| `W` `A` `S` `D` / 방향키 | 상하좌우 이동 |
+| `Tab` | 미로 레이어 전환 (Physical ↔ Arcane) |
+| `Esc` | 일시정지(게임 플레이 중에만 동작), 게임재개(일시정지 상태에서 한번더 누르면 일시정지 해제) |
 
+---
 
+## 실행 화면
+
+### 게임 실행
+<img src="" width="800">
+
+### 게임 플레이 
+<img src="" width="800">
+
+### 게임 클리어
+<img src="" width="800">
+
+---
+
+## 사용한 엔진 기능
+
+| 분류 | 적용 내용 |
+|---|---|
+| **Animation / Animator** | Player/Monster 각각 `Animator` 기반 애니메이션(`PlayerAnim.cs`, `MonsterAnim.cs`) |
+| **UI** | UGUI Canvas 하위 Title/Select/InGame/Pause/Result/Help 패널(UIToolKit)을 `GameUIController.cs` + `GameFlowFSM`(상태 패턴)이 조율, `DamageflashUI.cs`로 피격 시 화면 붉은색 페이드 |
+| **사운드** | `SoundManager`(싱글톤) + `SoundLibrary`(ScriptableObject, AudioClip 보관) |
+| **VFX** | Goal Point 프리팹의 `ParticleSystem`, `ScreenRippleController` + ShaderGraph(`SG_LayerTransitionRipple`) 기반 레이어 전환 화면 일렁임 연출 |
+| **물리 Trigger** | 열쇠 회수(`Key.cs`), Goal Point 도달(`GoalPoint.cs`), 몬스터 공격 범위 판정(`MonsterAttackTrigger.cs`) |
+| **Cinemachine** | `CinemachineBrain` + `CM_IntroCamera`/`CM_QuarterViewCamera`(우선순위 기반 블렌딩)로 카메라 전환 연출, 피격 시 `Cinemachine Impulse` 카메라 흔들림 |
+| **조명 / 머티리얼** | Physical/Arcane 벽 머티리얼(ShaderGraph `SG_PhysicalGrime`/`SG_ArcaneNoise`), Key/Goal Point 발광 머티리얼(`SG_GlowOrb`), 레이어 전환에 맞춘 Directional Light·Fog 색 전환(`LayerLightingController.cs`) |
+| **이동 / 경로 시스템** | Player: `CharacterController`(`PlayerMove.cs`) 기반 이동 / Monster: `NavMeshAgent` + `NavMeshSurface`(레이어별 독립 베이크, `MazeLayerManager.cs`) 기반 이동 |
+
+### 추가로 사용한 시스템
+- **Input System** — `PlayerInput.onActionTriggered` 이벤트 기반 입력 처리, `PlayerInputHandler.cs`
+- **Awaitable 비동기** — 레이어 전환 시퀀스, 카메라 인트로 딜레이 등 시간 기반 연출 처리
+- **FSM** — 몬스터 AI(`MonsterFSM.cs` + `IMonsterState.cs` 구현체), UI 흐름(`GameFlowFSM.cs` + `IGameFlowState.cs` 구현체) 양쪽에 State 패턴 적용
+- **오브젝트 풀링** — 몬스터/열쇠/벽(Physical/Arcane Wall)은 `UnityEngine.Pool.ObjectPool<GameObject>`로 재사용(`MonsterSpawner.cs`, `KeySpawner.cs`, `MazeGenerator.cs`)
+
+---
+
+## 리소스 구성
+
+```
+Assets/
+└─ MyAssets/                  # 직접 작업한 리소스
+   ├─ Animation/              # 애니메이션 클립들(Player, Monster)
+   ├─ Animator/               # Animator Controller(Player, Monster)
+   ├─ Fonts/                  # Font
+   ├─ Materials/              # 직접 만든 머티리얼들
+   ├─ Prefabs/                # Player, Monster, Key, GoalPoint 등
+   ├─ Scenes/                 # GameClientAssignment (메인 씬)
+   ├─ ScriptableObjectAssets/ # SoundLibrary 에셋
+   ├─ Scripts/
+   │   ├─ Monster/            # 몬스터 AI(FSM, Sight, Move, Anim)
+   │   ├─ Player/             # 플레이어 입력/이동/애니메이션
+   │   ├─ ScriptableObject/   # SoundLibrary 등 SO 클래스
+   │   ├─ UI/                 # 패널, GameFlowFSM
+   │   ├─ Utility/            # Maze, Spawners, SingleTon(Manager), Visuals, Core
+   │   └─ Obsolete/           # AStarPathfinder, FollowCamera ([Obsolete] 처리, 참고용)
+   ├─ ShaderGraphs/           # SG_PhysicalGrime, SG_ArcaneNoise, SG_GlowOrb, SG_LayerTransitionRipple
+   └─ SoundClips/             # AudioClip 원본
+```
+
+외부 에셋(`AOSFogWar`, `Hand Painted Stone Texture`, `SD Unity-Chan Haon Custom`, `Toon Shaders Pro`, `unity-chan!`, `TextMesh Pro`)은 원래 임포트 경로를 그대로 유지

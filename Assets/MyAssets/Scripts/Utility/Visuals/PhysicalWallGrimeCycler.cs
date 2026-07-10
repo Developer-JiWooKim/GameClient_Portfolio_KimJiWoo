@@ -6,17 +6,15 @@ using UnityEngine;
 namespace Assets.MyAssets.Scripts.Utility.Visuals
 {
     /// <summary>
-    /// Physical 벽에 30초 주기로 그림(오염) 무늬가 누적되는 연출을 담당하는 컴포넌트
-    /// Physical 벽은 모두 동일한 _physicalGrimeMaterial(공유 머테리얼)을 참조하므로, 이 머테리얼 하나만 값을 바꿔도
-    /// Physical 레이어의 모든 벽에 한 번에 반영됨
+    /// Physical 벽에 _grimeCycleInterval초 주기로 그림(오염) 무늬가 누적되는 연출을 담당하는 컴포넌트
     /// </summary>
     public class PhysicalWallGrimeCycler : MonoBehaviour
     {
         [Header("Physical Wall Grime")]
-        [SerializeField] private Material _physicalGrimeMaterial; // Wall_Physical의 유일한 머테리얼 슬롯과 동일한 에셋(공유 머테리얼)을 참조해야 함
+        [SerializeField] private Material _physicalGrimeMaterial;
         [SerializeField] private float _grimeCycleInterval = 30f; // 다음 단계로 넘어가기까지 대기하는 시간(초)
-        [SerializeField] private float _grimeStep = 0.25f; // 한 사이클마다 늘어나는 블렌드 양(0~1)
-        [SerializeField] private float _grimeFadeDuration = 3f; // 한 사이클 내에서 블렌드가 부드럽게 올라가는 시간(초)
+        [SerializeField] private float _grimeStep = 0.25f;        // 한 사이클마다 늘어나는 블렌드 양(0~1)
+        [SerializeField] private float _grimeFadeDuration = 1.5f; // 한 사이클 내에서 블렌드가 부드럽게 올라가는 시간(초)
 
         private static readonly int GrimeBlendPropertyId = Shader.PropertyToID("_GrimeBlend");
 
@@ -37,7 +35,11 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
             _grimeCts?.Dispose();
             _grimeCts = null;
 
-            if (_physicalGrimeMaterial == null) return;
+            if (_physicalGrimeMaterial == null)
+            {
+                Debug.LogError("PhysicalWallGrimeCycler - RestartCycle(): _physicalGrimeMaterial is null");
+                return;
+            }
 
             _physicalGrimeMaterial.SetFloat(GrimeBlendPropertyId, 0f);
 

@@ -12,9 +12,6 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     /// </summary>
     public class UnitsSpawner : MonoBehaviour
     {
-        [Header("Maze Layer Manager")]
-        [SerializeField] private MazeLayerManager _mazeLayerManager;
-
         [Header("Spawners")]
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private MonsterSpawner _monsterSpawner;
@@ -27,7 +24,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         private Vector2Int _goalCell;        // 목표 지점 셀
 
         private MazeGenerator _activeMaze;
-
+        private MazeLayerManager _mazeLayerManager;
         public PlayerController Player => _playerSpawner.Player;
 
         /// <summary>
@@ -37,6 +34,12 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
 
         private void Initialize()
         {
+            _mazeLayerManager = MazeLayerManager.Instance;
+            if (_mazeLayerManager == null)
+            {
+                Debug.LogError("UnitsSpawner Initialize(): _mazeLayerManager is null");
+            }
+
             _activeMaze = _mazeLayerManager.GetActiveMaze();
             if (_activeMaze == null)
             {
@@ -61,7 +64,6 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             bool hasNull = false;
 
             // 현재 내 스크립트의 필드들 전수 조사 (널이 있으면 로그를 찍고 true로 잠금)
-            if (_mazeLayerManager == null) { Debug.LogError("UnitsSpawner: _mazeLayerManager is null"); hasNull = true; }
             if (_playerSpawner == null) { Debug.LogError("UnitsSpawner: _playerSpawner is null"); hasNull = true; }
             if (_monsterSpawner == null) { Debug.LogError("UnitsSpawner: _monsterSpawner is null"); hasNull = true; }
             if (_keySpawner == null) { Debug.LogError("UnitsSpawner: _keySpawner is null"); hasNull = true; }
@@ -141,6 +143,12 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
         /// </summary>
         private void ClearAll()
         {
+            if (GameManager.Instance == null)
+            {
+                Debug.LogError("UnitsSpawner ClearAll(): GameManager Instance is null");
+                return;
+            }
+
             GameRule gameRule = GameManager.Instance.GameRule;
             gameRule.OnAllKeysCollected -= _goalPointSpawner.SpawnGoalPoint;
             gameRule.OnClear -= _monsterSpawner.StopAllMonsters;

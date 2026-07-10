@@ -1776,13 +1776,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1179157516}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1370825219}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2132763795}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1179157518
 MonoBehaviour:
@@ -1886,7 +1886,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c0e2c3fc04848548ad8bc3d680b27ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawner
-  _mazeLayerManager: {fileID: 2132763794}
   _playerSpawner: {fileID: 1873188345}
   _monsterSpawner: {fileID: 665127257}
   _keySpawner: {fileID: 301959642}
@@ -2751,7 +2750,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1179157517}
   m_Father: {fileID: 2071794230}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2132763796
@@ -2801,7 +2801,7 @@ MonoBehaviour:
   _physicalGrimeMaterial: {fileID: 2100000, guid: 08460f0bec9b4d53acf7a792876e1b06, type: 2}
   _grimeCycleInterval: 30
   _grimeStep: 0.25
-  _grimeFadeDuration: 3
+  _grimeFadeDuration: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2812,6 +2812,5 @@ SceneRoots:
   - {fileID: 782461474}
   - {fileID: 495425287}
   - {fileID: 1809156178}
-  - {fileID: 1179157517}
   - {fileID: 2071794230}
   - {fileID: 1679605075}

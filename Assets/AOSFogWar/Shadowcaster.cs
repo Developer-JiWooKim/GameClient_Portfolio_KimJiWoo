@@ -15,6 +15,13 @@
  * accidental Linq dispatch fired hundreds of times per refresh. Changed to `levelRow.Count`
  * (property access, no allocation/dispatch) since levelRow's size never changes during the loop.
  * If this asset is ever re-imported/updated from the original source, re-apply this one-line fix.
+ *
+ * [PROJECT CUSTOMIZATION] FogField.GetColors() was renamed to WriteColors() and changed from
+ * allocating/caching its own Color[] (returned to csFogWar for a Texture2D.SetPixels() call -
+ * Major severity per Project Auditor) to writing directly into a NativeArray<Color32> parameter
+ * supplied by the caller (a live view onto the fog texture's native memory obtained via
+ * Texture2D.GetRawTextureData<Color32>()). See csFogWar.cs's matching customization note. If
+ * this asset is ever re-imported/updated from the original source, re-apply this change.
  */
 
 /*
@@ -27,8 +34,9 @@
 
 
 
-using System.Linq;                  // Enumerable
 using System.Collections.Generic;   // List
+using System.Linq;                  // Enumerable
+using Unity.Collections;            // NativeArray
 using UnityEngine;                  // Vector2
 
 
@@ -49,7 +57,7 @@ namespace FischlWorks_FogWar
         /// 
         /// This class is only instantiated and managed by a single Shadowcaster object,\n
         /// and the object only lasts per session, unlike the serialized LevelData of csFogWar.\n
-        /// This class also has the GetColors() method, which returns the actual texture data in a 1D Color array format. 
+        /// This class also has the WriteColors() method, which writes the actual texture data directly into a caller-supplied NativeArray of Color32.
         public class FogField
         {
             public void AddColumn(LevelColumn levelColumn)
@@ -65,13 +73,8 @@ namespace FischlWorks_FogWar
                 }
             }
 
-            public Color[] GetColors(float fogPlaneAlpha, csFogWar fogWar)
+            public void WriteColors(float fogPlaneAlpha, csFogWar fogWar, NativeArray<Color32> colors)
             {
-                if (colors == null)
-                {
-                    colors = new Color[levelRow.Count * levelRow[0].Count()];
-                }
-
                 for (int xIterator = 0; xIterator < levelRow[0].Count(); xIterator++)
                 {
                     for (int yIterator = 0; yIterator < levelRow.Count; yIterator++)
@@ -94,13 +97,13 @@ namespace FischlWorks_FogWar
                         new Color(1, 1, 1, (tileOpacity) * fogPlaneAlpha);
                     }
                 }
-
-                return colors;
             }
 
             // Indexer definition
-            public LevelColumn this[int index] {
-                get {
+            public LevelColumn this[int index]
+            {
+                get
+                {
                     if (index >= 0 && index < levelRow.Count)
                     {
                         return levelRow[index];
@@ -112,7 +115,8 @@ namespace FischlWorks_FogWar
                         return null;
                     }
                 }
-                set {
+                set
+                {
                     if (index >= 0 && index < levelRow.Count)
                     {
                         levelRow[index] = value;
@@ -127,9 +131,6 @@ namespace FischlWorks_FogWar
             }
 
             private List<LevelColumn> levelRow = new List<LevelColumn>();
-
-            // To be initialized with the dependant initialization function call
-            private Color[] colors = null;
         }
 
 
@@ -173,8 +174,10 @@ namespace FischlWorks_FogWar
             }
 
             // Indexer definition
-            public ETileVisibility this[int index] {
-                get {
+            public ETileVisibility this[int index]
+            {
+                get
+                {
                     if (index >= 0 && index < levelColumn.Count)
                     {
                         return levelColumn[index];
@@ -186,7 +189,8 @@ namespace FischlWorks_FogWar
                         return ETileVisibility.Hidden;
                     }
                 }
-                set {
+                set
+                {
                     if (index >= 0 && index < levelColumn.Count)
                     {
                         levelColumn[index] = value;
@@ -238,7 +242,7 @@ namespace FischlWorks_FogWar
                         quadrantPoint = new Vector2Int(originPoint.x - quadrantVector.y, originPoint.y + quadrantVector.x);
                         break;
                     case ECardinal.West:
-                        quadrantPoint =  new Vector2Int(originPoint.x - quadrantVector.x, originPoint.y - quadrantVector.y);
+                        quadrantPoint = new Vector2Int(originPoint.x - quadrantVector.x, originPoint.y - quadrantVector.y);
                         break;
                     case ECardinal.South:
                         quadrantPoint = new Vector2Int(originPoint.x + quadrantVector.y, originPoint.y - quadrantVector.x);
