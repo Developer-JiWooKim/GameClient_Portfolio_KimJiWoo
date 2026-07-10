@@ -20,9 +20,8 @@ namespace Assets.MyAssets.Scripts.Monster.States
             controller.Move.StopMovement();
             controller.Move.LookAtTarget(controller.TargetPosition);
 
-            MonsterAttackTrigger attackTrigger = controller.AttackTrigger;
-
             // 타겟(플레이어)이 공격 범위 안에 들어와 공격할 수 있는지 Trigger 체크 결과가 false면
+            MonsterAttackTrigger attackTrigger = controller.AttackTrigger;
             if (!attackTrigger.PlayerInAttackRange)
             {
                 // 추격 상태로 전환

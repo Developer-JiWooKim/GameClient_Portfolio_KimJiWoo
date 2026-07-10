@@ -34,7 +34,7 @@ namespace Assets.MyAssets.Scripts.Monster
             // Animator 컴포넌트 Null 체크
             if (!_isSetAnimator)
             {
-                Debug.LogError("Animator is null");
+                Debug.LogError("MonsterAnim - SetState(): Animator is null");
                 return;
             }
 

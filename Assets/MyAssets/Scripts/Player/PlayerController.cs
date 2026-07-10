@@ -120,7 +120,7 @@ namespace Assets.MyAssets.Scripts.Player
             _invincibleTimer = _invincibleDuration;
 
             // 피격 시 카메라 흔들림 발생 (Cinemachine Impulse Listener가 받아서 처리)
-            _impulseSource?.GenerateImpulse();
+            _impulseSource.GenerateImpulse();
 
             SoundManager.Instance?.PlayPlayerDamaged();
 
@@ -140,11 +140,11 @@ namespace Assets.MyAssets.Scripts.Player
             _detectingMonsterCount = Mathf.Max(0, _detectingMonsterCount + (isDetected ? 1 : -1));
             if (_detectingMonsterCount > 0)
             {
-                _faceController?.SetCaughtExpression();
+                _faceController.SetCaughtExpression();
             }
             else
             {
-                _faceController?.SetNormalExpression();
+                _faceController.SetNormalExpression();
             }
         }
     }

@@ -28,6 +28,7 @@ namespace Assets.MyAssets.Scripts.Monster
         private void Awake()
         {
             _controller = GetComponent<MonsterController>();
+
             _current = _idleState;
         }
 

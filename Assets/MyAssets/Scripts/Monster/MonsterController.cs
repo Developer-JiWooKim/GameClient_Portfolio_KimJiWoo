@@ -120,7 +120,7 @@ namespace Assets.MyAssets.Scripts.Monster
         /// </summary>
         private void SetDetectingPlayer(bool isDetecting)
         {
-            if (_isDetectingPlayer == isDetecting) return;
+            if (_isDetectingPlayer == isDetecting) return; // 이미 발견한 상태면 바로 리턴
 
             _isDetectingPlayer = isDetecting;
 

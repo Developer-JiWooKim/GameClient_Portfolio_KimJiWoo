@@ -17,7 +17,11 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
 
         public void SetIntensity(float intensity)
         {
-            if (_rippleMat == null) return;
+            if (_rippleMat == null)
+            {
+                Debug.LogError("ScreenRippleController - Material is null!!");
+                return;
+            }
 
             _rippleMat.SetFloat(IntensityID, intensity);
         }

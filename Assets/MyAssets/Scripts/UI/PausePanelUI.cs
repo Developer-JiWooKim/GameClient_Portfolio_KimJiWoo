@@ -35,8 +35,8 @@ namespace Assets.MyAssets.Scripts.UI
         /// </summary>
         public void Show(int currentHp, int maxHp, int currentKeys, int requiredKeys, string formattedTime)
         {
-            _hpText.text       = $"HP : {currentHp} / {maxHp}";
-            _keyCountText.text = $"Keys : {currentKeys} / {requiredKeys}";
+            _hpText.text       = "HP : " + currentHp.ToString() + " / " + maxHp.ToString();
+            _keyCountText.text = "Keys : " + currentKeys.ToString() + " / " + requiredKeys.ToString();
             _timerText.text    = formattedTime;
 
             Show();

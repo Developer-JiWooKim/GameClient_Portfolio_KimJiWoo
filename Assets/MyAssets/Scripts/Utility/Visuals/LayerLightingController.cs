@@ -32,7 +32,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
             }
             else
             {
-                Debug.LogError("LayerLightingController - Start(): MazeLayerManager.Instance is Null!!");
+                Debug.LogError("LayerLightingController - Start(): MazeLayerManager.Instance is Null");
             }
         }
 

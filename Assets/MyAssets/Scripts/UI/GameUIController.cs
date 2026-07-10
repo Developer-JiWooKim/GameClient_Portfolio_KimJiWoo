@@ -190,6 +190,7 @@ namespace Assets.MyAssets.Scripts.UI
         /// </summary>
         private void SetupInGame()
         {
+            // 게임 시작 전 규칙을 생성(클리어 조건, 오버 조건, 현재 게임이 끝났는지 여부)
             GameRule gameRule = GameManager.Instance.GameRule;
 
             _player.OnHPChanged += _inGamePanel.UpdateHp;
