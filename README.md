@@ -43,13 +43,13 @@
 ## 실행 화면
 
 ### 게임 실행
-<img src="" width="800">
+<img src="Assets/MyAssets/Screenshots/Title.jpg" width="800">
 
 ### 게임 플레이 
-<img src="" width="800">
+<img src="Assets/MyAssets/Screenshots/Play.jpg" width="800">
 
 ### 게임 클리어
-<img src="" width="800">
+<img src="Assets/MyAssets/Screenshots/Clear.jpg" width="800">
 
 ---
 
@@ -60,7 +60,7 @@
 | **Animation / Animator** | Player/Monster 각각 `Animator` 기반 애니메이션(`PlayerAnim.cs`, `MonsterAnim.cs`) |
 | **UI** | UGUI Canvas 하위 Title/Select/InGame/Pause/Result/Help 패널(UIToolKit)을 `GameUIController.cs` + `GameFlowFSM`(상태 패턴)이 조율, `DamageflashUI.cs`로 피격 시 화면 붉은색 페이드 |
 | **사운드** | `SoundManager`(싱글톤) + `SoundLibrary`(ScriptableObject, AudioClip 보관) |
-| **VFX** | Goal Point 프리팹의 `ParticleSystem`, `ScreenRippleController` + ShaderGraph(`SG_LayerTransitionRipple`) 기반 레이어 전환 화면 일렁임 연출 |
+| **VFX** | Goal Point 프리팹의 `ParticleSystem`, `ScreenRippleController.cs` + ShaderGraph(`SG_LayerTransitionRipple`) 기반 레이어 전환 화면 일렁임 연출 |
 | **물리 Trigger** | 열쇠 회수(`Key.cs`), Goal Point 도달(`GoalPoint.cs`), 몬스터 공격 범위 판정(`MonsterAttackTrigger.cs`) |
 | **Cinemachine** | `CinemachineBrain` + `CM_IntroCamera`/`CM_QuarterViewCamera`(우선순위 기반 블렌딩)로 카메라 전환 연출, 피격 시 `Cinemachine Impulse` 카메라 흔들림 |
 | **조명 / 머티리얼** | Physical/Arcane 벽 머티리얼(ShaderGraph `SG_PhysicalGrime`/`SG_ArcaneNoise`), Key/Goal Point 발광 머티리얼(`SG_GlowOrb`), 레이어 전환에 맞춘 Directional Light·Fog 색 전환(`LayerLightingController.cs`) |
@@ -97,4 +97,4 @@ Assets/
    └─ SoundClips/             # AudioClip 원본
 ```
 
-외부 에셋(`AOSFogWar`, `Hand Painted Stone Texture`, `SD Unity-Chan Haon Custom`, `Toon Shaders Pro`, `unity-chan!`, `TextMesh Pro`)은 원래 임포트 경로를 그대로 유지
+#### ※ 외부 에셋(`AOSFogWar`, `Hand Painted Stone Texture`, `SD Unity-Chan Haon Custom`, `Toon Shaders Pro`, `unity-chan!`, `TextMesh Pro`)은 원래 임포트 경로를 그대로 유지
