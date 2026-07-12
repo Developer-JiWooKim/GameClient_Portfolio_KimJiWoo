@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080fbff2127dc4241a4a96b74ed3dd8f, type: 3}
   m_Name: SoundLibrary
   m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
-  keyCollected: {fileID: 0}
-  goalSpawned: {fileID: 0}
-  goalReached: {fileID: 0}
-  playerDamaged: {fileID: 0}
-  gameClear: {fileID: 0}
-  gameOver: {fileID: 0}
-  layerSwitch: {fileID: 0}
-  layerSwitchBlocked: {fileID: 0}
-  physicalBGM: {fileID: 0}
-  arcaneBGM: {fileID: 0}
+  keyCollected: {fileID: 8300000, guid: 6ec0ecb711247f64a83ddfe1d190c213, type: 3}
+  goalSpawned: {fileID: 8300000, guid: ad16285e6ce1ab942b68090887492bd2, type: 3}
+  goalReached: {fileID: 8300000, guid: 530702c4f8114ff418d88f7ae8c6327c, type: 3}
+  playerDamaged: {fileID: 8300000, guid: f847b52596c8b9a44b9b7bcb7c72ce65, type: 3}
+  gameClear: {fileID: 8300000, guid: 1f8ad7a0e3463a844be819629fd46a06, type: 3}
+  gameOver: {fileID: 8300000, guid: fdac2d82fffd3df468df655ead9f2dc1, type: 3}
+  layerSwitch: {fileID: 8300000, guid: 82f7b7d9af7d8044695a9c2467d012ea, type: 3}
+  layerSwitchBlocked: {fileID: 8300000, guid: 108b093cd56128c4284152baad677527, type: 3}
+  physicalBGM: {fileID: 8300000, guid: 574e0733f372baf4ca4c4f4a4b3dbaf5, type: 3}
+  arcaneBGM: {fileID: 8300000, guid: 8c914df2d027aeb498932b1bf611c803, type: 3}
