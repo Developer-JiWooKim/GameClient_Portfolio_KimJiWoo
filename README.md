@@ -25,7 +25,7 @@
 ## 시연 방법
 
 1. Unity 6(6000.4.9f1, URP)로 프로젝트 열기
-2. `Assets/MyAssets/Scenes/GameClientAssignment.unity` 씬 열고 Play
+2. `Assets/MyAssets/Scenes/GameClientAssignment.unity` 씬 열고 Play(Full HD)
 3. 타이틀 화면 Start버튼 클릭 → 난이도(Normal/Hard) 선택 → Intro 연출 후 InGameUI가 나오면 게임 시작
 
 ---
