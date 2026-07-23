@@ -62,7 +62,7 @@
 | `W` `A` `S` `D` / 방향키 | `Move` (Value, Vector2) | 상하좌우 이동 |
 | `Tab` | `SwitchLayer` (Button) | 미로 레이어 전환 (Physical ↔ Arcane) |
 | `Esc` | `Pause` (Button) | 일시정지 / 재개 토글 (게임 플레이 중에만 동작) |
-| 마우스 좌클릭 | — | UI 버튼 조작 |
+| 마우스 좌클릭 | `OnClickEvent` | UI 버튼 조작 |
 
 ---
 
