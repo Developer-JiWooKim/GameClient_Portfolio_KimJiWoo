@@ -31,7 +31,6 @@
 | 렌더 파이프라인 | URP |
 | 장르 | 미로 탈출 / 추격 회피 |
 | 메인 씬 | `Assets/MyAssets/Scenes/GameClientAssignment.unity` |
-| 주요 패키지 | Input System, Cinemachine, AI Navigation(NavMesh), Shader Graph |
 | 권장 해상도 | Full HD (1920×1080) |
 
 ---
