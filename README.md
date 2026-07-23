@@ -81,7 +81,7 @@
 
 ## 주요 기능
 
-| # | 필수 구현 | 구현 내용 | 주요 파일 |
+|  | 필수 구현 | 구현 내용 | 주요 파일 |
 |---|---|---|---|
 | 1 | Input System 기반 입력 처리 | `InputSystem_Actions` 에셋의 `Player` 액션 맵 + `PlayerInput`(Invoke C# Events) → `onActionTriggered` 이벤트 처리 | `PlayerInputHandler.cs` |
 | 2 | 플레이어 조작 | `CharacterController` 기반 이동, 입력값을 월드 방향으로 변환해 이동 + 애니메이션 연동 | `PlayerController.cs`, `PlayerMove.cs` |
