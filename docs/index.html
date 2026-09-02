@@ -58,6 +58,11 @@
 
   --measure: 68ch;
   --cut: 9px;
+
+  /* 본문 컬럼 폭과 좌측 레일의 치수 — 레일 위치 계산이 이 값들에서 파생된다 */
+  --page-max: 1180px;
+  --rail-w: 92px;
+  --rail-gap: 26px;
 }
 
 :root[data-layer="arcane"] {
@@ -110,7 +115,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 /* ── 레이아웃 ────────────────────────────────────────────── */
 
 .wrap {
-  max-width: 1180px;
+  max-width: var(--page-max);
   margin: 0 auto;
   padding: 0 24px 120px;
 }
@@ -119,11 +124,15 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 
 section { scroll-margin-top: 32px; }
 
-/* 좌측 섹션 레일 */
+/* 좌측 섹션 레일 — 본문 컬럼 '바깥' 왼쪽 여백에 놓인다.
+   본문 왼쪽 모서리는 (50vw - --page-max/2) 이므로, 레일의 오른쪽 끝이
+   거기서 --rail-gap 만큼 떨어지도록 레일 너비를 빼서 위치를 잡는다.
+   이 여백을 확보하지 못하는 화면(< 1460px)에서는 아예 숨긴다. */
 .rail {
   display: none;
   position: fixed;
-  left: max(24px, calc(50vw - 590px + 8px));
+  width: var(--rail-w);
+  left: calc(50vw - var(--page-max) / 2 - var(--rail-gap) - var(--rail-w));
   top: 50%;
   transform: translateY(-50%);
   z-index: 30;
@@ -131,17 +140,18 @@ section { scroll-margin-top: 32px; }
   font-size: 11px;
   letter-spacing: 0.04em;
 }
-@media (min-width: 1180px) { .rail { display: block; } }
+@media (min-width: 1460px) { .rail { display: block; } }
 
 .rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
 .rail a {
   display: grid;
-  grid-template-columns: 22px auto;
+  grid-template-columns: 16px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   color: var(--muted);
   border: 0;
   opacity: 0.62;
+  white-space: nowrap;
   transition: opacity 200ms ease, color 200ms ease;
 }
 .rail a::before {
