@@ -10,7 +10,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     /// PlayerSpawner/MonsterSpawner/KeySpawner/GoalPointSpawner를 정해진 순서로 호출하는 코디네이터.
     /// 몬스터 스폰은 플레이어의 Transform을 타겟으로 필요로 하므로, 반드시 플레이어 스폰 이후에 실행돼야 함
     /// </summary>
-    public class UnitsSpawner : MonoBehaviour
+    public sealed class UnitsSpawner : MonoBehaviour
     {
         [Header("Spawners")]
         [SerializeField] private PlayerSpawner _playerSpawner;

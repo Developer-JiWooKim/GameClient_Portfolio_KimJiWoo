@@ -9,7 +9,7 @@ namespace Assets.MyAssets.Scripts.Obsolete
     /// 현재 프로젝트에서는 몬스터 추적/순찰을 NavMeshAgent + NavMeshSurface로 대체
     /// </summary>
     [System.Obsolete("NavMeshAgent로 대체됨. 더 이상 사용하지 않음")]
-    public class AStarPathfinder : MonoBehaviour
+    public sealed class AStarPathfinder : MonoBehaviour
     {
         [SerializeField] private MazeGenerator _mazeGenerator;
 

@@ -6,7 +6,7 @@ namespace Assets.MyAssets.Scripts.UI
     /// <summary>
     /// 게임 규칙 안내 UI
     /// </summary>
-    public class HelpPanelUI : BasePanelUI
+    public sealed class HelpPanelUI : BasePanelUI
     {
         protected override void Start()
         {

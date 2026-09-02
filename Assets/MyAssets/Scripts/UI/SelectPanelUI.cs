@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Assets.MyAssets.Scripts.UI
 {
-    public class SelectPanelUI : BasePanelUI
+    public sealed class SelectPanelUI : BasePanelUI
     {
         public event System.Action OnGameModeConfirmed;
         public event System.Action OnBackClicked;

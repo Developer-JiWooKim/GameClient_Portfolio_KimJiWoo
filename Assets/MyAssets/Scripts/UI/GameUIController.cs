@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.UI
 {
-    public class GameUIController : MonoBehaviour
+    public sealed class GameUIController : MonoBehaviour
     {
         [Header("Panels")]
         [SerializeField] private TitlePanelUI _titlePanel;

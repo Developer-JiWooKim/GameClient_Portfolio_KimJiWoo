@@ -7,7 +7,7 @@ namespace Assets.MyAssets.Scripts.Player
     /// 몸 애니메이션(Idle/Move)과는 독립적으로 작동함 - 평상시엔 Fsad 고정 + Fhide(눈 깜빡임) 주기적 반복
     /// 몬스터에게 발각되면 즉시 Fdam으로 전환
     /// </summary>
-    public class PlayerFaceController : MonoBehaviour
+    public sealed class PlayerFaceController : MonoBehaviour
     {
         [SerializeField] private SkinnedMeshRenderer _faceRenderer;
 

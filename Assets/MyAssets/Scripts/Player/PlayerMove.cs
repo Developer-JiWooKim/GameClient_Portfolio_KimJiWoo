@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Assets.MyAssets.Scripts.Player
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerMove : MonoBehaviour
+    public sealed class PlayerMove : MonoBehaviour
     {
         private CharacterController _characterController;
 

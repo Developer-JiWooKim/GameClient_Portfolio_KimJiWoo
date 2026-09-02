@@ -5,7 +5,7 @@ namespace Assets.MyAssets.Scripts.UI
     /// <summary>
     /// 게임 UI 흐름(Title/Select/Playing/Paused/Result) 전환을 관리하는 상태 머신
     /// </summary>
-    public class GameFlowFSM
+    public sealed class GameFlowFSM
     {
         private readonly GameUIController _controller;
 

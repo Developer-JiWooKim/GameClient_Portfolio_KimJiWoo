@@ -11,7 +11,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     /// <summary>
     /// 몬스터 오브젝트 풀 관리, 스폰, 레이어 전환 시 재동기화, 클리어/게임오버 시 타겟 해제를 전담하는 스포너
     /// </summary>
-    public class MonsterSpawner : MonoBehaviour
+    public sealed class MonsterSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject _monsterPrefab;
         [SerializeField] private MazeLayerManager _mazeLayerManager;

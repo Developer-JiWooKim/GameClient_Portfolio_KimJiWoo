@@ -6,7 +6,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
     /// <summary>
     /// 레이어 전환에 맞춰 Directional Light 색/밝기와 대기 Fog 색을 함께 바꿔주는 컴포넌트
     /// </summary>
-    public class LayerLightingController : MonoBehaviour
+    public sealed class LayerLightingController : MonoBehaviour
     {
         [Header("Directional Light")]
         [SerializeField] private Light _directionalLight;

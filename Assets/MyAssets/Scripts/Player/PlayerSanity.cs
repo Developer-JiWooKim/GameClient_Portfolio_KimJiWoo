@@ -9,7 +9,7 @@ namespace Assets.MyAssets.Scripts.Player
     /// Arcane 레이어에 머무는 동안 정신력이 깎이고 Physical로 돌아오면 회복되는 스탯
     /// 0이 되면 즉시 게임오버
     /// </summary>
-    public class PlayerSanity : MonoBehaviour
+    public sealed class PlayerSanity : MonoBehaviour
     {
         [Header("Max Sanity")]
         [SerializeField] private float _maxSanity = 100f;

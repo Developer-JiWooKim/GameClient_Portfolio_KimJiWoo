@@ -7,7 +7,7 @@ using UnityEngine.AI;
 namespace Assets.MyAssets.Scripts.Monster
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class MonsterMove : MonoBehaviour
+    public sealed class MonsterMove : MonoBehaviour
     {
         [Header("Setting")]
         [SerializeField] private float _patrolSpeed = 4f;

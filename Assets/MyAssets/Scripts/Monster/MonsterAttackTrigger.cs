@@ -6,7 +6,7 @@ namespace Assets.MyAssets.Scripts.Monster
     /// <summary>
     /// 몬스터 공격 범위 안에 플레이어가 들어왔는지 체크, Trigger 이벤트
     /// </summary>
-    public class MonsterAttackTrigger : MonoBehaviour
+    public sealed class MonsterAttackTrigger : MonoBehaviour
     {
         public PlayerController Player { get; private set; }
         public bool PlayerInAttackRange { get; private set; } = false;

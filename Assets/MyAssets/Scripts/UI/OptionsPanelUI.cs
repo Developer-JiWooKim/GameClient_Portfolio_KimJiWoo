@@ -7,7 +7,7 @@ namespace Assets.MyAssets.Scripts.UI
     /// <summary>
     /// 옵션 UI - SFX/BGM 볼륨 슬라이더와 음소거 토글 (세션 내에서만 적용, 저장 안 함)
     /// </summary>
-    public class OptionsPanelUI : BasePanelUI
+    public sealed class OptionsPanelUI : BasePanelUI
     {
         private Slider _sfxVolumeSlider;
         private Toggle _sfxMuteToggle;
@@ -21,9 +21,9 @@ namespace Assets.MyAssets.Scripts.UI
             Root.Q<CutButton>("close-button").clicked += Hide;
 
             _sfxVolumeSlider = Root.Q<Slider>("sfx-volume-slider");
-            _sfxMuteToggle   = Root.Q<Toggle>("sfx-mute-toggle");
+            _sfxMuteToggle = Root.Q<Toggle>("sfx-mute-toggle");
             _bgmVolumeSlider = Root.Q<Slider>("bgm-volume-slider");
-            _bgmMuteToggle   = Root.Q<Toggle>("bgm-mute-toggle");
+            _bgmMuteToggle = Root.Q<Toggle>("bgm-mute-toggle");
 
             if (SoundManager.Instance == null) return;
 

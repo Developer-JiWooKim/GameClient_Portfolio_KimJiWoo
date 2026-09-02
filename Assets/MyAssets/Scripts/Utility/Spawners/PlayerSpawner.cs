@@ -8,7 +8,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     /// <summary>
     /// 플레이어 스폰/디스폰, 인트로 카메라, 레이어 전환 입력 연결을 전담하는 스포너
     /// </summary>
-    public class PlayerSpawner : MonoBehaviour
+    public sealed class PlayerSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private IntroCameraSequencer _introCameraSequencer;

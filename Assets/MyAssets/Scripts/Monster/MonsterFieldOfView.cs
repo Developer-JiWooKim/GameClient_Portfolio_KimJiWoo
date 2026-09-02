@@ -5,7 +5,7 @@ namespace Assets.MyAssets.Scripts.Monster
 {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
-    public class MonsterFieldOfView : MonoBehaviour
+    public sealed class MonsterFieldOfView : MonoBehaviour
     {
         [Header("Mesh Quality")]
         [Tooltip("Ray 개수가 많을수록 부드럽지만 연산 비용 증가")]

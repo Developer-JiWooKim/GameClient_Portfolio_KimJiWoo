@@ -4,7 +4,7 @@ using Assets.MyAssets.Scripts.UI.Controls;
 
 namespace Assets.MyAssets.Scripts.UI
 {
-    public class PausePanelUI : BasePanelUI
+    public sealed class PausePanelUI : BasePanelUI
     {
         [SerializeField] private OptionsPanelUI _optionsPanel;
 
@@ -35,9 +35,9 @@ namespace Assets.MyAssets.Scripts.UI
         /// </summary>
         public void Show(int currentHp, int maxHp, int currentKeys, int requiredKeys, string formattedTime)
         {
-            _hpText.text       = "HP : " + currentHp.ToString() + " / " + maxHp.ToString();
+            _hpText.text = "HP : " + currentHp.ToString() + " / " + maxHp.ToString();
             _keyCountText.text = "Keys : " + currentKeys.ToString() + " / " + requiredKeys.ToString();
-            _timerText.text    = formattedTime;
+            _timerText.text = formattedTime;
 
             Show();
         }

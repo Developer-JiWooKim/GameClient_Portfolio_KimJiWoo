@@ -9,7 +9,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     /// <summary>
     /// 키 오브젝트 풀 관리, 스폰, 획득 이벤트 처리를 전담하는 스포너
     /// </summary>
-    public class KeySpawner : MonoBehaviour
+    public sealed class KeySpawner : MonoBehaviour
     {
         [SerializeField] private GameObject _keyPrefab;
 

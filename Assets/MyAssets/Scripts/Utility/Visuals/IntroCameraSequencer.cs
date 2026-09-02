@@ -8,7 +8,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
     /// 플레이어 스폰 시 인트로 카메라를 보여준 뒤 팔로우 카메라로 부드럽게 전환하는 컴포넌트
     /// 스폰 직후 CutToIntroCamera()로 즉시 컷하고, 플레이어 인트로 애니메이션이 끝난 뒤 SwitchToFollowCamera()를 호출해 전환함
     /// </summary>
-    public class IntroCameraSequencer : MonoBehaviour
+    public sealed class IntroCameraSequencer : MonoBehaviour
     {
         [Header("Cinemachine Cameras")]
         [SerializeField] private CinemachineCamera _followPlayerCamera;

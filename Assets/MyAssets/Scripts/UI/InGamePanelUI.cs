@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace Assets.MyAssets.Scripts.UI
 {
-    public class InGamePanelUI : BasePanelUI
+    public sealed class InGamePanelUI : BasePanelUI
     {
         private Label _hpText;
         private Label _timerText;

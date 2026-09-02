@@ -1,6 +1,6 @@
 namespace Assets.MyAssets.Scripts.Utility.Maze
 {
-    public class Cell
+    public sealed class Cell
     {
         public readonly int col;
         public readonly int row;

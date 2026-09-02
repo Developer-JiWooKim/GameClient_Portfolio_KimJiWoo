@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.SingleTon
 {
-    public class GameManager : Singleton<GameManager>
+    public sealed class GameManager : Singleton<GameManager>
     {
         public static GameMode CurrentGameMode { get; set; } = GameMode.Normal;
 

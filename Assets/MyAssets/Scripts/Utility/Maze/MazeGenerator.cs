@@ -4,7 +4,7 @@ using UnityEngine.Pool;
 
 namespace Assets.MyAssets.Scripts.Utility.Maze
 {
-    public class MazeGenerator : MonoBehaviour
+    public sealed class MazeGenerator : MonoBehaviour
     {
         [Header("Gird")]
         [SerializeField] private int _cols = 20; // 가로

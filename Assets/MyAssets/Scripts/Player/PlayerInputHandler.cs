@@ -11,7 +11,7 @@ namespace Assets.MyAssets.Scripts.Player
     /// 이제는 Input Action이 트리거될 때만 콜백으로 값을 받는 이벤트 기반 방식으로 변경
     /// </summary>
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerInputHandler : MonoBehaviour
+    public sealed class PlayerInputHandler : MonoBehaviour
     {
         private Vector2 _inputVector = Vector2.zero;
 
@@ -20,9 +20,9 @@ namespace Assets.MyAssets.Scripts.Player
         private PlayerInput _playerInput; // 유니티 내장 PlayerInput 컴포넌트
 
         public bool IsControlEnabled { get; set; } = true; // Pause, Result중에 플레이어의 이동 및 레이어 전환을 막는 프로퍼티
-        
+
         public event System.Action<Vector3> OnLayerSwitchRequested; // SwitchLayer 액션(Tab 키)이 트리거됐을 때 발생하는 이벤트
-        public event System.Action          OnPauseRequested;       // Pause 액션(ESC 키)이 트리거됐을 때 발생하는 이벤트
+        public event System.Action OnPauseRequested;       // Pause 액션(ESC 키)이 트리거됐을 때 발생하는 이벤트
 
         private void Awake()
         {

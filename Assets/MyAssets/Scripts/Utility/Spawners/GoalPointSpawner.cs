@@ -7,7 +7,7 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
     /// <summary>
     /// 골 포인트 스폰(열쇠를 전부 모으면 1회 생성)을 전담하는 스포너
     /// </summary>
-    public class GoalPointSpawner : MonoBehaviour
+    public sealed class GoalPointSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject _goalPointPrefab;
 

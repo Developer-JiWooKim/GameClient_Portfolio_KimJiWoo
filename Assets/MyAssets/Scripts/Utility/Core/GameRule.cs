@@ -3,7 +3,7 @@ namespace Assets.MyAssets.Scripts.Utility.Core
     /// <summary>
     /// 게임의 클리어 여부와 고유 규칙을 담당하는 순수 클래스
     /// </summary>
-    public class GameRule
+    public sealed class GameRule
     {
         private readonly int _requiredKeyCount = 5; // 게임 클리어 위해 모아야 되는 열쇠 개수
         private int _currentCollectedKeyCount = 0;  // 현재 모은 키 개수

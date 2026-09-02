@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Monster
 {
-    public class MonsterSight : MonoBehaviour
+    public sealed class MonsterSight : MonoBehaviour
     {
         [Header("Setting")]
         [SerializeField] private float _detectionRange = 15f; // 감지 반경

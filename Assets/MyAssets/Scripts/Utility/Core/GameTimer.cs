@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Utility.Core
 {
-    public class GameTimer
+    public sealed class GameTimer
     {
         private float _elapsedTime = 0f;
         private bool _isRunning = false;

@@ -10,7 +10,7 @@ namespace Assets.MyAssets.Scripts.Player
     [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(PlayerFaceController))]
     [RequireComponent(typeof(CinemachineImpulseSource))]
-    public class PlayerController : MonoBehaviour
+    public sealed class PlayerController : MonoBehaviour
     {
         [Header("Settings")]
         [SerializeField] private float _moveSpeed = 10f;

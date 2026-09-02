@@ -10,7 +10,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
     [RequireComponent(typeof(PhysicalWallGrimeCycler))]
     [RequireComponent(typeof(HardModeIdleWaver))]
     [RequireComponent(typeof(LayerTransitionSequencer))]
-    public class MazeLayerManager : Singleton<MazeLayerManager>
+    public sealed class MazeLayerManager : Singleton<MazeLayerManager>
     {
         public enum LayerType
         {

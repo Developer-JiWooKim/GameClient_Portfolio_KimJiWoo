@@ -5,7 +5,7 @@ using Assets.MyAssets.Scripts.Utility.SingleTon;
 
 namespace Assets.MyAssets.Scripts.UI
 {
-    public class TitlePanelUI : BasePanelUI
+    public sealed class TitlePanelUI : BasePanelUI
     {
         [SerializeField] private OptionsPanelUI _optionsPanel;
         [SerializeField] private HelpPanelUI _helpPanel;

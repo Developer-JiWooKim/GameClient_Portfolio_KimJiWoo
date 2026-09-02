@@ -8,7 +8,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
     /// <summary>
     /// Physical 벽에 _grimeCycleInterval초 주기로 그림(오염) 무늬가 누적되는 연출을 담당하는 컴포넌트
     /// </summary>
-    public class PhysicalWallGrimeCycler : MonoBehaviour
+    public sealed class PhysicalWallGrimeCycler : MonoBehaviour
     {
         [Header("Physical Wall Grime")]
         [SerializeField] private Material _physicalGrimeMaterial;

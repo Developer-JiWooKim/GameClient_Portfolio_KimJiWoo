@@ -7,7 +7,7 @@ namespace Assets.MyAssets.Scripts.Obsolete
     /// 현재 프로젝트에서는 Cinemachine으로 대체
     /// </summary>
     [System.Obsolete("Cinemachine(CinemachineCamera + CinemachineBrain)으로 대체됨. 더 이상 사용하지 않음")]
-    public class FollowCamera : MonoBehaviour
+    public sealed class FollowCamera : MonoBehaviour
     {
         [SerializeField] private float _smoothTime = 0.3f; // 높을수록 더 느리게 따라감
 

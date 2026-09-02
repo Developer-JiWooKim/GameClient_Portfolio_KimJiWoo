@@ -6,7 +6,7 @@ namespace Assets.MyAssets.Scripts.ScriptableObject
     /// 게임에서 쓰는 모든 사운드 클립을 보관하는 순수 데이터 에셋
     /// </summary>
     [CreateAssetMenu(fileName = "SoundLibrary", menuName = "Audio/Sound Library")]
-    public class SoundLibrary : UnityEngine.ScriptableObject
+    public sealed class SoundLibrary : UnityEngine.ScriptableObject
     {
         [Header("Gameplay SFX")]
         public AudioClip keyCollected;

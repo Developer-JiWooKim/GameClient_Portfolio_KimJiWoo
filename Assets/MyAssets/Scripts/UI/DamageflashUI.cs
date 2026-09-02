@@ -8,7 +8,7 @@ namespace Assets.MyAssets.Scripts.UI
     /// 화면 전체를 덮는 빨간 Image를 피격 시 깜빡이듯 보여주는 컴포넌트
     /// </summary>
     [RequireComponent(typeof(Image))]
-    public class DamageflashUI : MonoBehaviour
+    public sealed class DamageflashUI : MonoBehaviour
     {
         [Header("Settings")]
         [SerializeField] private float _maxAlpha = 0.35f;

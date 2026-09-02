@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Player
 {
-    public class PlayerAnim : MonoBehaviour
+    public sealed class PlayerAnim : MonoBehaviour
     {
         private Animator _animator;
 

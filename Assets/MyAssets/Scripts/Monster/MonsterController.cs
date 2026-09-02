@@ -11,7 +11,7 @@ namespace Assets.MyAssets.Scripts.Monster
     [RequireComponent(typeof(MonsterMove))]
     [RequireComponent(typeof(MonsterFSM))]
     [RequireComponent(typeof(MonsterAnim))]
-    public class MonsterController : MonoBehaviour
+    public sealed class MonsterController : MonoBehaviour
     {
         [Header("감지 여부")]
         [SerializeField] private bool _isSensed = false;          // 타겟 감지 여부를 저장하는 bool

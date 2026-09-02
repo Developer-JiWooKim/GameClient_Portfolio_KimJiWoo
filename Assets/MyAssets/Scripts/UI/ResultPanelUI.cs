@@ -4,7 +4,7 @@ using Assets.MyAssets.Scripts.Utility.SingleTon;
 
 namespace Assets.MyAssets.Scripts.UI
 {
-    public class ResultPanelUI : BasePanelUI
+    public sealed class ResultPanelUI : BasePanelUI
     {
         private Label _resultText;
         private Label _resultTimeText;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Assets.MyAssets.Scripts.Monster
 {
-    public class MonsterAnim : MonoBehaviour
+    public sealed class MonsterAnim : MonoBehaviour
     {
         private Animator _animator;
 
@@ -55,7 +55,7 @@ namespace Assets.MyAssets.Scripts.Monster
             _hasSetStateOnce = true;
         }
 
-        void OnValidate()
+        private void OnValidate()
         {
             _isSetAnimator = _animator = GetComponentInChildren<Animator>();
         }

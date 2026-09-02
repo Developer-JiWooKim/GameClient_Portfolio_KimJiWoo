@@ -8,7 +8,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
     /// <summary>
     /// Hard 모드에서 일정 시간 경과 후 화면이 은은하게 상시 일렁이는 연출을 담당하는 컴포넌트
     /// </summary>
-    public class HardModeIdleWaver : MonoBehaviour
+    public sealed class HardModeIdleWaver : MonoBehaviour
     {
         [Header("Layer Transition FX 참조")]
         [SerializeField] private ScreenRippleController _rippleController;

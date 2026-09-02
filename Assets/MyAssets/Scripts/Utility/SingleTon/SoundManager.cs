@@ -6,7 +6,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
     /// <summary>
     /// 사운드 재생을 책임지는 매니저
     /// </summary>
-    public class SoundManager : Singleton<SoundManager>
+    public sealed class SoundManager : Singleton<SoundManager>
     {
         [SerializeField] private SoundLibrary _library;
 
@@ -18,8 +18,8 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
 
         public float SfxVolume => _sfxVolume;
         public float BgmVolume => _bgmVolume;
-        public bool  IsSfxMuted => _sfxSource != null && _sfxSource.mute;
-        public bool  IsBgmMuted => _bgmSource != null && _bgmSource.mute;
+        public bool IsSfxMuted => _sfxSource != null && _sfxSource.mute;
+        public bool IsBgmMuted => _bgmSource != null && _bgmSource.mute;
 
         private void Start()
         {
@@ -28,7 +28,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
 
             if (MazeLayerManager.Instance != null)
             {
-                MazeLayerManager.Instance.OnLayerChanged       += PlayBGMForLayer;
+                MazeLayerManager.Instance.OnLayerChanged += PlayBGMForLayer;
                 MazeLayerManager.Instance.OnLayerSwitchBlocked += PlayLayerSwitchBlocked;
             }
         }
@@ -37,7 +37,7 @@ namespace Assets.MyAssets.Scripts.Utility.SingleTon
         {
             if (MazeLayerManager.Instance != null)
             {
-                MazeLayerManager.Instance.OnLayerChanged       -= PlayBGMForLayer;
+                MazeLayerManager.Instance.OnLayerChanged -= PlayBGMForLayer;
                 MazeLayerManager.Instance.OnLayerSwitchBlocked -= PlayLayerSwitchBlocked;
             }
         }

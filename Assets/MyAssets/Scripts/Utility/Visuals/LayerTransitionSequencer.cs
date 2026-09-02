@@ -9,7 +9,7 @@ namespace Assets.MyAssets.Scripts.Utility.Visuals
     /// <summary>
     /// 레이어 전환 시 화면 일렁임 연출(일시정지 + 입력차단 + 리플 페이드 + 레이어 교체 + 복구)을 담당하는 컴포넌트
     /// </summary>
-    public class LayerTransitionSequencer : MonoBehaviour
+    public sealed class LayerTransitionSequencer : MonoBehaviour
     {
         [Header("Layer Transition FX")]
         [SerializeField] private ScreenRippleController _rippleController;
