@@ -473,8 +473,7 @@ kbd {
   border-top: 1px solid var(--line-soft);
 }
 
-/* 플레이 영상 자리 — 촬영 전까지의 플레이스홀더. 실제 임베드로 교체할 때는
-   .video-slot 내부를 <iframe class="video-frame" src="https://www.youtube-nocookie.com/embed/VIDEO_ID" ...> 로 바꾸면 됨 */
+/* 플레이 영상 — 유튜브 임베드 */
 .video-frame-wrap {
   margin-top: 14px;
   border: 1px solid var(--line);
@@ -915,28 +914,16 @@ img { max-width: 100%; }
       </figure>
     </div>
 
-    <!--
-      플레이 영상 자리 — 촬영 후 유튜브 임베드로 교체 예정.
-      교체 방법: 아래 .video-slot 의 내용물(.video-slot-inner 전체)을 지우고 그 자리에
-        <iframe class="video-frame" src="https://www.youtube-nocookie.com/embed/VIDEO_ID"
+    <figure class="video-frame-wrap">
+      <div class="video-slot">
+        <iframe class="video-frame" src="https://www.youtube-nocookie.com/embed/2C-7kjyIC78"
                 title="꿈의 미로 — 플레이 영상" loading="lazy"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen></iframe>
-      를 넣고, .video-caption의 "촬영 예정" 배지 문구를 실제 러닝타임으로 바꾸면 됨.
-    -->
-    <figure class="video-frame-wrap">
-      <div class="video-slot" role="img" aria-label="플레이 영상 — 촬영 후 추가 예정">
-        <div class="video-slot-inner">
-          <span class="video-slot-play" aria-hidden="true">
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 1.5v13l12-6.5-12-6.5z"/></svg>
-          </span>
-          <span class="video-slot-label">Play Video</span>
-          <span class="video-slot-note">촬영 후 유튜브 영상이 이 자리에 들어갑니다</span>
-        </div>
       </div>
       <figcaption class="video-caption">
         <span>Gameplay Footage</span>
-        <span><b>촬영 예정</b> · 클리어까지의 한 판</span>
+        <span><b>유튜브</b> · 클리어까지의 한 판</span>
       </figcaption>
     </figure>
   </section>
