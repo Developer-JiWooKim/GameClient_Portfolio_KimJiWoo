@@ -52,7 +52,7 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _GrimeBlend: 0
+    - _GrimeBlend: 0.25
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
