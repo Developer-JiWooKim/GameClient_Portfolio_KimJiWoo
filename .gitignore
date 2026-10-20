@@ -83,3 +83,11 @@ crashlytics-build.properties
 /[Aa]ssets/SD Unity-Chan Haon Custom.meta
 /[Aa]ssets/Toon Shaders Pro/
 /[Aa]ssets/Toon Shaders Pro.meta
+/[Aa]ssets/unity-chan!/
+/[Aa]ssets/unity-chan!.meta
+
+# Personal study notes / planning docs (kept local only)
+/Question/
+/UI_Design_Reference.md
+/CLAUDE.md
+/GameClient에 적용할 내용.txt
