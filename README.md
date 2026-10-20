@@ -220,3 +220,32 @@ Pause 패널의 End 버튼         ─┘
 | 상태 표시 UI | ○ | HP, 열쇠 수집 수, 정신력 게이지, 경과 시간 HUD + 레이어 전환 불가 경고 |
 | 이벤트 흐름 | ○ | 열쇠 획득 → Goal Point 생성 → 클리어 판정, 난이도별 규칙 분기 |
 | 사운드 / VFX | ○ | `SoundManager` + `SoundLibrary`(SO), Goal Point 파티클, 레이어 전환 화면 일렁임(Shader Graph), 피격 화면 페이드 |
+
+---
+
+## 외부 에셋 / 라이선스
+
+아래 외부 에셋은 **라이선스상 재배포가 불가능하여 저장소에 포함하지 않았습니다.** 프로젝트를 열기 전에 각 에셋을 Unity Asset Store(Package Manager → My Assets)에서 받아 **기본 경로 그대로** 임포트해 주세요. 씬·프리팹은 에셋의 GUID로 연결되어 있으므로 임포트하면 참조가 자동으로 복구됩니다.
+
+| 에셋 | 임포트 경로 | 용도 | 라이선스 |
+|---|---|---|---|
+| Toon Shaders Pro (URP) | `Assets/Toon Shaders Pro/` | 툰 셰이딩 / 아웃라인 포스트 프로세스 | Unity Asset Store EULA |
+| SD Unity-Chan Haon Custom | `Assets/SD Unity-Chan Haon Custom/` | 플레이어 / 몬스터(도플갱어) 캐릭터 모델·애니메이션 | Unity-Chan License (UCL 2.0) |
+| AOS Fog of War v1.2 (FischlWorks) | `Assets/AOSFogWar/` | 시야(Fog of War) 시스템 | Unity Asset Store EULA |
+| Hand Painted Stone Texture | `Assets/Hand Painted Stone Texture/` | 미로 바닥/벽 텍스처 | Unity Asset Store EULA |
+
+**임포트 후 추가 설정**
+
+- **SD Unity-Chan 머티리얼**: 이 프로젝트에서는 캐릭터 머티리얼(`Assets/SD Unity-Chan Haon Custom/Materials/` 하위)의 셰이더를 `Toon Shaders Pro/Toon`으로 교체해 사용했습니다. 원본 그대로 임포트하면 캐릭터 외형이 시연 영상과 다르게 보일 수 있으니 해당 머티리얼의 셰이더를 교체해 주세요.
+- **AOS Fog of War**: 원본 에셋 코드를 수정하지 않아도 동작하도록 작성되어 있습니다(`UnitsSpawner`에서 `ForceUpdateFog()`를 리플렉션으로 호출). 로컬에서는 매 프레임 `GetPixels/SetPixels` 할당 제거, `List.Last()`(Linq) 제거 등 에셋 내부 성능 개선을 별도로 적용했습니다.
+
+**저장소에 포함된 서드파티 리소스**
+
+| 리소스 | 라이선스 |
+|---|---|
+| Cinzel 폰트 | SIL Open Font License 1.1 (`Assets/MyAssets/Fonts/Cinzel-OFL.txt`) |
+| Share Tech Mono 폰트 | SIL Open Font License 1.1 (`Assets/MyAssets/Fonts/ShareTechMono-OFL.txt`) |
+| Unity Spring Bone (`Packages/com.unity.springbone`) | MIT License (패키지 내 `LICENSE`) |
+| TextMesh Pro / UI Toolkit 기본 리소스 | Unity Companion License |
+
+캐릭터: © Unity Technologies Japan/UCL

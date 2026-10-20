@@ -73,3 +73,13 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Third-party assets (license: redistribution not allowed - import them yourself, see README "외부 에셋")
+/[Aa]ssets/AOSFogWar/
+/[Aa]ssets/AOSFogWar.meta
+/[Aa]ssets/Hand Painted Stone Texture/
+/[Aa]ssets/Hand Painted Stone Texture.meta
+/[Aa]ssets/SD Unity-Chan Haon Custom/
+/[Aa]ssets/SD Unity-Chan Haon Custom.meta
+/[Aa]ssets/Toon Shaders Pro/
+/[Aa]ssets/Toon Shaders Pro.meta

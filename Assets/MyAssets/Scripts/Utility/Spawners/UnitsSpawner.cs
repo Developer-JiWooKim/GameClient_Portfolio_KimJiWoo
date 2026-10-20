@@ -127,7 +127,24 @@ namespace Assets.MyAssets.Scripts.Utility.Spawners
             // 서서히 따라가므로, 그동안 이전 판에서 밝혔던 부분이 잠시(혹은 갱신 조건에 따라 계속) 남아 보일 수 있음
             // ForceUpdateFog()로 새 플레이어 기준 안개를 즉시 재계산하고 버퍼에 그대로 복사해, 재시작 시에도
             // 처음 시작할 때와 동일하게 안개가 즉시 리셋된 상태로 보이게 함
-            fogWar.ForceUpdateFog();
+            ForceUpdateFog(fogWar);
+        }
+
+        // ForceUpdateFog()는 원본 AOSFogWar 에셋에서 private이므로, 에셋을 원본 그대로 임포트해도 컴파일되도록 리플렉션으로 호출
+        // (외부 에셋은 라이선스상 저장소에 포함하지 않으므로 에셋 코드 수정에 의존하지 않기 위함. 재시작 시 1회만 호출되어 비용은 무시 가능)
+        private static readonly System.Reflection.MethodInfo s_forceUpdateFogMethod =
+            typeof(FischlWorks_FogWar.csFogWar).GetMethod("ForceUpdateFog",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+
+        private static void ForceUpdateFog(FischlWorks_FogWar.csFogWar fogWar)
+        {
+            if (s_forceUpdateFogMethod == null)
+            {
+                Debug.LogError("UnitsSpawner: csFogWar.ForceUpdateFog() not found");
+                return;
+            }
+
+            s_forceUpdateFogMethod.Invoke(fogWar, null);
         }
 
         private void SpawnPlayer()
