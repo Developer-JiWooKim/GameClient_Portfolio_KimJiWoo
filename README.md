@@ -37,6 +37,8 @@
 
 ## 시연 방법
 
+> **바로 플레이하기**: [Releases](https://github.com/Developer-JiWooKim/GameClient_Portfolio_KimJiWoo/releases/latest)에서 Windows 빌드(zip)를 받아 압축을 풀고 실행하세요. 프로젝트를 직접 열려면 먼저 아래 [외부 에셋 / 라이선스](#외부-에셋--라이선스)의 에셋을 임포트해야 합니다.
+
 1. Unity 6(6000.4.9f1, URP)로 프로젝트 열기
 2. `Assets/MyAssets/Scenes/GameClientAssignment.unity` 씬 열고 **Play** (Game 뷰를 Full HD로 설정)
 3. **Title 화면** → `Start` 버튼 클릭

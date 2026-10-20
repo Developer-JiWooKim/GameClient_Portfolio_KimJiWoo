@@ -835,7 +835,7 @@ img { max-width: 100%; }
       </p>
 
       <div class="meta">
-        <span class="chip cut">C# <b>65</b>개 파일</span>
+        <span class="chip cut">C# <b>64</b>개 파일</span>
         <span class="chip cut">약 <b>4,760</b> LOC</span>
         <span class="chip cut">미로 <b>20×20</b></span>
         <span class="chip cut">몬스터 <b>10</b>마리</span>
@@ -844,6 +844,7 @@ img { max-width: 100%; }
 
       <div class="hero-links">
         <button class="btn cut" id="swap" type="button">Tab · 레이어 전환</button>
+        <a class="btn btn-ghost cut" href="https://github.com/Developer-JiWooKim/GameClient_Portfolio_KimJiWoo/releases/latest" target="_blank" rel="noopener">플레이 다운로드 (Windows)</a>
         <a class="btn btn-ghost cut" href="https://github.com/Developer-JiWooKim/GameClient_Portfolio_KimJiWoo" target="_blank" rel="noopener">GitHub 저장소</a>
       </div>
     </div>
@@ -886,6 +887,7 @@ img { max-width: 100%; }
       <div><span class="k">개발 형태</span><span class="v">1인 개발 — 기획 및 클라이언트 구현 전반</span></div>
       <div><span class="k">주요 기술</span><span class="v">Input System · NavMesh (Agent / Surface) · Cinemachine 3 · UI Toolkit · Awaitable · ObjectPool · ScriptableObject · Shader Graph</span></div>
       <div><span class="k">플레이 루프</span><span class="v">Title → Select(난이도) → Intro 연출 → Playing → (Pause) → Result → 재시작</span></div>
+      <div><span class="k">외부 에셋</span><span class="v">캐릭터 SD Unity-Chan(UCL) · Toon Shaders Pro · AOS Fog of War · Hand Painted Stone Texture — 라이선스상 저장소에는 미포함</span></div>
     </div>
 
     <div class="layers">
@@ -1026,7 +1028,7 @@ img { max-width: 100%; }
     <div class="sec-head">
       <span class="eyebrow">Core Implementation</span>
       <h2>핵심 구현</h2>
-      <p>전체 65개 파일 중, 설계 판단이 실제로 드러나는 여섯 곳을 골랐습니다.</p>
+      <p>전체 64개 파일 중, 설계 판단이 실제로 드러나는 여섯 곳을 골랐습니다.</p>
     </div>
 
     <!-- 1 -->
@@ -1485,7 +1487,7 @@ public void Warp(Vector3 position)
         <pre><code class="language-csharp">// 안개 — 논리 상태와 렌더링 버퍼를 둘 다 손봐야 잔상이 사라진다
 fogWar.ScanLevel();                      // 새로 생성된 미로 벽 반영
 Player.RegisterToFogSystem(fogWar);      // 새 플레이어를 리빌러로 등록
-fogWar.ForceUpdateFog();                 // 보간을 건너뛰고 즉시 반영
+ForceUpdateFog(fogWar);                  // 보간을 건너뛰고 즉시 반영 (원본 에셋에선 private이라 리플렉션 호출)
 
 // 플레이어 파괴 전 리빌러를 해제하지 않으면 재시작할 때마다 계속 쌓인다
 public void UnregisterFromFogSystem()
