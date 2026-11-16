@@ -1,4 +1,4 @@
-# EchoesOfMe — 게임 클라이언트 포트폴리오 (김지우)
+# 꿈의 미로 - Echoes Of Me
 
 두 개의 미로 레이어(Physical ↔ Arcane)를 오가며 열쇠를 모아 탈출하는 Unity 6(URP) 미로 탈출 게임입니다.
 
